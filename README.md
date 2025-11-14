@@ -21,7 +21,7 @@ The game uses **hand-tracking controls** to let players interact with the world 
 - Polished UI and visual effects  
 
 ## 🛠️ Tech Stack
-- Language: *![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)*  
+- Language: *Python*  
 - Framework/Engine: *Pygame*  
 - Libraries: *CV2, MediaPipe, Threading*  
 - Extras: *[any other tools]*  
