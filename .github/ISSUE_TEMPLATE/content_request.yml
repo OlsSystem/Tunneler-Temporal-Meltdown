@@ -1,0 +1,58 @@
+name: New Feature/Request
+description: New content or feature request
+title: "Aspect - Short Description"
+labels: ["request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please fill out the following information to the best of your ability!**
+
+        Remember that it's important to provide as much information! It will help other developers
+        understand the issue and fix it efficiently.
+
+        Also, if this is a huge content request, consider splitting it into multiple issues. That way,
+        we can work on this in parallel!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is the request about?
+      placeholder: |
+        New game spike trap for levels
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation-details
+    attributes:
+      label: Implementation Details
+      description: How should the request be implemented?
+      placeholder: |
+        - [ ] Create sprite for new spike trap
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Any additional information that may be helpful, such as technical concerns, etc.
+      placeholder: |
+        Make sure that levels are still compleatable with this new trap.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: final-checks
+    attributes:
+      label: Final Checks
+      description: Questions to ask yourself before submitting the issue
+      options:
+        - label: I provided a clear title and filled in all the fields with clear information
+          required: true
+        - label: I have checked the issue tracker for duplicates
+          required: true
+        - label: I properly tagged the issue on the right
+          required: true
