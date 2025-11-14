@@ -29,9 +29,9 @@ jobs:
           git config user.email "axol[bot]@axol.systems"
           git config pull.rebase false
 
-      - name: Merge live into staging
+      - name: Merge main into staging
         run: |
           git fetch origin staging
           git checkout staging
-          git merge origin/live --ff --no-edit
+          git merge origin/main --ff --no-edit
           git push origin staging
