@@ -1,0 +1,33 @@
+name: Sync main → staging
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "axol-systems[bot]"
+          git config user.email "axol[bot]@axol.systems"
+
+      - name: Fetch all branches
+        run: git fetch --all
+
+      - name: Switch to staging branch
+        run: git checkout staging
+
+      - name: Merge main into staging
+        run: git merge origin/main --no-edit
+
+      - name: Push changes
+        run: git push origin staging
