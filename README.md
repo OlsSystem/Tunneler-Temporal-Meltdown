@@ -38,4 +38,4 @@ This project was created for my A Level Computer Science NEA and focuses on:
 - Real-time gesture recognition  
 - Game development  
 - Algorithm design  
-- Efficient physics/puzzle mechanics  
+- Efficient physics/puzzle mechanics
