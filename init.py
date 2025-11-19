@@ -9,8 +9,3 @@ import modules.handTracking as handTracking
 HT = handTracking.TrackHands()
 
 HT.start()
-
-time.sleep(3)
-
-print('STOPPING')
-HT.stop()

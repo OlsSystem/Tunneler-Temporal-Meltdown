@@ -1,13 +1,20 @@
 # ---- Python Modules ---- #
 import cv2
 from threading import Thread
-import mediapipe 
+import mediapipe
+
+# ---- Initialising Variables ---- # 
+
+coordinates = [
+    [(320,0), (320,480)],
+    [(0,240), (640,240)],
+]
 
 class TrackHands():
     def __init__(self):
         self.camera = cv2.VideoCapture(0) # Used to fetch the camera feed.
         #camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1920) # Allows me to test out the camera in a bigger size
-        #camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080) 
+        #camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
         self.cameraUiEnabled = True # used to turn off the camera when its not needed.
         self.mpHandsSolution = mediapipe.solutions.hands # Imports the hands solution from Mediapipe
@@ -15,12 +22,15 @@ class TrackHands():
         self.hand = self.mpHandsSolution.Hands() # Initialises the Hands moduel from the hands solution
 
     def applyGrid(self):
-        print('APPLYING GRID')
-        cv2.line(self.cameraImage, (0,0), (250,250), (255, 0, 255), 9)
+        for coord_set in coordinates: # Loops through the dictionary 
+            cv2.line(self.cameraImage, coord_set[0], coord_set[1], (255, 0, 255), 6) # Sets the line using the camera image and points from the dictionary.
+                
+    def showCoords(self, event, x, y, flags, params):
+        if event == cv2.EVENT_LBUTTONDOWN:
+            print(f'X: {x} // Y: {y}')
 
     def startCameraFeedThread(self):
         while self.cameraUiEnabled: # Keeping the camera on when its in use.
-            # print(self.cameraUiEnabled)
             foundCamera, self.cameraImage = self.camera.read() # Reading the image of the camera
             self.cameraImage = cv2.flip(self.cameraImage, 1) # Flips the video image so that you move the hand in the same direction on the camera as you are in real life.
 
@@ -33,7 +43,7 @@ class TrackHands():
 
             handsInView = self.hand.process(colourConvert) # Finds the hands that are in view of the camera.
 
-            self.applyGrid() # Applys the grid to the 
+            self.applyGrid() # Applys the grid to the
 
             if handsInView.multi_hand_landmarks: # Runs if it finds hands.
                 for handPos in handsInView.multi_hand_landmarks: # Runs for each hand in view of the camera.
@@ -42,9 +52,13 @@ class TrackHands():
                         x, y = int(landMark.x * w), int(landMark.y * h) # converts the height and width into x and y coordinates to draw on the hand
                         if id == 8: # 8 is the ID for the tip of the index finger.
                             cv2.circle(self.cameraImage, (x, y), 15, (255, 0, 255), cv2.FILLED) # Creates a circle around the point on the index finger.
-        
+
             cv2.imshow('image', self.cameraImage) # Displaying the cameras image in a window
+            cv2.setMouseCallback('image', self.showCoords) # Displays the mouse coords after clicking
             cv2.waitKey(1) # Wait for a key to be used
+
+            if cv2.waitKey(1) & 0xFF == ord('q'): # Temp for when q is clicked the window closes for testing.
+                self.cameraUiEnabled = False
 
 
     def start(self):
@@ -52,7 +66,7 @@ class TrackHands():
             print('Camera cant be opened.. Exiting.')
             self.cameraUiEnabled = False
             return "Camera Not Found." # Return an Error to the core of the game.
-        
+
         Thread(target=self.startCameraFeedThread).start() # Starts the camera feed as a Thread so that other code is able to run while still having the camera enabled since it requires a loop
 
 
