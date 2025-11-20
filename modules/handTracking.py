@@ -5,10 +5,13 @@ import mediapipe
 
 # ---- Initialising Variables ---- # 
 
-coordinates = [
+coordinates = [ # Coordinate points for the grid 
     [(320,0), (320,480)],
     [(0,240), (640,240)],
-]
+
+    [(380,200), (380,280)],
+    [(260,200), (260,280)]
+] ## add a third option to the dictionary for the colour 
 
 class TrackHands():
     def __init__(self):
