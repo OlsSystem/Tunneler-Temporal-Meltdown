@@ -3,15 +3,33 @@ import cv2
 from threading import Thread
 import mediapipe
 
+# ---- Misc Variables ---- #
+
+Pink = (255, 0, 255)
+Blue = (255, 0, 0)
+Green = (0, 255, 0)
+Red = (0, 0, 255)
+
 # ---- Initialising Variables ---- # 
 
-coordinates = [ # Coordinate points for the grid 
-    [(320,0), (320,480)],
-    [(0,240), (640,240)],
+coordinates = [ # Coordinate points for the grid 640x480 and applies colour
+    
+    # -- Central Cross -- #
+    [(320,0), (320,480), Pink],
+    [(0,240), (640,240), Pink],
 
-    [(380,200), (380,280)],
-    [(260,200), (260,280)]
-] ## add a third option to the dictionary for the colour 
+    # -- Dead Zone Box -- #
+    [(380,200), (380,280), Red],
+    [(260,200), (260,280), Red],
+    [(380,200), (260,200), Red],
+    [(380,280), (260,280), Red],
+
+    # -- Extra Moves Boxes -- #
+    [(580,480), (580,0), Green],
+    [(60,480), (60,0), Green],
+    [(0,425), (640,425), Green],
+    [(0,55), (640,55), Green]
+] 
 
 class TrackHands():
     def __init__(self):
@@ -26,11 +44,35 @@ class TrackHands():
 
     def applyGrid(self):
         for coord_set in coordinates: # Loops through the dictionary 
-            cv2.line(self.cameraImage, coord_set[0], coord_set[1], (255, 0, 255), 6) # Sets the line using the camera image and points from the dictionary.
+            cv2.line(self.cameraImage, coord_set[0], coord_set[1], coord_set[2], 6) # Sets the line using the camera image and points from the dictionary.
                 
     def showCoords(self, event, x, y, flags, params):
         if event == cv2.EVENT_LBUTTONDOWN:
             print(f'X: {x} // Y: {y}')
+            self.checkHand(x,y)
+
+    def checkHand(self, x, y):
+
+        # -- Dead Zone Check -- #
+        if x > 260 and x < 380 and y < 280 and y > 200:
+            print('DEAD')
+            return
+
+        # -- Top Right -- #
+        if x > 320 and x < 580 and y < 240 and y > 55:
+            print('Top Right')
+
+        # -- Top Left -- #
+        if x > 60 and x < 320 and y < 240 and y > 55:
+            print('Top Left')
+
+        # -- Bottom Left -- #
+        if x > 60 and x < 320 and y < 420 and y > 240:
+            print('Bottom Left')
+
+        # -- Bottom Right -- #
+        if x > 320 and x < 580 and y < 420 and y > 240:
+            print('Bottom Right')
 
     def startCameraFeedThread(self):
         while self.cameraUiEnabled: # Keeping the camera on when its in use.
@@ -55,6 +97,7 @@ class TrackHands():
                         x, y = int(landMark.x * w), int(landMark.y * h) # converts the height and width into x and y coordinates to draw on the hand
                         if id == 8: # 8 is the ID for the tip of the index finger.
                             cv2.circle(self.cameraImage, (x, y), 15, (255, 0, 255), cv2.FILLED) # Creates a circle around the point on the index finger.
+                            self.checkHand(x,y)
 
             cv2.imshow('image', self.cameraImage) # Displaying the cameras image in a window
             cv2.setMouseCallback('image', self.showCoords) # Displays the mouse coords after clicking
