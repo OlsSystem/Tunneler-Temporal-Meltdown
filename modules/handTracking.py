@@ -33,7 +33,7 @@ coordinates = [ # Coordinate points for the grid 640x480 and applies colour
 
 class TrackHands():
     def __init__(self):
-        self.camera = cv2.VideoCapture(0) # Used to fetch the camera feed.
+        self.camera = None # Initialising Variable
         #camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1920) # Allows me to test out the camera in a bigger size
         #camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
@@ -41,6 +41,28 @@ class TrackHands():
         self.mpHandsSolution = mediapipe.solutions.hands # Imports the hands solution from Mediapipe
 
         self.hand = self.mpHandsSolution.Hands() # Initialises the Hands moduel from the hands solution
+    
+
+    def start(self):
+        self.camera = cv2.VideoCapture(0) # Used to fetch the camera feed.
+        
+        if not self.camera.isOpened(): # Checking if the user has got the camera opened.
+            print('Camera cant be opened.. Exiting.')
+            self.cameraUiEnabled = False
+            return "Camera Not Found." # Return an Error to the core of the game.
+
+        self.cameraUiEnabled = True
+        Thread(target=self.startCameraFeedThread).start() # Starts the camera feed as a Thread so that other code is able to run while still having the camera enabled since it requires a loop
+
+
+    def stop(self): # Disables the camera feed and thread.
+        print("Stopping camera...")
+        self.cameraUiEnabled = False
+
+        if self.camera:
+            self.camera.release()
+            self.camera = None
+            cv2.destroyWindow("image")
 
     def applyGrid(self):
         for coord_set in coordinates: # Loops through the dictionary 
@@ -105,16 +127,3 @@ class TrackHands():
 
             if cv2.waitKey(1) & 0xFF == ord('q'): # Temp for when q is clicked the window closes for testing.
                 self.cameraUiEnabled = False
-
-
-    def start(self):
-        if not self.camera.isOpened(): # Checking if the user has got the camera opened.
-            print('Camera cant be opened.. Exiting.')
-            self.cameraUiEnabled = False
-            return "Camera Not Found." # Return an Error to the core of the game.
-
-        Thread(target=self.startCameraFeedThread).start() # Starts the camera feed as a Thread so that other code is able to run while still having the camera enabled since it requires a loop
-
-
-    def stop(self): # Disables the camera feed and thread.
-        self.cameraUiEnabled = False # Stops the loop
