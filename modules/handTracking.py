@@ -58,12 +58,13 @@ class TrackHands():
 
     def stop(self): # Disables the camera feed and thread.
         print("Stopping camera...")
-        self.cameraUiEnabled = False
+        self.cameraUiEnabled = False # Sets the for loop within the thread to false so it stops.
 
-        if self.camera:
-            self.camera.release()
-            self.camera = None
-            cv2.destroyWindow("image")
+        if self.camera: # If theres still and camera it will
+            self.camera.release() # Shuts off the camera Feed. 
+            self.camera = None # Sets the camera to None to allow for boot up again.
+            cv2.destroyWindow("image") # Closes out the window that shows the camera.
+
 
     def applyGrid(self):
         for coord_set in coordinates: # Loops through the dictionary 

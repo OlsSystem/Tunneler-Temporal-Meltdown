@@ -7,23 +7,25 @@ import pygame
 # ---- Initialising Variables ---- # 
 
 class TextButton:
-    def __init__(self, x, y, text, font_size, color, screen):
-        self.screen = screen
-        self.text = text
+    def __init__(self, x, y, text, font_size, color, screen): # Basic Setup of the text button and variables it needs.
+        
+        # Requested variables from when creating a new instance of this class.
+        self.screen = screen 
+        self.text = text 
         self.color = color
 
-        self.font = pygame.font.Font(None, font_size) 
-        self.render = self.font.render(self.text, True, self.color)
+        self.font = pygame.font.Font(None, font_size) # Sets the font of the Text
+        self.render = self.font.render(self.text, True, self.color) # Renders the text in the colour and font
 
-        self.rectangle = self.render.get_rect()
-        self.rectangle.topleft = (x, y)
+        self.rectangle = self.render.get_rect() # Gets the coordinates of the render.
+        self.rectangle.topleft = (x, y) # Sets the coordinates of the render to specified x and y coordinates.
 
     def draw(self):
-        self.screen.blit(self.render, (self.rectangle.x, self.rectangle.y))
+        self.screen.blit(self.render, (self.rectangle.x, self.rectangle.y)) # On call draws on the text.
         
     def isClicked(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if self.rectangle.collidepoint(event.pos):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # When the event is mouse button and down and event button is 1 (keydown)
+            if self.rectangle.collidepoint(event.pos): # Checks that where the mouse is and if its on top of the button it returns true
                 return True
             else: 
                 return False
