@@ -15,8 +15,8 @@ Red = (0, 0, 255)
 coordinates = [ # Coordinate points for the grid 640x480 and applies colour
     
     # -- Central Cross -- #
-    [(320,0), (320,480), Pink],
-    [(0,240), (640,240), Pink],
+    [(320,55), (320,425), Pink],
+    [(60,240), (580,240), Pink],
 
     # -- Dead Zone Box -- #
     [(380,200), (380,280), Red],
@@ -41,8 +41,9 @@ class TrackHands():
         self.mpHandsSolution = mediapipe.solutions.hands # Imports the hands solution from Mediapipe
 
         self.hand = self.mpHandsSolution.Hands() # Initialises the Hands moduel from the hands solution
+        
+        self.handLocation = "Unknown"
     
-
     def start(self):
         self.camera = cv2.VideoCapture(0) # Used to fetch the camera feed.
         
@@ -72,30 +73,56 @@ class TrackHands():
         if event == cv2.EVENT_LBUTTONDOWN:
             print(f'X: {x} // Y: {y}')
             self.checkHand(x,y)
+            print(self.handLocation)
 
     def checkHand(self, x, y):
-
         # -- Dead Zone Check -- #
         if x > 260 and x < 380 and y < 280 and y > 200:
-            print('DEAD')
+            self.handLocation = "Dead Zone"
             return
 
         # -- Top Right -- #
         if x > 320 and x < 580 and y < 240 and y > 55:
-            print('Top Right')
-
+            self.handLocation = "Top Right"
+            return
+        
         # -- Top Left -- #
         if x > 60 and x < 320 and y < 240 and y > 55:
-            print('Top Left')
+            self.handLocation = "Top Left"
+            return
 
         # -- Bottom Left -- #
         if x > 60 and x < 320 and y < 420 and y > 240:
-            print('Bottom Left')
+            self.handLocation = "Bottom Left"
+            return
 
         # -- Bottom Right -- #
         if x > 320 and x < 580 and y < 420 and y > 240:
-            print('Bottom Right')
-
+            self.handLocation = "Bottom Right"
+            return
+            
+        # -- Left Side Green -- #
+        if x > 0 and x < 60 and y < 425 and y > 55:
+            self.handLocation = "Left Side Green"
+            return
+        
+        # -- Right Side Green -- #
+        if x > 580 and x < 640 and y < 425 and y > 55:
+            self.handLocation = "Right Side Green"
+            return
+        
+        # -- Top Green -- #
+        if x > 60 and x < 580 and y < 55 and y > 0:
+            self.handLocation = "Top Green"
+            return
+        
+        # -- Bottom Green -- #
+        if x > 60 and x < 580 and y < 480 and y > 425:
+            self.handLocation = "Bottom Green"
+            return
+        
+        self.handLocation = "Unknown"
+        
     def startCameraFeedThread(self):
         while self.cameraUiEnabled: # Keeping the camera on when its in use.
             foundCamera, self.cameraImage = self.camera.read() # Reading the image of the camera
