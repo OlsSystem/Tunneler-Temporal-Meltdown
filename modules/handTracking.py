@@ -43,6 +43,9 @@ class TrackHands():
         self.hand = self.mpHandsSolution.Hands() # Initialises the Hands moduel from the hands solution
         
         self.handLocation = "Unknown"
+        self.menuTracked = False
+        self.x, self.y = 100, 100
+
     
     def start(self):
         self.camera = cv2.VideoCapture(0) # Used to fetch the camera feed.
@@ -65,16 +68,32 @@ class TrackHands():
             self.camera = None # Sets the camera to None to allow for boot up again.
             cv2.destroyWindow("image") # Closes out the window that shows the camera.
 
+    def enableMenuTracking(self, cursor):
+        self.menuTracked = True # Enables the menu tracking to be used.
+        self.cursor = cursor # Brings the cursor over from the core file to be used and changed with mediapipe and cv2.
+        
+    def disableMenuTracking(self):
+        self.menuTracked = False # Disables the menu tracking.
+        
+    def setXandY(self, x, y):
+        self.x = x # Sets the hands x
+        self.y = y # Sets the hands y
 
+    def menuTracking(self):
+        if self.menuTracked: # If the menus enabled and hand tracking is on.
+            self.cursor.moveCursor(self.x, self.y) # Moves the cursor based on the set values.
+            
     def applyGrid(self):
         for coord_set in coordinates: # Loops through the dictionary 
             cv2.line(self.cameraImage, coord_set[0], coord_set[1], coord_set[2], 6) # Sets the line using the camera image and points from the dictionary.
                 
+    # To be deleted after testing ----- ----- -----
     def showCoords(self, event, x, y, flags, params):
         if event == cv2.EVENT_LBUTTONDOWN:
             print(f'X: {x} // Y: {y}')
             self.checkHand(x,y)
             print(self.handLocation)
+    # ----- ----- ----- ----- ----- ----- ----- ----- 
 
     def checkHand(self, x, y):
         # -- Dead Zone Check -- #
@@ -147,7 +166,7 @@ class TrackHands():
                         x, y = int(landMark.x * w), int(landMark.y * h) # converts the height and width into x and y coordinates to draw on the hand
                         if id == 8: # 8 is the ID for the tip of the index finger.
                             cv2.circle(self.cameraImage, (x, y), 15, (255, 0, 255), cv2.FILLED) # Creates a circle around the point on the index finger.
-                            self.checkHand(x,y)
+                            self.setXandY(x,y)
 
             cv2.imshow('image', self.cameraImage) # Displaying the cameras image in a window
             cv2.setMouseCallback('image', self.showCoords) # Displays the mouse coords after clicking
