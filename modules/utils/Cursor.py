@@ -8,16 +8,35 @@ import pygame
 
 
 class Cursor:
-    def __init__(self, x, y, image, scale, screen):
-      
+    def __init__(self, x, y, idleHand, selectHand, scale, screen):
       # Requested variables from when creating a new instance of this class.
-      self.width = image.get_width()
-      self.height = image.get_height()
+      self.selectHand = selectHand
+      self.idleHand = idleHand
+      self.hand = self.idleHand
+      self.scale = scale
+      self.width = self.hand.get_width()
+      self.height = self.hand.get_height()
       self.screen = screen
       
-      self.image = pygame.transform.scale(image, (int(self.width * scale), int(self.height * scale))) # Scales down the image using the scale requested
+      self.image = pygame.transform.scale(self.hand, (int(self.width * scale), int(self.height * scale))) # Scales down the image using the scale requested
       self.rectangle = self.image.get_rect() # Gets the coordinates of the render.
       self.rectangle.topleft = (x,y) # Sets the coordinates of the render to specified x and y coordinates.
+
+    def setImage(self, imageName):
+      if imageName == "Select":
+        self.hand = self.selectHand
+        self.width = self.hand.get_width()
+        self.height = self.hand.get_height()
+        
+        self.image = pygame.transform.scale(self.hand, (int(self.width * 0.6), int(self.height * 0.6))) # Scales down the image using the scale requested
+      else:
+        self.hand = self.idleHand
+        self.width = self.hand.get_width()
+        self.height = self.hand.get_height()
+        
+        self.image = pygame.transform.scale(self.hand, (int(self.width * self.scale), int(self.height * self.scale))) # Scales down the image using the scale requested
+        
+      self.draw()
 
     def draw(self):
         self.screen.blit(self.image, (self.rectangle.x, self.rectangle.y)) # Draws on the cursor at the requested coordinates

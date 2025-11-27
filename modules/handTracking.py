@@ -2,6 +2,7 @@
 import cv2
 from threading import Thread
 import mediapipe
+import math
 
 # ---- Misc Variables ---- #
 
@@ -143,8 +144,14 @@ class TrackHands():
         
         self.handLocation = "Unknown"
         
+    def isPinching(self, p1, p2, threashold=30):
+        print(math.hypot(p2[0] - p1[0], p2[1] - p1[1]) < threashold)
+        return math.hypot(p2[0] - p1[0], p2[1] - p1[1]) < threashold
+        
     def startCameraFeedThread(self):
         while self.cameraUiEnabled: # Keeping the camera on when its in use.
+            indexLandmark = None
+            thumbLandmark = None
             foundCamera, self.cameraImage = self.camera.read() # Reading the image of the camera
             self.cameraImage = cv2.flip(self.cameraImage, 1) # Flips the video image so that you move the hand in the same direction on the camera as you are in real life.
 
@@ -167,6 +174,21 @@ class TrackHands():
                         if id == 8: # 8 is the ID for the tip of the index finger.
                             cv2.circle(self.cameraImage, (x, y), 15, (255, 0, 255), cv2.FILLED) # Creates a circle around the point on the index finger.
                             self.setXandY(x,y)
+                            indexLandmark = (x,y)
+                            
+                        if id == 4 and self.menuTracked:
+                            cv2.circle(self.cameraImage, (x, y), 15, (255, 0, 255), cv2.FILLED) 
+                            thumbLandmark = (x,y)
+                            
+                        
+            if indexLandmark and thumbLandmark:
+                if self.isPinching(indexLandmark, thumbLandmark, 20):   
+                    self.cursor.setImage("Select")
+                else:
+                    self.cursor.setImage("Idle")
+            else:
+                self.cursor.setImage("Idle")
+
 
             cv2.imshow('image', self.cameraImage) # Displaying the cameras image in a window
             cv2.setMouseCallback('image', self.showCoords) # Displays the mouse coords after clicking

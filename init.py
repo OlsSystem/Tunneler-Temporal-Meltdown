@@ -28,7 +28,7 @@ endButton = TextButton(100, 100, "End", 38, (255,255,255), screen) # Creates a n
 
 testLabel = TextLabel(300,300, "This is a Test Label", 60, (255,0,255), screen)
 
-cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), 0.05, screen)    
+cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\CursorSelect.png')).convert_alpha(), 0.05, screen)    
 
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)

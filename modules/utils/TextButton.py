@@ -7,7 +7,7 @@ import pygame
 # ---- Initialising Variables ---- # 
 
 class TextButton:
-    def __init__(self, x, y, text, font_size, color, screen): # Basic Setup of the text button and variables it needs.
+    def __init__(self, x, y, text, font_size, color, screen, menuSelectEnabled=False): # Basic Setup of the text button and variables it needs.
         
         # Requested variables from when creating a new instance of this class.
         self.screen = screen 
@@ -19,12 +19,20 @@ class TextButton:
 
         self.rectangle = self.render.get_rect() # Gets the coordinates of the render.
         self.rectangle.topleft = (x, y) # Sets the coordinates of the render to specified x and y coordinates.
+        
+        self.menuSelectEnabled = menuSelectEnabled
 
     def draw(self):
         self.screen.blit(self.render, (self.rectangle.x, self.rectangle.y)) # On call draws on the text.
         
     def isClicked(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # When the event is mouse button and down and event button is 1 (keydown)
+            if self.rectangle.collidepoint(event.pos): # Checks that where the mouse is and if its on top of the button it returns true
+                return True
+            else: 
+                return False
+            
+        if self.menuSelectEnabled:
             if self.rectangle.collidepoint(event.pos): # Checks that where the mouse is and if its on top of the button it returns true
                 return True
             else: 
