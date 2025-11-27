@@ -1,6 +1,7 @@
 # ---- Python Modules ---- #
 import pygame
 import os
+import csv
 
 # ---- Misc Variables ---- #
 
@@ -16,4 +17,11 @@ class LevelGenerator:
         self.levelsFolder = []
         
     def findLevel(self, levelName):
+        print(levelName)
         
+# grid = []
+#     with open(file_path, newline="") as f:
+#         reader = csv.reader(f)
+#         for row in reader:
+#             grid.append([tile_map.get(int(code), "unknown") for code in row])
+#     return grid
