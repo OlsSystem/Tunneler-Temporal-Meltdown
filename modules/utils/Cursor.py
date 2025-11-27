@@ -11,6 +11,7 @@ class Cursor:
     def __init__(self, x, y, idleHand, selectHand, scale, screen):
       # Requested variables from when creating a new instance of this class.
       self.selectHand = selectHand
+      self.handMode = "Idle"
       self.idleHand = idleHand
       self.hand = self.idleHand
       self.scale = scale
@@ -27,10 +28,12 @@ class Cursor:
         self.hand = self.selectHand
         self.width = self.hand.get_width()
         self.height = self.hand.get_height()
+        self.handMode = "Select"
         
         self.image = pygame.transform.scale(self.hand, (int(self.width * 0.6), int(self.height * 0.6))) # Scales down the image using the scale requested
       else:
         self.hand = self.idleHand
+        self.handMode = "Idle"
         self.width = self.hand.get_width()
         self.height = self.hand.get_height()
         

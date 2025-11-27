@@ -36,28 +36,31 @@ while isRunning: # While isRunning is set to true
     endButton.draw() # Draws on the end Button
     testLabel.draw() # Draw on the text
     
+    if HT.menuTracked and cursor.handMode == "Select":
+        if endButton.isClicked(cursor.rectangle.topleft):
+            print('CLICKED END')
+            HT.stop() # Closes out the Hand Tracking Client
+            HT.disableMenuTracking() # Disabes the menu hand tracking.
+    
     for event in pygame.event.get(): # Constantly Event Checking.
         if event.type == pygame.QUIT: # If the pygame window is closed.
             isRunning = False # Closes out the while loop by setting isRunning to false.
             pygame.quit() # Quits out of pygame.
             HT.stop() # Stops the hand tracking client.
             break
-                    
-        if startButton.isClicked(event): # When the start Buttons clicked 
-            print('CLICKED START')
-            HT.start() # Opens up the Hand Tracking Client
-            HT.enableMenuTracking(cursor) # Enables the menu hand tracking.
-
-                    
-        if endButton.isClicked(event): # When the end Button clicked
-            print('CLICKED END')
-            HT.stop() # Closes out the Hand Tracking Client
-            HT.disableMenuTracking() # Disabes the menu hand tracking.
             
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # When the event is mouse button and down and event button is 1 (keydown)
+            if startButton.isClicked(event.pos): # When the start Buttons clicked 
+                print('CLICKED START')
+                HT.start() # Opens up the Hand Tracking Client
+                HT.enableMenuTracking(cursor) # Enables the menu hand tracking.
+                    
+            if endButton.isClicked(event.pos): # When the end Button clicked
+                print('CLICKED END')
+                HT.stop() # Closes out the Hand Tracking Client
+                HT.disableMenuTracking() # Disabes the menu hand tracking.
+            
             print(event.pos)
                     
-    
     HT.menuTracking() # Runs update image position
-        
     pygame.display.update() # Updates the display with the new buttons to make sure they all appear.

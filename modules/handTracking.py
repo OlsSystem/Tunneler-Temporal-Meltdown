@@ -75,6 +75,7 @@ class TrackHands():
         
     def disableMenuTracking(self):
         self.menuTracked = False # Disables the menu tracking.
+        self.cursor.setImage("Idle")
         
     def setXandY(self, x, y):
         self.x = x # Sets the hands x
@@ -145,7 +146,6 @@ class TrackHands():
         self.handLocation = "Unknown"
         
     def isPinching(self, p1, p2, threashold=30):
-        print(math.hypot(p2[0] - p1[0], p2[1] - p1[1]) < threashold)
         return math.hypot(p2[0] - p1[0], p2[1] - p1[1]) < threashold
         
     def startCameraFeedThread(self):
