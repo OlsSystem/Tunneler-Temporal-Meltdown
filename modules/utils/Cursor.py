@@ -25,10 +25,10 @@ class Cursor:
 
     def setImage(self, imageName):
       if imageName == "Select":
-        self.hand = self.selectHand
+        self.hand = self.selectHand # Change the hand to the select image
         self.width = self.hand.get_width()
         self.height = self.hand.get_height()
-        self.handMode = "Select"
+        self.handMode = "Select" # Set the new Hand Mode
         
         self.image = pygame.transform.scale(self.hand, (int(self.width * 0.6), int(self.height * 0.6))) # Scales down the image using the scale requested
       else:
@@ -39,7 +39,7 @@ class Cursor:
         
         self.image = pygame.transform.scale(self.hand, (int(self.width * self.scale), int(self.height * self.scale))) # Scales down the image using the scale requested
         
-      self.draw()
+      self.draw() # Draw on the new hand.
 
     def draw(self):
         self.screen.blit(self.image, (self.rectangle.x, self.rectangle.y)) # Draws on the cursor at the requested coordinates

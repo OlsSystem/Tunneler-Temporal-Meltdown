@@ -146,7 +146,7 @@ class TrackHands():
         self.handLocation = "Unknown"
         
     def isPinching(self, p1, p2, threashold=30):
-        return math.hypot(p2[0] - p1[0], p2[1] - p1[1]) < threashold
+        return math.hypot(p2[0] - p1[0], p2[1] - p1[1]) < threashold # Returns True if the two points are close enough to indicate a pinch gesture
         
     def startCameraFeedThread(self):
         while self.cameraUiEnabled: # Keeping the camera on when its in use.

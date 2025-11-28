@@ -28,6 +28,10 @@ class LevelGenerator:
 
         
     def loadLevel(self, chapterId, levelId):
+        if self.inLevel:
+            self.levelEnded()
+            
+            
         # loadingScreen.enabled()
         self.findLevel(chapterId, levelId)
         with open(self.levelPath, newline="") as lvl:
