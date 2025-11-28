@@ -8,7 +8,7 @@ from modules.utils.ItemMapping import itemMap, itemImageMap
 
 # ---- Misc Variables ---- #
 
-assetSize = 32
+assetSize = 64
 
 # ---- Initialising Variables ---- # 
 
@@ -18,6 +18,7 @@ class LevelGenerator:
         self.screen = pygameInstance
         self.levelName = None
         self.levelPath = None
+        self.inLevel = False
         self.levelLocation = os.path.normpath(os.path.join(self.rootDir, "../levels"))
         self.levelsFolder = []
         self.levelGrid = []
@@ -29,17 +30,16 @@ class LevelGenerator:
     def loadLevel(self, chapterId, levelId):
         # loadingScreen.enabled()
         self.findLevel(chapterId, levelId)
-        print(self.levelPath)
         with open(self.levelPath, newline="") as lvl:
             levelReader = csv.reader(lvl)
-            
             for row in levelReader:
-                for code in row:
-                    self.levelGrid.append([itemMap.get(int(code), "Unknown")])
+                self.levelGrid.append([itemMap.get(int(code), "Unknown") for code in row])
                 
-                
-        #if len(self.levelGrid) > 1 and len(self.levelAssets) > 1:
-        self.generateLevel()
+        self.inLevel = True
+        
+    def levelEnded(self):
+        self.levelGrid = []
+        self.inLevel = False
         
     def loadAssets(self):
         for assetId, filePath in itemImageMap.items():
@@ -47,21 +47,19 @@ class LevelGenerator:
             code = None
             for itemCode, itemName in itemMap.items():
                 if itemName == assetId:
-                    code = itemCode
+                    code = itemName
             
             if code is not None:   
                 self.levelAssets[code] = image
-                
-        print(self.levelAssets)
-    
+                    
     def generateLevel(self):
-        print('DRAWING LEVEL')
-        for y, row in enumerate(self.levelGrid):
-            for x, code in enumerate(row):
-                if code in self.levelAssets:
-                    self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize))
-                #elif code == 1:
-                #    pygame.draw.rect(self.screen, (200,200,200),(x * assetSize, y * assetSize, assetSize, assetSize))
+        if self.inLevel:
+            for y, row in enumerate(self.levelGrid):
+                for x, code in enumerate(row):
+                    if code in self.levelAssets:
+                        self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize))
+                    #elif code == 1:
+                    #    pygame.draw.rect(self.screen, (200,200,200),(x * assetSize, y * assetSize, assetSize, assetSize))
 
 
         # disable loading screen and enable game.
@@ -75,7 +73,6 @@ class LevelGenerator:
                     levelPath = os.path.join(path, level)
 
                     if level.split(".")[0] == levelId:
-                        print("found")
                         self.levelName = levelById[chapterId][levelId]
                         self.levelPath = levelPath
                         

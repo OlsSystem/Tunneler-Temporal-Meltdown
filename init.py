@@ -19,7 +19,7 @@ from modules.LevelGen import LevelGenerator
 
 pygame.init() # Initialises pygame and starts it up.
         
-screen = pygame.display.set_mode((1480,900)) # Sets the window to 1480 by 900px
+screen = pygame.display.set_mode((960,540)) # Sets the window to 1480 by 900px
 isRunning = True # Sets runing to True
 HT = TrackHands() # Initialises HandTracking to be used throughout the program.
 LG = LevelGenerator(screen)
@@ -28,7 +28,8 @@ clock = pygame.time.Clock()
 startButton = TextButton(100, 300, "Start", 38, (255,255,255), screen) # Creates a new Start button
 endButton = TextButton(100, 100, "End", 38, (255,255,255), screen) # Creates a new End button
 
-testLevelLoad = TextButton(300, 200, "Test Level", 38, (255,209, 21), screen)
+testLevelLoad1 = TextButton(300, 100, "Test Level 1", 38, (255,209, 21), screen)
+testLevelLoad2 = TextButton(300, 200, "Test Level 2", 38, (255,209, 21), screen)
 
 testLabel = TextLabel(300,300, "This is a Test Label", 60, (255,0,255), screen)
 
@@ -37,7 +38,8 @@ cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
     startButton.draw() # Draws on the start Button
-    testLevelLoad.draw()
+    testLevelLoad1.draw()
+    testLevelLoad2.draw()
     endButton.draw() # Draws on the end Button
     testLabel.draw() # Draw on the text
     
@@ -46,10 +48,15 @@ while isRunning: # While isRunning is set to true
             print('CLICKED END')
             HT.stop() # Closes out the Hand Tracking Client
             HT.disableMenuTracking() # Disabes the menu hand tracking.
+            LG.levelEnded()
             
-        if testLevelLoad.isClicked(cursor.rectangle.topleft):
-            print('CLICKED TEST LOAD')
+        if testLevelLoad2.isClicked(cursor.rectangle.topleft):
+            print('CLICKED TEST LOAD 2')
             LG.loadLevel("CH1", "LV2")
+            
+        if testLevelLoad1.isClicked(cursor.rectangle.topleft):
+            print('CLICKED TEST LOAD 1')
+            LG.loadLevel("CH1", "LV1")
     
     for event in pygame.event.get(): # Constantly Event Checking.
         if event.type == pygame.QUIT: # If the pygame window is closed.
@@ -68,8 +75,11 @@ while isRunning: # While isRunning is set to true
                 print('CLICKED END')
                 HT.stop() # Closes out the Hand Tracking Client
                 HT.disableMenuTracking() # Disabes the menu hand tracking.
+                LG.levelEnded()
             
             print(event.pos)
                     
     HT.menuTracking() # Runs update image position
+    LG.generateLevel()
+    
     pygame.display.update() # Updates the display with the new buttons to make sure they all appear.

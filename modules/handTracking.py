@@ -182,7 +182,7 @@ class TrackHands():
                             
                         
             if indexLandmark and thumbLandmark:
-                if self.isPinching(indexLandmark, thumbLandmark, 20):   
+                if self.isPinching(indexLandmark, thumbLandmark, 30):   
                     self.cursor.setImage("Select")
                 else:
                     self.cursor.setImage("Idle")
