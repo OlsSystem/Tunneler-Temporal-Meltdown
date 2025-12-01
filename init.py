@@ -11,6 +11,7 @@ from modules.utils.TextButton import TextButton
 from modules.utils.TextLabel import TextLabel
 from modules.utils.Cursor import Cursor
 from modules.LevelGen import LevelGenerator
+from modules.Player import Player
 
 # -- Core Variables -- #
 
@@ -35,6 +36,8 @@ testLabel = TextLabel(300,300, "This is a Test Label", 60, (255,0,255), screen)
 
 cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\CursorSelect.png')).convert_alpha(), 0.05, screen)    
 
+player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets/bettingTonBulk.png')).convert_alpha(), 0.6)
+
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
     startButton.draw() # Draws on the start Button
@@ -42,6 +45,7 @@ while isRunning: # While isRunning is set to true
     testLevelLoad2.draw()
     endButton.draw() # Draws on the end Button
     testLabel.draw() # Draw on the text
+    player.draw()
     
     if HT.menuTracked and cursor.handMode == "Select":
         if endButton.isClicked(cursor.rectangle.topleft):
@@ -64,6 +68,11 @@ while isRunning: # While isRunning is set to true
             pygame.quit() # Quits out of pygame.
             HT.stop() # Stops the hand tracking client.
             break
+        
+        if event.type == pygame.KEYDOWN:
+            player.keyDown(event)
+        elif event.type == pygame.KEYUP:
+            player.keyUp(event)
             
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # When the event is mouse button and down and event button is 1 (keydown)
             if startButton.isClicked(event.pos): # When the start Buttons clicked 
@@ -81,5 +90,7 @@ while isRunning: # While isRunning is set to true
                     
     HT.menuTracking() # Runs update image position
     LG.generateLevel()
+    
+    player.movePlayer()
     
     pygame.display.update() # Updates the display with the new buttons to make sure they all appear.
