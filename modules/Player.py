@@ -24,19 +24,19 @@ class Player:
         
         self.image = pygame.transform.scale(characterImage, (int(self.width * scale), int(self.height * scale))) # Scales down the image using the scale requested
         
-        self.speed = 0.5
+        self.speed = 1
         self.scale = scale
-        self.rectangle = pygame.Rect(self.x * scale, self.y * scale, 64, 64)
-    
+        self.rectangle = pygame.Rect(self.x, self.y, 64, 64)    
+        
     def draw(self):
-        self.rectangle = pygame.Rect(self.x * self.scale, self.y * self.scale, 64, 64)
-        pygame.draw.rect(self.screen, (255,102,255), self.rectangle)
-        #self.screen.blit(self.image, (self.x, self.y)) # On call draws on the text.
+        self.rectangle = pygame.Rect(self.x, self.y, 64, 64)    
+        pygame.draw.rect(self.screen, (255,102,255), self.rectangle, 2)
+        self.screen.blit(self.image, (self.x, self.y)) # On call draws on the text.
     
     def keyDown(self, event):
-        if event.key == pygame.K_LEFT and (self.x_last == 0 or self.x_last == 1):
+        if event.key == pygame.K_LEFT:
             self.x_direction = -1
-        elif event.key == pygame.K_RIGHT and (self.x_last == 0 or self.x_last == -1):
+        elif event.key == pygame.K_RIGHT:
             self.x_direction = 1
 
     def keyUp(self, event):
@@ -48,27 +48,28 @@ class Player:
                 
     def movePlayer(self, canCollide=None):
         hasCollided = False
-        if canCollide or not self.x_last:
+        if canCollide:
             for object in canCollide:
-                if self.rectangle.colliderect(object):
-                    self.x += 0
-                    self.y += 0
-                    self.x_last = self.x_direction
-                    self.y_last = self.y_direction
-                    
-                    self.x_direction = 0
-                    self.y_direction = 0
-                    hasCollided = True
-                    print('collided')
+                if object.collidepoint(self.rectangle.topleft) and self.x_direction == 1:
                     break
-                hasCollided = False
+                    
+                if object.collidepoint(self.rectangle.topright) and self.x_direction == -1:
+                    break
+                    
+                if self.rectangle.colliderect(object):
+                    hasCollided = True
+                    
+                    if self.x_direction != 0:
+                        self.x_direction = 0
+                    if self.y_direction != 0:
+                        self.y_direction = 0
+                    break
         
         if not hasCollided:
+            print(self.speed * self.x_direction)
             self.x += self.speed * self.x_direction
             self.y += self.speed * self.y_direction
             
-            self.x_last = None
-            self.y_last = None
-        
-            self.draw()
+            
+        self.draw()
     
