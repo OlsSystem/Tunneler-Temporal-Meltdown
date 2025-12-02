@@ -11,8 +11,8 @@ class Player:
     def __init__(self, screen, characterImage, scale):
         self.screen = screen
         self.playerCharacter = characterImage
-        self.x = 300
-        self.y = 300
+        self.x = 200
+        self.y = 325
         self.x_direction = 0
         self.y_direction = 0
         
@@ -21,10 +21,14 @@ class Player:
         
         self.image = pygame.transform.scale(characterImage, (int(self.width * scale), int(self.height * scale))) # Scales down the image using the scale requested
         
-        self.speed = 0.1
+        self.speed = 0.5
+        self.scale = scale
+        self.rectangle = pygame.Rect(self.x * scale, self.y * scale, 64, 64)
     
     def draw(self):
-        self.screen.blit(self.image, (self.x, self.y)) # On call draws on the text.
+        self.rectangle = pygame.Rect(self.x * self.scale, self.y * self.scale, 64, 64)
+        pygame.draw.rect(self.screen, (255,102,255), self.rectangle)
+        #self.screen.blit(self.image, (self.x, self.y)) # On call draws on the text.
     
     def keyDown(self, event):
         if event.key == pygame.K_LEFT:
@@ -37,8 +41,23 @@ class Player:
             self.x_direction = 0
         elif event.key == pygame.K_RIGHT:
             self.x_direction = 0
-
-    def movePlayer(self):
-        self.x += self.speed * self.x_direction
-        self.y += self.speed * self.y_direction
+                
+                
+    def movePlayer(self, canCollide=None):
+        hasCollided = False
+        if canCollide:
+            for object in canCollide:
+                if self.rectangle.colliderect(object):
+                    self.x += 0
+                    self.y += 0
+                    hasCollided = True
+                    print('collided')
+                    break
+                hasCollided = False
+        
+        if not hasCollided:
+            self.x += self.speed * self.x_direction
+            self.y += self.speed * self.y_direction
+        
+            self.draw()
     

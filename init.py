@@ -36,7 +36,7 @@ testLabel = TextLabel(300,300, "This is a Test Label", 60, (255,0,255), screen)
 
 cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\CursorSelect.png')).convert_alpha(), 0.05, screen)    
 
-player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets/bettingTonBulk.png')).convert_alpha(), 0.6)
+player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets/mell.png')).convert_alpha(), 0.6)
 
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
@@ -47,6 +47,8 @@ while isRunning: # While isRunning is set to true
     testLabel.draw() # Draw on the text
     player.draw()
     
+    
+      
     if HT.menuTracked and cursor.handMode == "Select":
         if endButton.isClicked(cursor.rectangle.topleft):
             print('CLICKED END')
@@ -91,6 +93,6 @@ while isRunning: # While isRunning is set to true
     HT.menuTracking() # Runs update image position
     LG.generateLevel()
     
-    player.movePlayer()
+    player.movePlayer(LG.canCollide)
     
     pygame.display.update() # Updates the display with the new buttons to make sure they all appear.

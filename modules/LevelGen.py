@@ -4,7 +4,7 @@ import os
 import csv
 
 from modules.utils.LevelDictionary import levelById
-from modules.utils.ItemMapping import itemMap, itemImageMap
+from modules.utils.ItemMapping import itemMap, itemImageMap, collisionItems
 
 # ---- Misc Variables ---- #
 
@@ -23,6 +23,7 @@ class LevelGenerator:
         self.levelsFolder = []
         self.levelGrid = []
         self.levelAssets = {}
+        self.canCollide = []
         
         self.loadAssets()
 
@@ -43,6 +44,7 @@ class LevelGenerator:
         
     def levelEnded(self):
         self.levelGrid = []
+        self.canCollide = []
         self.inLevel = False
         
     def loadAssets(self):
@@ -61,7 +63,12 @@ class LevelGenerator:
             for y, row in enumerate(self.levelGrid):
                 for x, code in enumerate(row):
                     if code in self.levelAssets:
-                        self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize))
+                        
+                        if code in collisionItems:
+                            collisionBox = pygame.Rect(x * assetSize, y * assetSize, assetSize, assetSize)
+                            self.canCollide.append(collisionBox)
+                            pygame.draw.rect(self.screen, (200,200,200), collisionBox)
+                        #self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize))
                     #elif code == 1:
                     #    pygame.draw.rect(self.screen, (200,200,200),(x * assetSize, y * assetSize, assetSize, assetSize))
 
