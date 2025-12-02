@@ -11,10 +11,13 @@ class Player:
     def __init__(self, screen, characterImage, scale):
         self.screen = screen
         self.playerCharacter = characterImage
-        self.x = 200
-        self.y = 325
+        self.x = 220
+        self.y = 320
         self.x_direction = 0
         self.y_direction = 0
+        
+        self.x_last = None
+        self.y_last = None
         
         self.width = characterImage.get_width()
         self.height = characterImage.get_height()
@@ -31,9 +34,9 @@ class Player:
         #self.screen.blit(self.image, (self.x, self.y)) # On call draws on the text.
     
     def keyDown(self, event):
-        if event.key == pygame.K_LEFT:
+        if event.key == pygame.K_LEFT and (self.x_last == 0 or self.x_last == 1):
             self.x_direction = -1
-        elif event.key == pygame.K_RIGHT:
+        elif event.key == pygame.K_RIGHT and (self.x_last == 0 or self.x_last == -1):
             self.x_direction = 1
 
     def keyUp(self, event):
@@ -45,11 +48,16 @@ class Player:
                 
     def movePlayer(self, canCollide=None):
         hasCollided = False
-        if canCollide:
+        if canCollide or not self.x_last:
             for object in canCollide:
                 if self.rectangle.colliderect(object):
                     self.x += 0
                     self.y += 0
+                    self.x_last = self.x_direction
+                    self.y_last = self.y_direction
+                    
+                    self.x_direction = 0
+                    self.y_direction = 0
                     hasCollided = True
                     print('collided')
                     break
@@ -58,6 +66,9 @@ class Player:
         if not hasCollided:
             self.x += self.speed * self.x_direction
             self.y += self.speed * self.y_direction
+            
+            self.x_last = None
+            self.y_last = None
         
             self.draw()
     

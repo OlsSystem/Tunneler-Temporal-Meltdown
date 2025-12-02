@@ -38,6 +38,8 @@ cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.
 
 player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets/mell.png')).convert_alpha(), 0.6)
 
+LG.loadLevel("CH1", "LV2")
+
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
     startButton.draw() # Draws on the start Button
