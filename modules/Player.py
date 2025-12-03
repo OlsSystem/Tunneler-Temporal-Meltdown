@@ -30,14 +30,14 @@ class Player(pygame.sprite.Sprite):
         self.scale = scale
         
     def draw(self):
-        pygame.draw.rect(self.screen, (255,2,200), self.rectangle)  
+        #pygame.draw.rect(self.screen, (255,2,200), self.rectangle)  
         self.screen.blit(self.player, self.rectangle.topleft) # On call draws on the text.
     
     def keyDown(self, event):
         if event.key == pygame.K_LEFT:
-            self.x_direction = -1
+            self.x_direction = -2
         elif event.key == pygame.K_RIGHT:
-            self.x_direction = 1
+            self.x_direction = 2
 
     def keyUp(self, event):
         if event.key == pygame.K_LEFT:
@@ -50,10 +50,10 @@ class Player(pygame.sprite.Sprite):
         hasCollided = False
         if canCollide:
             for object in canCollide:
-                if object.collidepoint(self.rectangle.topleft) and self.x_direction == 1:
+                if object.collidepoint(self.rectangle.topleft) and self.x_direction == 2:
                     break
                     
-                if object.collidepoint(self.rectangle.topright) and self.x_direction == -1:
+                if object.collidepoint(self.rectangle.topright) and self.x_direction == -2:
                     break
                     
                 if self.rectangle.colliderect(object):

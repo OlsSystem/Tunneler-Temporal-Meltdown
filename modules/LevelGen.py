@@ -67,9 +67,9 @@ class LevelGenerator:
                         if code in collisionItems: # checks if the item has collisions
                             collisionBox = pygame.Rect(x * assetSize, y * assetSize, assetSize, assetSize) # creates a collision box around it
                             self.canCollide.append(collisionBox) # adds collision box to a list
-                            pygame.draw.rect(self.screen, (200,200,200), collisionBox) # test draw for collision boxes
+                            #pygame.draw.rect(self.screen, (200,200,200), collisionBox) # test draw for collision boxes
                             
-                        #self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize)) # draws assets
+                        self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize)) # draws assets
 
 
         # disable loading screen and enable game.

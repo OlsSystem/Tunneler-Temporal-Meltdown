@@ -23,3 +23,8 @@ class TextLabel:
 
     def draw(self):
         self.screen.blit(self.render, (self.rectangle.x, self.rectangle.y)) # On call draws on the text.
+        
+        
+    def updateText(self, newText):
+        self.render = self.font.render(newText, True, self.color)
+        self.draw()

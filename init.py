@@ -33,6 +33,7 @@ testLevelLoad1 = TextButton(300, 100, "Test Level 1", 38, (255,209, 21), screen)
 testLevelLoad2 = TextButton(300, 200, "Test Level 2", 38, (255,209, 21), screen)
 
 testLabel = TextLabel(300,300, "This is a Test Label", 60, (255,0,255), screen) # Creates a new Label
+fps = TextLabel(200,100, f'{int(clock.get_fps())}', 40, (255,255,255), screen)
 
 # Initialises the Cursor Class 
 cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\CursorSelect.png')).convert_alpha(), 0.05, screen)    
@@ -41,7 +42,7 @@ cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.
 player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets/mell.png')).convert_alpha(), 0.6)
 
 
-LG.loadLevel("CH1", "LV2")
+#LG.loadLevel("CH1", "LV2")
 
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
@@ -50,6 +51,7 @@ while isRunning: # While isRunning is set to true
     testLevelLoad2.draw()
     endButton.draw() # Draws on the end Button
     testLabel.draw() # Draw on the text
+    fps.draw()
     player.draw()
     
     
