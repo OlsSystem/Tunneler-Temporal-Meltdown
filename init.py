@@ -23,20 +23,23 @@ pygame.init() # Initialises pygame and starts it up.
 screen = pygame.display.set_mode((960,540)) # Sets the window to 1480 by 900px
 isRunning = True # Sets runing to True
 HT = TrackHands() # Initialises HandTracking to be used throughout the program.
-LG = LevelGenerator(screen)
+LG = LevelGenerator(screen) # Initialises the Level Generator and pre generates the sprite images
 clock = pygame.time.Clock()
 
 startButton = TextButton(100, 300, "Start", 38, (255,255,255), screen) # Creates a new Start button
 endButton = TextButton(100, 100, "End", 38, (255,255,255), screen) # Creates a new End button
 
-testLevelLoad1 = TextButton(300, 100, "Test Level 1", 38, (255,209, 21), screen)
+testLevelLoad1 = TextButton(300, 100, "Test Level 1", 38, (255,209, 21), screen) 
 testLevelLoad2 = TextButton(300, 200, "Test Level 2", 38, (255,209, 21), screen)
 
-testLabel = TextLabel(300,300, "This is a Test Label", 60, (255,0,255), screen)
+testLabel = TextLabel(300,300, "This is a Test Label", 60, (255,0,255), screen) # Creates a new Label
 
+# Initialises the Cursor Class 
 cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\CursorSelect.png')).convert_alpha(), 0.05, screen)    
 
+# Initialises the Player Class
 player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets/mell.png')).convert_alpha(), 0.6)
+
 
 LG.loadLevel("CH1", "LV2")
 
@@ -73,9 +76,9 @@ while isRunning: # While isRunning is set to true
             HT.stop() # Stops the hand tracking client.
             break
         
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN: # when a key is pressed
             player.keyDown(event)
-        elif event.type == pygame.KEYUP:
+        elif event.type == pygame.KEYUP: # when a key is released
             player.keyUp(event)
             
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # When the event is mouse button and down and event button is 1 (keydown)
@@ -93,8 +96,8 @@ while isRunning: # While isRunning is set to true
             print(event.pos)
                     
     HT.menuTracking() # Runs update image position
-    LG.generateLevel()
+    LG.generateLevel() # Runs the level drawing
     
-    player.movePlayer(LG.canCollide)
+    player.movePlayer(LG.canCollide) # Moves the player 
     
     pygame.display.update() # Updates the display with the new buttons to make sure they all appear.

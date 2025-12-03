@@ -7,12 +7,13 @@ import pygame
 # ---- Initialising Variables ---- # 
 
 
-class Player:
+class Player(pygame.sprite.Sprite):
     def __init__(self, screen, characterImage, scale):
+        super().__init__()
         self.screen = screen
         self.playerCharacter = characterImage
         self.x = 220
-        self.y = 320
+        self.y = 318
         self.x_direction = 0
         self.y_direction = 0
         
@@ -22,16 +23,15 @@ class Player:
         self.width = characterImage.get_width()
         self.height = characterImage.get_height()
         
-        self.image = pygame.transform.scale(characterImage, (int(self.width * scale), int(self.height * scale))) # Scales down the image using the scale requested
+        self.player = pygame.transform.scale(characterImage, (int(self.width * scale), int(self.height * scale))) # Scales down the image using the scale requested
+        self.rectangle = self.player.get_rect(topleft=(self.x, self.y))
         
         self.speed = 1
         self.scale = scale
-        self.rectangle = pygame.Rect(self.x, self.y, 64, 64)    
         
     def draw(self):
-        self.rectangle = pygame.Rect(self.x, self.y, 64, 64)    
-        pygame.draw.rect(self.screen, (255,102,255), self.rectangle, 2)
-        self.screen.blit(self.image, (self.x, self.y)) # On call draws on the text.
+        pygame.draw.rect(self.screen, (255,2,200), self.rectangle)  
+        self.screen.blit(self.player, self.rectangle.topleft) # On call draws on the text.
     
     def keyDown(self, event):
         if event.key == pygame.K_LEFT:
@@ -66,9 +66,8 @@ class Player:
                     break
         
         if not hasCollided:
-            print(self.speed * self.x_direction)
-            self.x += self.speed * self.x_direction
-            self.y += self.speed * self.y_direction
+            self.rectangle.x += self.speed * self.x_direction
+            self.rectangle.y += self.speed * self.y_direction
             
             
         self.draw()
