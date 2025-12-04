@@ -59,6 +59,7 @@ class LevelGenerator:
                 self.levelAssets[code] = image # adds the asset and the code into the levelAssets list
                     
     def generateLevel(self):
+        self.canCollide = [] # not having this causes a memory leak
         if self.inLevel: # check that the users in a level before attempting to draw
             for y, row in enumerate(self.levelGrid): # iterates through the grid getting the row and y value
                 for x, code in enumerate(row): # iterates through the rows getting a value for x

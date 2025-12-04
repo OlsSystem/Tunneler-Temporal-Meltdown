@@ -14,6 +14,9 @@ class TextLabel:
         self.screen = screen 
         self.text = text 
         self.color = color
+        
+        self.x = x
+        self.y = y
 
         self.font = pygame.font.Font(None, font_size) # Sets the font of the Text
         self.render = self.font.render(self.text, True, self.color) # Renders the text in the colour and font
@@ -22,9 +25,12 @@ class TextLabel:
         self.rectangle.topleft = (x, y) # Sets the coordinates of the render to specified x and y coordinates.
 
     def draw(self):
+        self.screen.fill((30,30,30), self.rectangle)
         self.screen.blit(self.render, (self.rectangle.x, self.rectangle.y)) # On call draws on the text.
         
         
     def updateText(self, newText):
+        self.text = newText
         self.render = self.font.render(newText, True, self.color)
-        self.draw()
+        self.rectangle = self.render.get_rect(topleft=self.rectangle.topleft)
+        

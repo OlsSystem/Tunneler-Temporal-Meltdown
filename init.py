@@ -54,8 +54,8 @@ while isRunning: # While isRunning is set to true
     fps.draw()
     player.draw()
     
+    fps.updateText(f'{int(clock.get_fps())}')  
     
-      
     if HT.menuTracked and cursor.handMode == "Select":
         if endButton.isClicked(cursor.rectangle.topleft):
             print('CLICKED END')
@@ -101,5 +101,5 @@ while isRunning: # While isRunning is set to true
     LG.generateLevel() # Runs the level drawing
     
     player.movePlayer(LG.canCollide) # Moves the player 
-    
+    clock.tick(120)
     pygame.display.update() # Updates the display with the new buttons to make sure they all appear.
