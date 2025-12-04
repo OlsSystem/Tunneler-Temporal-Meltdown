@@ -39,7 +39,7 @@ fps = TextLabel(200,100, f'{int(clock.get_fps())}', 40, (255,255,255), screen)
 cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\CursorSelect.png')).convert_alpha(), 0.05, screen)    
 
 # Initialises the Player Class
-player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets/mell.png')).convert_alpha(), 0.6)
+player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets/spritesheet.png')).convert_alpha(), 0.6)
 
 
 #LG.loadLevel("CH1", "LV2")

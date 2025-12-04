@@ -1,6 +1,7 @@
 # ---- Python Modules ---- #
 import pygame
 
+from modules.utils.Spritesheet import SpriteSheet
 # ---- Misc Variables ---- #
 
 
@@ -8,42 +9,56 @@ import pygame
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, screen, characterImage, scale):
+    def __init__(self, screen, sheet, scale):
         super().__init__()
         self.screen = screen
-        self.playerCharacter = characterImage
+        self.spriteSheet = SpriteSheet(sheet)
+        self.animationList = []
+        self.animationSteps = 3
         self.x = 220
         self.y = 318
         self.x_direction = 0
         self.y_direction = 0
         
-        self.x_last = None
-        self.y_last = None
-        
-        self.width = characterImage.get_width()
-        self.height = characterImage.get_height()
-        
-        self.player = pygame.transform.scale(characterImage, (int(self.width * scale), int(self.height * scale))) # Scales down the image using the scale requested
-        self.rectangle = self.player.get_rect(topleft=(self.x, self.y))
+        self.isMoving = False
         
         self.speed = 1
         self.scale = scale
         
+        self.listAnimations()
+        
+        self.currentFrame = 0
+        self.image = self.animationList[self.currentFrame]
+        self.rectangle = self.image.get_rect(topleft=(self.x, self.y))
+        
+    def listAnimations(self):
+        for x in range(self.animationSteps):
+            self.animationList.append(self.spriteSheet.getSprite(x, 138, 182, self.scale, (30,50,30)))
+        
     def draw(self):
         #pygame.draw.rect(self.screen, (255,2,200), self.rectangle)  
-        self.screen.blit(self.player, self.rectangle.topleft) # On call draws on the text.
+        if self.isMoving:
+            for x in range(self.animationSteps):
+                self.screen.blit(self.animationList[x], self.rectangle.topleft) # On call draws on the text.
+        else:
+            self.screen.blit(self.animationList[0], self.rectangle.topleft) # On call draws on the text.
     
     def keyDown(self, event):
         if event.key == pygame.K_LEFT:
             self.x_direction = -2
         elif event.key == pygame.K_RIGHT:
             self.x_direction = 2
+            
+        self.isMoving = True
+
 
     def keyUp(self, event):
         if event.key == pygame.K_LEFT:
             self.x_direction = 0
         elif event.key == pygame.K_RIGHT:
             self.x_direction = 0
+            
+        self.isMoving = False
                 
                 
     def movePlayer(self, canCollide=None):
