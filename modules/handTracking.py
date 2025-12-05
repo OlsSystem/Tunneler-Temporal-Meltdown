@@ -181,12 +181,12 @@ class TrackHands():
                             thumbLandmark = (x,y)
                             
                         
-            if indexLandmark and thumbLandmark:
-                if self.isPinching(indexLandmark, thumbLandmark, 30):   
-                    self.cursor.setImage("Select")
-                else:
+            if indexLandmark and thumbLandmark: # If theres both the index and thumb on the screen.
+                if self.isPinching(indexLandmark, thumbLandmark, 30): # check if they are pinching with a ±30 threashold.
+                    self.cursor.setImage("Select") # If it passes then change to the select.
+                else: # Otherwise it goes to the idle mode.
                     self.cursor.setImage("Idle")
-            else:
+            else: # Defaults to the idle mode if not pinching or no thumb.
                 self.cursor.setImage("Idle")
 
 
