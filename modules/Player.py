@@ -14,7 +14,7 @@ class Player(pygame.sprite.Sprite):
         self.screen = screen
         self.spriteSheet = SpriteSheet(sheet)
         self.animationList = []
-        self.animationSteps = 3
+        self.animationSteps = 2
         self.x = 220
         self.y = 318
         self.x_direction = 0
