@@ -7,7 +7,7 @@ import pygame
 # ---- Initialising Variables ---- # 
 
 
-class Tunneler:
+class Tunneler():
     def __init__(self, screen, tunnelAImg, tunnelBImg, player):
         self.screen = screen
         self.tunnelA = tunnelAImg
@@ -18,10 +18,12 @@ class Tunneler:
         self.tunnelBPlaced = False
         self.tunnelALoc = None
         self.tunnelBLoc = None
-        self.tunnelAColour = ()
-        self.tunnelBColour = ()
+        self.tunnelAColour = (255,255,255)
+        self.tunnelBColour = (200,200,200)
+        self.direction = None
         
         self.tunnelActive = False
+        self.canShootTunnels = False
         
         
     def destoryTunnels(self):
@@ -50,6 +52,21 @@ class Tunneler:
     def drawTunnels(self): # draw on tunnels
         print('bang')
         
+    def enableTunnelShooting(self):
+        self.canShootTunnels = True
+        
+    def disableTunnelShooting(self):
+        self.canShootTunnels = False
+        
+    def setTunnelDirection(self):        
+        if self.player.Facing == "Left":
+            self.direction = -3
+        elif self.player.Facing == "Right":
+            self.direction = 3
+        
     def shootTunnel(self, tunnelCode): # what ever way they are facing fire a tunnel to the closest wall till a collision
         # display a fire like animation and then run place 
-        print('bang')
+        if self.canShootTunnels:
+            self.setTunnelDirection()
+            
+            self.energyPellet = pygame.draw.circle(self.screen, self.tunnelAColour, (self.player.rectangle.x, self.player.rectangle.y), 2)

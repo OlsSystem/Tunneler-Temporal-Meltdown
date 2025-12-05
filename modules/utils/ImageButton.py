@@ -7,7 +7,7 @@ import pygame
 # ---- Initialising Variables ---- # 
 
 
-class ImageButton:
+class ImageButton():
     def __init__(self, x, y, image, scale, screen):
       
       # Requested variables from when creating a new instance of this class.

@@ -12,7 +12,7 @@ assetSize = 64
 
 # ---- Initialising Variables ---- # 
 
-class LevelGenerator:
+class LevelGenerator():
     def __init__(self, pygameInstance):
         self.rootDir = os.path.dirname(__file__) # Root directory of where this file is.
         self.screen = pygameInstance # Add the screen from the main file.
@@ -24,9 +24,13 @@ class LevelGenerator:
         self.levelGrid = [] # Creates the level into a grid
         self.levelAssets = {} # Adds all assets that are defined in itemImageMap to a loaded state
         self.canCollide = [] # Lists all items that can be collided with
+        self.tunneler = None
         
         self.loadAssets() # Loads all assets to be used in levels.
 
+
+    def setTunneler(self, tunneler):
+        self.tunneler = tunneler
         
     def loadLevel(self, chapterId, levelId):
         if self.inLevel: # if the users in the level the end the level
@@ -41,11 +45,15 @@ class LevelGenerator:
                 self.levelGrid.append([itemMap.get(int(code), "Unknown") for code in row]) # adds each row of items to the grid
                 
         self.inLevel = True # sets in level to true
+        self.tunneler.disableTunnelShooting()
+        self.tunneler.enableTunnelShooting()
         
     def levelEnded(self): # resets all values to zero ready for the next level
         self.levelGrid = []
         self.canCollide = []
         self.inLevel = False
+        self.tunneler.disableTunnelShooting()
+        self.tunneler.destoryTunnels()
         
     def loadAssets(self):
         for assetId, filePath in itemImageMap.items(): # iterates through each item in the map

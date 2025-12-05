@@ -44,7 +44,7 @@ class Player(pygame.sprite.Sprite):
         #pygame.draw.rect(self.screen, (255,2,200), self.rectangle)  
         if self.isMoving: # if the player is moving
             currentTime = pygame.time.get_ticks() # gets the current time
-            if currentTime - self.lastUpdated >= 200: # checks if its been less then 200 ticks
+            if currentTime - self.lastUpdated >= 100: # checks if its been less then 200 ticks
                 self.currentFrame += 1 # updates the frame
                 self.lastUpdated = currentTime
             if self.currentFrame == 3: # checks if the frame went above 3
@@ -58,21 +58,20 @@ class Player(pygame.sprite.Sprite):
         if event.key == pygame.K_LEFT:
             self.x_direction = -2
             self.Facing = "Left"
+            self.isMoving = True # sets moving to true
         elif event.key == pygame.K_RIGHT:
             self.x_direction = 2
             self.Facing = "Right"
-            
-        self.isMoving = True # sets moving to true
+            self.isMoving = True # sets moving to true
 
 
     def keyUp(self, event): # as a key is pressed the x direction is changed to signify a stopping motion.
         if event.key == pygame.K_LEFT:
             self.x_direction = 0
+            self.isMoving = False # sets moving to false as they aren holding the move key down no more
         elif event.key == pygame.K_RIGHT:
             self.x_direction = 0
-            
-        self.isMoving = False # sets moving to false as they aren holding the move key down no more
-                
+            self.isMoving = False # sets moving to false as they aren holding the move key down no more                
                 
     def movePlayer(self, canCollide=None):
         hasCollided = False # checks for collisions

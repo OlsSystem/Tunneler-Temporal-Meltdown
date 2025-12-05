@@ -7,7 +7,7 @@ import pygame
 # ---- Initialising Variables ---- # 
 
 
-class SpriteSheet:
+class SpriteSheet():
     def __init__(self, sheet):
         self.spriteSheet = sheet # Initialises the image as the sprite sheet
         

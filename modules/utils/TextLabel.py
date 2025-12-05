@@ -7,7 +7,7 @@ import pygame
 # ---- Initialising Variables ---- # 
 
 
-class TextLabel:
+class TextLabel():
     def __init__(self, x, y, text, font_size, color, screen): # Basic Setup of the text labels and variables it needs.
         
         # Requested variables from when creating a new instance of this class.

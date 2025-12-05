@@ -7,7 +7,7 @@ import pygame
 # ---- Initialising Variables ---- # 
 
 
-class Cursor:
+class Cursor():
     def __init__(self, x, y, idleHand, selectHand, scale, screen):
       # Requested variables from when creating a new instance of this class.
       self.selectHand = selectHand

@@ -12,6 +12,7 @@ from modules.utils.TextLabel import TextLabel
 from modules.utils.Cursor import Cursor
 from modules.LevelGen import LevelGenerator
 from modules.Player import Player
+from modules.Items.Tunneler import Tunneler
 
 # -- Core Variables -- #
 
@@ -41,9 +42,11 @@ cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.
 # Initialises the Player Class
 player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets/spritesheet.png')).convert_alpha(), 0.6)
 
+# Initialise the Tunneler Class
+tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalA.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalB.png')).convert_alpha(), player)
 
 #LG.loadLevel("CH1", "LV2")
-
+LG.setTunneler(tunneler)
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
     startButton.draw() # Draws on the start Button
@@ -80,6 +83,12 @@ while isRunning: # While isRunning is set to true
         
         if event.type == pygame.KEYDOWN: # when a key is pressed
             player.keyDown(event)
+            
+            if event.key == pygame.K_j:
+                tunneler.shootTunnel("A")
+            elif event.key == pygame.K_l:
+                tunneler.shootTunnel("B")
+            
         elif event.type == pygame.KEYUP: # when a key is released
             player.keyUp(event)
             
