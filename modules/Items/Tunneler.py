@@ -1,6 +1,7 @@
 # ---- Python Modules ---- #
 import pygame
-
+from threading import Thread
+import time
 # ---- Misc Variables ---- #
 
 
@@ -13,6 +14,7 @@ class Tunneler():
         self.tunnelA = tunnelAImg
         self.tunnelB = tunnelBImg
         self.player = player
+        self.collisions = None
         
         self.tunnelAPlaced = False
         self.tunnelBPlaced = False
@@ -60,13 +62,30 @@ class Tunneler():
         
     def setTunnelDirection(self):        
         if self.player.Facing == "Left":
-            self.direction = -3
+            self.direction = -0.003
         elif self.player.Facing == "Right":
-            self.direction = 3
+            self.direction = 0.003
+
+    def movePellet(self):
+        self.x = self.player.rectangle.x
+        while not self.hitWall:
+            #print(self.hitWall)
+            self.x += self.direction 
+            self.energyPellet = pygame.draw.circle(self.screen, self.tunnelAColour, (self.x, self.player.rectangle.y), 7)
+            rect = pygame.Rect(self.energyPellet.left, self.energyPellet.top, self.energyPellet.width, self.energyPellet.height)
+            for collidables in self.collisions:
+                if rect.colliderect(collidables):
+                    print('hit wall')
+                    print(f'({self.energyPellet.x}, {self.energyPellet.y})')
+                    self.hitWall = True
+                    break         
         
-    def shootTunnel(self, tunnelCode): # what ever way they are facing fire a tunnel to the closest wall till a collision
+    def shootTunnel(self, tunnelCode, collisions): # what ever way they are facing fire a tunnel to the closest wall till a collision
         # display a fire like animation and then run place 
         if self.canShootTunnels:
             self.setTunnelDirection()
-            
-            self.energyPellet = pygame.draw.circle(self.screen, self.tunnelAColour, (self.player.rectangle.x, self.player.rectangle.y), 2)
+            self.collisions = collisions
+            self.energyPellet = pygame.draw.circle(self.screen, self.tunnelAColour, (self.player.rectangle.x, self.player.rectangle.y), 7)
+
+            self.hitWall = False
+            Thread(target=self.movePellet).start() 

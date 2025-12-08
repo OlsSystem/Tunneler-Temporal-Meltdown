@@ -45,8 +45,9 @@ player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.a
 # Initialise the Tunneler Class
 tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalA.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalB.png')).convert_alpha(), player)
 
-#LG.loadLevel("CH1", "LV2")
 LG.setTunneler(tunneler)
+LG.loadLevel("CH1", "LV2")
+
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
     startButton.draw() # Draws on the start Button
@@ -85,9 +86,9 @@ while isRunning: # While isRunning is set to true
             player.keyDown(event)
             
             if event.key == pygame.K_j:
-                tunneler.shootTunnel("A")
+                tunneler.shootTunnel("A", LG.canCollide)
             elif event.key == pygame.K_l:
-                tunneler.shootTunnel("B")
+                tunneler.shootTunnel("B", LG.canCollide)
             
         elif event.type == pygame.KEYUP: # when a key is released
             player.keyUp(event)
