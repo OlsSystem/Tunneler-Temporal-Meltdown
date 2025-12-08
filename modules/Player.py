@@ -71,7 +71,11 @@ class Player(pygame.sprite.Sprite):
             self.isMoving = False # sets moving to false as they aren holding the move key down no more
         elif event.key == pygame.K_RIGHT:
             self.x_direction = 0
-            self.isMoving = False # sets moving to false as they aren holding the move key down no more                
+            self.isMoving = False # sets moving to false as they aren holding the move key down no more      
+            
+    def tunnelPlayer(self, x, y):
+        self.rectangle.x = x
+        self.rectangle.y = y              
                 
     def movePlayer(self, canCollide=None):
         hasCollided = False # checks for collisions

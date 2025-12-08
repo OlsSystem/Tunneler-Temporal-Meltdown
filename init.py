@@ -111,5 +111,8 @@ while isRunning: # While isRunning is set to true
     LG.generateLevel() # Runs the level drawing
     
     player.movePlayer(LG.canCollide) # Moves the player 
+    tunneler.drawTunnels()
+    tunneler.canTunnel(player)
+    
     clock.tick(120)
     pygame.display.update() # Updates the display with the new buttons to make sure they all appear.
