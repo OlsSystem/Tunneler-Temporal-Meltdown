@@ -13,6 +13,7 @@ from modules.utils.Cursor import Cursor
 from modules.LevelGen import LevelGenerator
 from modules.Player import Player
 from modules.Items.Tunneler import Tunneler
+from modules.utils.Particles import RunParticles
 
 # -- Core Variables -- #
 
@@ -21,7 +22,7 @@ from modules.Items.Tunneler import Tunneler
 
 pygame.init() # Initialises pygame and starts it up.
         
-screen = pygame.display.set_mode((960,540)) # Sets the window to 1480 by 900px
+screen = pygame.display.set_mode((1472,896)) # Sets the window to 1480 by 900px
 isRunning = True # Sets runing to True
 HT = TrackHands() # Initialises HandTracking to be used throughout the program.
 LG = LevelGenerator(screen) # Initialises the Level Generator and pre generates the sprite images
@@ -109,6 +110,8 @@ while isRunning: # While isRunning is set to true
                     
     HT.menuTracking() # Runs update image position
     LG.generateLevel() # Runs the level drawing
+    
+    RunParticles(screen)
     
     player.movePlayer(LG.canCollide) # Moves the player 
     tunneler.drawTunnels()
