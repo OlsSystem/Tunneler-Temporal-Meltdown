@@ -2,6 +2,7 @@
 import pygame
 from threading import Thread
 import time
+from modules.utils.Particles import Dust, dustParticles
 # ---- Misc Variables ---- #
 
 
@@ -24,12 +25,13 @@ class Tunneler():
         self.tunnelARect = None
         self.tunnelBLoc = None
         self.tunnelBRect = None
-        self.tunnelAColour = (255,255,255)
-        self.tunnelBColour = (200,200,200)
+        self.tunnelAColour = (111, 49, 152)
+        self.tunnelBColour = (0, 173, 173)
         self.direction = None
         
         self.tunnelActive = False
         self.canShootTunnels = False
+        self.debounce = False
         
         
     def destoryTunnels(self):
@@ -54,35 +56,35 @@ class Tunneler():
         
     def canTunnel(self, player): # check collisions n if both are active
         if self.tunnelActive:
+            if self.tunnelAPlaced and self.tunnelBPlaced:
+                if player.rectangle.colliderect(self.tunnelARect):
+                    xB,yB = self.tunnelBLoc
+                    if self.player.Facing == "Left":
+                        xB -= threshold
+                    elif self.player.Facing == "Right":
+                        xB += threshold
+                    player.tunnelPlayer(xB, yB - 43, self.tunnelBColour)
             
-            if self.tunnelAPlaced and player.rectangle.colliderect(self.tunnelARect):
-                xB,yB = self.tunnelBLoc
-                if self.player.Facing == "Left":
-                    xB -= threshold
-                elif self.player.Facing == "Right":
-                    xB += threshold
-                player.tunnelPlayer(xB, yB)
-            
-            if self.tunnelBPlaced and player.rectangle.colliderect(self.tunnelBRect):
-                xA,yA = self.tunnelALoc
-                if self.player.Facing == "Left":
-                    xA -= threshold
-                elif self.player.Facing == "Right":
-                    xA += threshold
-                player.tunnelPlayer(xA, yA)
+                if player.rectangle.colliderect(self.tunnelBRect):
+                    xA,yA = self.tunnelALoc
+                    if self.player.Facing == "Left":
+                        xA -= threshold
+                    elif self.player.Facing == "Right":
+                        xA += threshold
+                    player.tunnelPlayer(xA, yA - 43, self.tunnelAColour)
 
         
     def drawTunnels(self): # draw on tunnels
         if self.tunnelActive:
             if self.tunnelAPlaced:
                 xA,yA = self.tunnelALoc
-                self.tunnelARect = pygame.Rect(xA - 10, yA - 30, 20, 60)
-                pygame.draw.rect(self.screen, self.tunnelAColour, pygame.Rect(xA, yA - 20, 20, 60))
+                self.tunnelARect = pygame.Rect(xA - 10, yA - 20, 20, 86)
+                pygame.draw.rect(self.screen, self.tunnelAColour, self.tunnelARect)
                 
             if self.tunnelBPlaced:
                 xB,yB = self.tunnelBLoc
-                self.tunnelBRect = pygame.Rect(xB - 10, yB - 30, 20, 60)
-                pygame.draw.rect(self.screen, self.tunnelBColour, pygame.Rect(xB, yB - 20, 20, 60))
+                self.tunnelBRect = pygame.Rect(xB - 10, yB - 20, 20, 86)
+                pygame.draw.rect(self.screen, self.tunnelBColour, self.tunnelBRect)
         
     def enableTunnelShooting(self):
         self.canShootTunnels = True
@@ -92,16 +94,25 @@ class Tunneler():
         
     def setTunnelDirection(self):        
         if self.player.Facing == "Left":
-            self.direction = -0.002
+            self.direction = -0.004
         elif self.player.Facing == "Right":
-            self.direction = 0.002
+            self.direction = 0.004
 
     def movePellet(self):
         self.x = self.player.rectangle.x
+        colour = (255,255,255)
+        if self.currentTunnel == "A":
+            colour = self.tunnelAColour
+        elif self.currentTunnel == "B":
+            colour = self.tunnelBColour
+        else:
+            colour = (255,255,255)
+            
+            
         while not self.hitWall:
             #print(self.hitWall)
             self.x += self.direction 
-            self.energyPellet = pygame.draw.circle(self.screen, self.tunnelAColour, (self.x, self.player.rectangle.y), 7)
+            self.energyPellet = pygame.draw.circle(self.screen, colour, (self.x, self.player.rectangle.y + 50), 7)
             rect = pygame.Rect(self.energyPellet.left, self.energyPellet.top, self.energyPellet.width, self.energyPellet.height)
             for collidables in self.collisions:
                 if rect.colliderect(collidables):
@@ -111,23 +122,38 @@ class Tunneler():
                     break
         
         if self.currentTunnel == "A":
-            self.tunnelALoc = (self.energyPellet.x, self.energyPellet.y)
-            self.tunnelAPlaced = True
+            temp = (self.energyPellet.x, self.energyPellet.y)
+            if temp == self.tunnelALoc or temp == self.tunnelBLoc:
+                print('test')
+            else:
+                self.tunnelALoc = (self.energyPellet.x, self.energyPellet.y)
+                self.tunnelAPlaced = True
+                
+            particles = Dust((self.energyPellet.x, self.energyPellet.y), self.tunnelAColour, self.player.Facing)
+            dustParticles.append(particles)
         elif self.currentTunnel == "B":
-            self.tunnelBLoc = (self.energyPellet.x, self.energyPellet.y)
-            self.tunnelBPlaced = True
+            temp = (self.energyPellet.x, self.energyPellet.y)
+            if temp == self.tunnelALoc or temp == self.tunnelBLoc:
+                print('test')
+            else:
+                self.tunnelBLoc = (self.energyPellet.x, self.energyPellet.y)
+                self.tunnelBPlaced = True
+                
+            particles = Dust((self.energyPellet.x, self.energyPellet.y), self.tunnelBColour, self.player.Facing)
+            dustParticles.append(particles)
+
             
         self.tunnelActive = True
         self.drawTunnels()
         self.currentTunnel = None
+        self.debounce = False
         
     def shootTunnel(self, tunnelCode, collisions): # what ever way they are facing fire a tunnel to the closest wall till a collision
         # display a fire like animation and then run place 
         print(tunnelCode)
-        self.debounce = False
         if not self.debounce:
+            self.debounce = True
             if self.canShootTunnels:
-                self.debounce = True
                 self.currentTunnel = tunnelCode
                 self.setTunnelDirection()
                 self.collisions = collisions
@@ -135,4 +161,6 @@ class Tunneler():
 
                 self.hitWall = False
                 Thread(target=self.movePellet).start() 
+            else:
+                self.debounce = False
             

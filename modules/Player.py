@@ -2,6 +2,7 @@
 import pygame
 
 from modules.utils.Spritesheet import SpriteSheet
+from modules.utils.Particles import Dust, dustParticles
 # ---- Misc Variables ---- #
 
 
@@ -17,12 +18,12 @@ class Player(pygame.sprite.Sprite):
         self.animationList = []
         self.animationSteps = 3
         self.x = 220
-        self.y = 318
+        self.y = 659
         self.x_direction = 0
         self.y_direction = 0
         
         self.isMoving = False
-        self.Facing = None
+        self.Facing = "Right"
         
         self.speed = 1
         self.scale = scale
@@ -35,7 +36,7 @@ class Player(pygame.sprite.Sprite):
         # Sets the current frame
         self.image = self.animationList[self.currentFrame]
         self.rectangle = self.image.get_rect(topleft=(self.x, self.y))
-        
+    
     def listAnimations(self):
         for x in range(self.animationSteps):
             self.animationList.append(self.spriteSheet.getSprite(x, 138, 182, self.scale, (30,50,30))) # Adds each mage frame to a list.
@@ -73,9 +74,12 @@ class Player(pygame.sprite.Sprite):
             self.x_direction = 0
             self.isMoving = False # sets moving to false as they aren holding the move key down no more      
             
-    def tunnelPlayer(self, x, y):
+    def tunnelPlayer(self, x, y, tunnelColour):
         self.rectangle.x = x
-        self.rectangle.y = y              
+        self.rectangle.y = y 
+        
+        particles = Dust(self.rectangle.center, tunnelColour, None, 12)
+        dustParticles.append(particles)             
                 
     def movePlayer(self, canCollide=None):
         hasCollided = False # checks for collisions
