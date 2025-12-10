@@ -75,9 +75,11 @@ class Player(pygame.sprite.Sprite):
             self.isMoving = False # sets moving to false as they aren holding the move key down no more      
             
     def tunnelPlayer(self, x, y, tunnelColour):
+        # moves the player to where the tunnel is.
         self.rectangle.x = x
         self.rectangle.y = y 
         
+        # adds dust onto the player to show them coming out of tunnel
         particles = Dust(self.rectangle.center, tunnelColour, None, 12)
         dustParticles.append(particles)             
                 
