@@ -56,7 +56,9 @@ class Tunneler():
         
             self.tunnelActive = False
         
-    def canTunnel(self, player): 
+    def canTunnel(self, player): # maybe do a left threshold and a right threshold??
+        # player should spawn as close as possible to the tunnel
+        
         if self.tunnelActive: # Checks that the tunnels are online
             if self.tunnelAPlaced and self.tunnelBPlaced: # Checks if both tunnels are placed
                 
@@ -83,6 +85,7 @@ class Tunneler():
     def drawTunnels(self):
         if self.tunnelActive: # only draws if tunnels if one or multiple tunnels are active
             
+            # maybe do the drawing x based on if its left or right????
             if self.tunnelAPlaced: # checks if tunnel is placed 
                 xA,yA = self.tunnelALoc # pulls coordinates from storage
                 self.tunnelARect = pygame.Rect(xA - 10, yA - 20, 20, 86) # creates a rectangle to be used.
