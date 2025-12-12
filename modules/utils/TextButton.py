@@ -18,9 +18,10 @@ class TextButton():
         self.render = self.font.render(self.text, True, self.color) # Renders the text in the colour and font
 
         self.rectangle = self.render.get_rect() # Gets the coordinates of the render.
-        self.rectangle.topleft = (x, y) # Sets the coordinates of the render to specified x and y coordinates.
+        self.rectangle.center = (x, y) # Sets the coordinates of the render to specified x and y coordinates.
         
     def draw(self):
+        # make box round text later
         self.screen.blit(self.render, (self.rectangle.x, self.rectangle.y)) # On call draws on the text.
         
     def isClicked(self, pos):

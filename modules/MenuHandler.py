@@ -4,12 +4,13 @@ from threading import Thread
 
 # ---- Menu Files ---- #
 from modules.menus.mainMenu import MainMenu
+from modules.menus.loadingScreen import LoadingScreen
 
 # ---- Initialising Variables ---- # 
 
 
 class MenuHandler():
-    def __init__(self, screen, handTracking, levelGenerator, cursor, player, tunneler):
+    def __init__(self, screen, handTracking, levelGenerator, cursor, player, tunneler, clock, root):
         self.currentMenu = "Main"
         self.screen = screen
         self.HT = handTracking
@@ -17,9 +18,12 @@ class MenuHandler():
         self.cursor = cursor
         self.player = player
         self.tunneler = tunneler
+        self.clock = clock
+        self.rootDir = root
     
-        self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG)
-        self.mainMenu.enableUi()
+        self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler)
+        self.loadingScreen = LoadingScreen(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler)
+        self.loadingScreen.enableUi()
 
 
     def hideCurrentMenu(self):
@@ -31,4 +35,4 @@ class MenuHandler():
         
         
     def drawCurrentMenu(self):
-        self.mainMenu.drawCurrentMenu()
+        self.loadingScreen.drawCurrentMenu()

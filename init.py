@@ -29,15 +29,6 @@ HT = TrackHands() # Initialises HandTracking to be used throughout the program.
 LG = LevelGenerator(screen) # Initialises the Level Generator and pre generates the sprite images
 clock = pygame.time.Clock()
 
-#startButton = TextButton(100, 300, "Start", 38, (255,255,255), screen) # Creates a new Start button
-#endButton = TextButton(100, 100, "End", 38, (255,255,255), screen) # Creates a new End button
-
-#testLevelLoad1 = TextButton(300, 100, "Test Level 1", 38, (255,209, 21), screen) 
-#testLevelLoad2 = TextButton(300, 200, "Test Level 2", 38, (255,209, 21), screen)
-
-#testLabel = TextLabel(300,300, "This is a Test Label", 60, (255,0,255), screen) # Creates a new Label
-#fps = TextLabel(200,100, f'{int(clock.get_fps())}', 40, (255,255,255), screen)
-
 # Initialises the Cursor Class 
 cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\CursorSelect.png')).convert_alpha(), 0.05, screen)    
 
@@ -48,13 +39,12 @@ player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.a
 tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalA.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalB.png')).convert_alpha(), player)
 
 LG.setTunneler(tunneler)
-LG.loadLevel("CH1", "LV2")
 
-MH = MenuHandler(screen, HT, LG, cursor, player, tunneler)
+MH = MenuHandler(screen, HT, LG, cursor, player, tunneler, clock, os.path.dirname(os.path.abspath(__file__)))
 
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
-    player.draw()
+    #player.draw()
     
     for event in pygame.event.get(): # Constantly Event Checking.
         if event.type == pygame.QUIT: # If the pygame window is closed.
@@ -80,8 +70,9 @@ while isRunning: # While isRunning is set to true
     
     RunParticles(screen)
     
-    player.movePlayer(LG.canCollide) # Moves the player 
+    #player.movePlayer(LG.canCollide) # Moves the player 
     tunneler.drawTunnels()
     tunneler.canTunnel(player)
+    clock.tick(120)
     
     pygame.display.update() # Updates the display with the new buttons to make sure they all appear.

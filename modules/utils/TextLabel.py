@@ -22,7 +22,7 @@ class TextLabel():
         self.render = self.font.render(self.text, True, self.color) # Renders the text in the colour and font
 
         self.rectangle = self.render.get_rect() # Gets the coordinates of the render.
-        self.rectangle.topleft = (x, y) # Sets the coordinates of the render to specified x and y coordinates.
+        self.rectangle.center = (x, y) # Sets the coordinates of the render to specified x and y coordinates.
 
     def draw(self):
         self.screen.fill((30,30,30), self.rectangle)
