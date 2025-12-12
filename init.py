@@ -14,6 +14,7 @@ from modules.LevelGen import LevelGenerator
 from modules.Player import Player
 from modules.Items.Tunneler import Tunneler
 from modules.utils.Particles import RunParticles
+from modules.MenuHandler import MenuHandler
 
 # -- Core Variables -- #
 
@@ -28,14 +29,14 @@ HT = TrackHands() # Initialises HandTracking to be used throughout the program.
 LG = LevelGenerator(screen) # Initialises the Level Generator and pre generates the sprite images
 clock = pygame.time.Clock()
 
-startButton = TextButton(100, 300, "Start", 38, (255,255,255), screen) # Creates a new Start button
-endButton = TextButton(100, 100, "End", 38, (255,255,255), screen) # Creates a new End button
+#startButton = TextButton(100, 300, "Start", 38, (255,255,255), screen) # Creates a new Start button
+#endButton = TextButton(100, 100, "End", 38, (255,255,255), screen) # Creates a new End button
 
-testLevelLoad1 = TextButton(300, 100, "Test Level 1", 38, (255,209, 21), screen) 
-testLevelLoad2 = TextButton(300, 200, "Test Level 2", 38, (255,209, 21), screen)
+#testLevelLoad1 = TextButton(300, 100, "Test Level 1", 38, (255,209, 21), screen) 
+#testLevelLoad2 = TextButton(300, 200, "Test Level 2", 38, (255,209, 21), screen)
 
-testLabel = TextLabel(300,300, "This is a Test Label", 60, (255,0,255), screen) # Creates a new Label
-fps = TextLabel(200,100, f'{int(clock.get_fps())}', 40, (255,255,255), screen)
+#testLabel = TextLabel(300,300, "This is a Test Label", 60, (255,0,255), screen) # Creates a new Label
+#fps = TextLabel(200,100, f'{int(clock.get_fps())}', 40, (255,255,255), screen)
 
 # Initialises the Cursor Class 
 cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\CursorSelect.png')).convert_alpha(), 0.05, screen)    
@@ -49,32 +50,11 @@ tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.pa
 LG.setTunneler(tunneler)
 LG.loadLevel("CH1", "LV2")
 
+MH = MenuHandler(screen, HT, LG, cursor, player, tunneler)
+
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
-    startButton.draw() # Draws on the start Button
-    testLevelLoad1.draw()
-    testLevelLoad2.draw()
-    endButton.draw() # Draws on the end Button
-    testLabel.draw() # Draw on the text
-    fps.draw()
     player.draw()
-    
-    fps.updateText(f'{int(clock.get_fps())}')  
-    
-    if HT.menuTracked and cursor.handMode == "Select":
-        if endButton.isClicked(cursor.rectangle.topleft):
-            print('CLICKED END')
-            HT.stop() # Closes out the Hand Tracking Client
-            HT.disableMenuTracking() # Disabes the menu hand tracking.
-            LG.levelEnded()
-            
-        if testLevelLoad2.isClicked(cursor.rectangle.topleft):
-            print('CLICKED TEST LOAD 2')
-            LG.loadLevel("CH1", "LV2")
-            
-        if testLevelLoad1.isClicked(cursor.rectangle.topleft):
-            print('CLICKED TEST LOAD 1')
-            LG.loadLevel("CH1", "LV1")
     
     for event in pygame.event.get(): # Constantly Event Checking.
         if event.type == pygame.QUIT: # If the pygame window is closed.
@@ -93,23 +73,10 @@ while isRunning: # While isRunning is set to true
             
         elif event.type == pygame.KEYUP: # when a key is released
             player.keyUp(event)
-            
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # When the event is mouse button and down and event button is 1 (keydown)
-            if startButton.isClicked(event.pos): # When the start Buttons clicked 
-                print('CLICKED START')
-                HT.start() # Opens up the Hand Tracking Client
-                HT.enableMenuTracking(cursor) # Enables the menu hand tracking.
-                    
-            if endButton.isClicked(event.pos): # When the end Button clicked
-                print('CLICKED END')
-                HT.stop() # Closes out the Hand Tracking Client
-                HT.disableMenuTracking() # Disabes the menu hand tracking.
-                LG.levelEnded()
-            
-            print(event.pos)
                     
     HT.menuTracking() # Runs update image position
     LG.generateLevel() # Runs the level drawing
+    MH.drawCurrentMenu()
     
     RunParticles(screen)
     
@@ -117,5 +84,4 @@ while isRunning: # While isRunning is set to true
     tunneler.drawTunnels()
     tunneler.canTunnel(player)
     
-    clock.tick(120)
     pygame.display.update() # Updates the display with the new buttons to make sure they all appear.

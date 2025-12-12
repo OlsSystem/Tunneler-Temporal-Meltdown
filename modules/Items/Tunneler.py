@@ -174,4 +174,3 @@ class Tunneler():
                 Thread(target=self.movePellet).start() # starts a new thread to move the pellet along.
             else:
                 self.debounce = False # sets debounce to false as the pellet doesnt move.
-            
