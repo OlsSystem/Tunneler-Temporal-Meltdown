@@ -1,7 +1,7 @@
 # ---- Python Modules ---- #
-import cv2
+#import cv2
 from threading import Thread
-import mediapipe
+#import mediapipe
 import math
 
 # ---- Misc Variables ---- #
@@ -39,9 +39,9 @@ class TrackHands():
         #camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
         self.cameraUiEnabled = True # used to turn off the camera when its not needed.
-        self.mpHandsSolution = mediapipe.solutions.hands # Imports the hands solution from Mediapipe
+        #self.mpHandsSolution = mediapipe.solutions.hands # Imports the hands solution from Mediapipe
 
-        self.hand = self.mpHandsSolution.Hands() # Initialises the Hands moduel from the hands solution
+        #self.hand = self.mpHandsSolution.Hands() # Initialises the Hands moduel from the hands solution
         
         self.handLocation = "Unknown"
         self.menuTracked = False

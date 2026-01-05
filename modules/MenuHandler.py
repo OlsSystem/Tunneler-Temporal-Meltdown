@@ -11,6 +11,7 @@ from modules.menus.loadingScreen import LoadingScreen
 
 class MenuHandler():
     def __init__(self, screen, handTracking, levelGenerator, cursor, player, tunneler, clock, root):
+        # Variables for everything each menu option may require
         self.currentMenu = "Main"
         self.screen = screen
         self.HT = handTracking
@@ -21,18 +22,22 @@ class MenuHandler():
         self.clock = clock
         self.rootDir = root
     
+        # load in every menu class to prepare it.
         self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler)
         self.loadingScreen = LoadingScreen(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler)
+        
+        # the main menu should enable first. 
         self.loadingScreen.enableUi()
 
-
+    # hide current menu function to be written later
     def hideCurrentMenu(self):
         print('hide')
     
+    # menu enabling script
     def enableMenu(self, menuId):
         if menuId == "Main" and self.currentMenu == "Main":
             return
         
-        
+    # drawing on the curernt menu based on self.CurrentMenu.
     def drawCurrentMenu(self):
         self.loadingScreen.drawCurrentMenu()

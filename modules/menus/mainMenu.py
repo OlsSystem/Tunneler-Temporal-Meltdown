@@ -38,7 +38,6 @@ class MainMenu():
         self.menuTunnelA = pygame.Rect(3, 680, 20, 86) # creates a rectangle to be used.
         self.menuTunnelB = pygame.Rect(1452, 680, 20, 86) # creates a rectangle to be used.
 
-
         self.startButton = TextButton(100, 300, "Start", 38, (255,255,255), self.screen) # Creates a new Start button
         self.endButton = TextButton(100, 380, "End", 38, (255,255,255), self.screen) # Creates a new End button
 
@@ -54,15 +53,6 @@ class MainMenu():
     def disableUi(self):
         self.enabled = False
         
-    def movingPlayerAnimation(self):
-        
-        self.menuPlayer.movePlayer(None)
-        self.menuPlayer.draw()
-        if self.menuPlayer.rectangle.colliderect(self.menuTunnelB):
-            self.menuPlayer.tunnelPlayer(0,659, self.tunneler.tunnelAColour)
-        pygame.draw.rect(self.screen, self.tunneler.tunnelAColour, self.menuTunnelA) # draws on the rectangle and correct tunnel colour
-        pygame.draw.rect(self.screen, self.tunneler.tunnelBColour, self.menuTunnelB) # draws on the rectangle and correct tunnel colour
-
     def drawCurrentMenu(self):
         if self.enabled == True:
             
@@ -71,9 +61,7 @@ class MainMenu():
             self.testLevelLoad2.draw()
             self.endButton.draw() # Draws on the end Button
             self.testLabel.draw() # Draw on the text
-                        
-            self.movingPlayerAnimation()
-            
+                                    
             if self.HT.menuTracked and self.cursor.handMode == "Select":
                 if self.endButton.isClicked(self.cursor.rectangle.topleft):
                     print('CLICKED END')

@@ -46,11 +46,10 @@ class LoadingScreen():
     def disableUi(self):
         self.enabled = False
         
-    def movingPlayerAnimation(self):
-        
-        self.menuPlayer.movePlayer(None)
-        self.menuPlayer.draw()
-        if self.menuPlayer.rectangle.colliderect(self.menuTunnelB):
+    def movingPlayerAnimation(self):  
+        self.menuPlayer.movePlayer(None) # plays the moving animation as we move the player
+        self.menuPlayer.draw() #draws on the player
+        if self.menuPlayer.rectangle.colliderect(self.menuTunnelB): # when the player reaches the end it tunnels through to the other end and loops back. to show a loading effect
             self.menuPlayer.tunnelPlayer(0,659, self.tunneler.tunnelAColour)
             
         pygame.draw.rect(self.screen, self.tunneler.tunnelAColour, self.menuTunnelA) # draws on the rectangle and correct tunnel colour
@@ -60,5 +59,5 @@ class LoadingScreen():
         if self.enabled == True:
             self.testLabel.draw() # Draw on the text
                         
-            self.movingPlayerAnimation()
+            self.movingPlayerAnimation() # runs animation
             
