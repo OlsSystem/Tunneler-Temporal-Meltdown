@@ -136,7 +136,7 @@ class Tunneler():
         if self.currentTunnel == "A":
             temp = (self.energyPellet.x, self.energyPellet.y) # temp variable for the x,y coordinates of the pellet
             if temp == self.tunnelALoc or temp == self.tunnelBLoc: # if theres already a tunnel at the fired location then it wont place
-                print('test')
+                return
             else:
                 self.tunnelALoc = (self.energyPellet.x, self.energyPellet.y) # sets the new location of the tunnels coordinates
                 self.tunnelAPlaced = True # sets A to be placed.
@@ -146,7 +146,7 @@ class Tunneler():
         elif self.currentTunnel == "B":
             temp = (self.energyPellet.x, self.energyPellet.y)
             if temp == self.tunnelALoc or temp == self.tunnelBLoc:
-                print('test')
+                return
             else:
                 self.tunnelBLoc = (self.energyPellet.x, self.energyPellet.y)
                 self.tunnelBPlaced = True

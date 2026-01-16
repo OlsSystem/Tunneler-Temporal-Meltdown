@@ -38,7 +38,7 @@ class MainMenu():
         self.menuTunnelA = pygame.Rect(3, 680, 20, 86) # creates a rectangle to be used.
         self.menuTunnelB = pygame.Rect(1452, 680, 20, 86) # creates a rectangle to be used.
 
-        self.startButton = TextButton(100, 300, "Start", 38, (255,255,255), self.screen) # Creates a new Start button
+        self.startButton = TextButton(100, 300, "StarT", 38, (255,255,255), self.screen) # Creates a new Start button
         self.endButton = TextButton(100, 380, "End", 38, (255,255,255), self.screen) # Creates a new End button
 
         self.testLevelLoad1 = TextButton(300, 100, "Test Level 1", 38, (255,209, 21), self.screen) 
@@ -78,6 +78,7 @@ class MainMenu():
                     self.LG.loadLevel("CH1", "LV1")
                 
             for event in pygame.event.get(): # Constantly Event Checking.    
+                print(event.type == pygame.MOUSEBUTTONDOWN)
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # When the event is mouse button and down and event button is 1 (keydown)
                     if self.startButton.isClicked(event.pos): # When the start Buttons clicked 
                         print('CLICKED START')

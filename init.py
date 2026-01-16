@@ -1,5 +1,5 @@
 # ---- Python Modules ---- #
-#import cv2
+import cv2
 import time
 import pygame
 import os
@@ -44,15 +44,16 @@ MH = MenuHandler(screen, HT, LG, cursor, player, tunneler, clock, os.path.dirnam
 
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
-    #player.draw()
-    
+    player.draw()    
+    MH.drawCurrentMenu()
+
     for event in pygame.event.get(): # Constantly Event Checking.
         if event.type == pygame.QUIT: # If the pygame window is closed.
             isRunning = False # Closes out the while loop by setting isRunning to false.
             pygame.quit() # Quits out of pygame.
             HT.stop() # Stops the hand tracking client.
             break
-        
+
         if event.type == pygame.KEYDOWN: # when a key is pressed
             player.keyDown(event)
             
@@ -66,11 +67,10 @@ while isRunning: # While isRunning is set to true
                     
     HT.menuTracking() # Runs update image position
     LG.generateLevel() # Runs the level drawing
-    MH.drawCurrentMenu()
     
     RunParticles(screen)
     
-    #player.movePlayer(LG.canCollide) # Moves the player 
+    player.movePlayer(LG.canCollide) # Moves the player 
     tunneler.drawTunnels()
     tunneler.canTunnel(player)
     clock.tick(120)
