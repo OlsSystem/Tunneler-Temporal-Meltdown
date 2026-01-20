@@ -18,7 +18,7 @@ Red = (0, 0, 255)
 
 
 class MainMenu():
-    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler):
+    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler):
         self.enabled = False
         self.screen = screen
         self.HT = handTracking
@@ -28,6 +28,7 @@ class MainMenu():
         self.menuPlayer = Player(screen, pygame.image.load(os.path.join(self.rootDir, 'assets/spritesheet.png')).convert_alpha(), 0.6)
         self.clock = clock
         self.tunneler = tunneler
+        self.InputHandler = InputHandler
 
         self.menuPlayer.x = 0
         self.menuPlayer.y = 659
@@ -77,8 +78,9 @@ class MainMenu():
                     print('CLICKED TEST LOAD 1')
                     self.LG.loadLevel("CH1", "LV1")
                 
+                
             for event in pygame.event.get(): # Constantly Event Checking.    
-                print(event.type == pygame.MOUSEBUTTONDOWN)
+                self.InputHandler.inputCheck(event)
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # When the event is mouse button and down and event button is 1 (keydown)
                     if self.startButton.isClicked(event.pos): # When the start Buttons clicked 
                         print('CLICKED START')

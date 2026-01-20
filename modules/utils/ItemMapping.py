@@ -14,5 +14,5 @@ moveables = []
 # Items linked to their image
 itemImageMap = {
     "Wall": "assets/wall.png",
-    "Enemy": "assets/sharry.png"
+    "Enemy": "assets/jay.png"
 }

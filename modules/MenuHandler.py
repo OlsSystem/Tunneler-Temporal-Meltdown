@@ -10,7 +10,7 @@ from modules.menus.loadingScreen import LoadingScreen
 
 
 class MenuHandler():
-    def __init__(self, screen, handTracking, levelGenerator, cursor, player, tunneler, clock, root):
+    def __init__(self, screen, handTracking, levelGenerator, cursor, player, tunneler, clock, root, Inputs):
         # Variables for everything each menu option may require
         self.currentMenu = "Main"
         self.screen = screen
@@ -21,9 +21,10 @@ class MenuHandler():
         self.tunneler = tunneler
         self.clock = clock
         self.rootDir = root
+        self.Inputs = Inputs
     
         # load in every menu class to prepare it.
-        self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler)
+        self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs)
         self.loadingScreen = LoadingScreen(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler)
         
         # the main menu should enable first. 
