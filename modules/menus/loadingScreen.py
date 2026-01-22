@@ -18,7 +18,7 @@ Red = (0, 0, 255)
 
 
 class LoadingScreen():
-    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler):
+    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, inputHandler):
         self.enabled = False
         self.screen = screen
         self.HT = handTracking
@@ -28,6 +28,7 @@ class LoadingScreen():
         self.menuPlayer = Player(screen, pygame.image.load(os.path.join(self.rootDir, 'assets/spritesheet.png')).convert_alpha(), 0.6)
         self.clock = clock
         self.tunneler = tunneler
+        self.InputHandler = inputHandler
 
         self.menuPlayer.x = 0
         self.menuPlayer.y = 659
@@ -42,13 +43,13 @@ class LoadingScreen():
         self.testLabel = TextLabel(736, 448, "Loading Level", 60, (255,0,255), self.screen) # Creates a new Label    
     def enableUi(self):
         self.enabled = True
-        
+
     def disableUi(self):
         self.enabled = False
         
     def movingPlayerAnimation(self):  
         self.menuPlayer.movePlayer(None) # plays the moving animation as we move the player
-        self.menuPlayer.draw() #draws on the player
+        self.menuPlayer.draw(True) #draws on the player
         if self.menuPlayer.rectangle.colliderect(self.menuTunnelB): # when the player reaches the end it tunnels through to the other end and loops back. to show a loading effect
             self.menuPlayer.tunnelPlayer(0,659, self.tunneler.tunnelAColour)
             
@@ -60,4 +61,7 @@ class LoadingScreen():
             self.testLabel.draw() # Draw on the text
                         
             self.movingPlayerAnimation() # runs animation
+            
+            for event in pygame.event.get(): # Constantly Event Checking.    
+                self.InputHandler.inputCheck(event)
             

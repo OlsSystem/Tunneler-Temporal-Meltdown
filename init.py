@@ -50,7 +50,7 @@ MH = MenuHandler(screen, HT, LG, cursor, player, tunneler, clock, os.path.dirnam
 
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
-    player.draw()    
+    player.draw(LG.inLevel)    
     MH.drawCurrentMenu()
                     
     HT.menuTracking() # Runs update image position
@@ -58,7 +58,7 @@ while isRunning: # While isRunning is set to true
     
     RunParticles(screen)
     
-    player.movePlayer(LG.canCollide) # Moves the player 
+    player.movePlayer(LG.canCollide, LG.inLevel) # Moves the player 
     tunneler.drawTunnels()
     tunneler.canTunnel(player)
     clock.tick(120)

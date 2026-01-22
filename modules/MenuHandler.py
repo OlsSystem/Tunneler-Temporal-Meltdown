@@ -25,11 +25,11 @@ class MenuHandler():
     
         # load in every menu class to prepare it.
         self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs)
-        self.loadingScreen = LoadingScreen(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler)
+        self.loadingScreen = LoadingScreen(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs)
         
         # the main menu should enable first. 
-        #self.loadingScreen.enableUi()
-        self.mainMenu.enableUi()
+        self.loadingScreen.enableUi()
+        #self.mainMenu.enableUi()
 
     # hide current menu function to be written later
     def hideCurrentMenu(self):
@@ -42,4 +42,4 @@ class MenuHandler():
         
     # drawing on the curernt menu based on self.CurrentMenu.
     def drawCurrentMenu(self):
-        self.mainMenu.drawCurrentMenu()
+        self.loadingScreen.drawCurrentMenu()
