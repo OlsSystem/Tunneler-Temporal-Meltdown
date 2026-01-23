@@ -9,7 +9,6 @@ import pygame
 
 class RadioButtons():
     def __init__(self, x, y, font_size, screen, options, selected=0, spacing=30):
-      
         # Requested variables from when creating a new instance of this class.
         self.screen = screen
       
