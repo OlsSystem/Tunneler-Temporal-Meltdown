@@ -53,6 +53,10 @@ class SettingsMenu:
         self.testToggle = ToggleSwitch(350, 200, 80, 30, 32, self.screen, "test")
 
         self.applyButton = TextButton(576, 796, "Apply", 36, (0, 200, 0), screen)
+        
+        self.testDrop = DropdownSelect(576, 400, 250, 50, 38, self.screen, ["test", "test2", "test3"])
+
+        self.radioButtons = RadioButtons(576, 630, 38, self.screen, ["option 1", "option2"])
 
         self.slider = Slider(
             200, 300, 300, 6, 38, screen, "Volume", 0, 100, 75
@@ -76,6 +80,8 @@ class SettingsMenu:
             self.backButton.draw()
             self.testToggle.draw()
             self.slider.draw()
+            self.testDrop.draw()
+            self.radioButtons.draw()
 
             for event in pygame.event.get():  # Constantly Event Checking.
                 self.InputHandler.inputCheck(event)
@@ -86,7 +92,8 @@ class SettingsMenu:
                 ):  # When the event is mouse button and down and event button is 1 (keydown)
                     print("click")
                     print(self.testToggle.isClicked(event.pos))
-                    
+                    print(self.testDrop.isClicked(event.pos))
+                    print(self.radioButtons.isClicked(event.pos))
                     
                     if self.applyButton.isClicked(event.pos):
                         print('apply settings.')
