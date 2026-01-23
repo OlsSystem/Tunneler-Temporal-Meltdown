@@ -43,6 +43,7 @@ class MenuHandler():
         if menuId == "Main" and self.currentMenu == "Main":
             return
         
+    # make a way to navigate through the different pages.
         
         
     # drawing on the curernt menu based on self.CurrentMenu.

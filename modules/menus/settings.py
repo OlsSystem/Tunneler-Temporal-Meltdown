@@ -1,6 +1,5 @@
 # ---- Python Modules ---- #
 import pygame
-import pygame_menu as pm
 import os
 from threading import Thread
 from modules.utils.ImageButton import ImageButton
@@ -60,7 +59,9 @@ class SettingsMenu:
         )
 
         self.backButton = TextButton(896, 796, "Back", 36, (200, 50, 50), screen)
-
+        
+        
+        
     def enableUi(self):
         self.enabled = True
 
