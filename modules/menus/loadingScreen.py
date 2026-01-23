@@ -18,7 +18,7 @@ Red = (0, 0, 255)
 
 
 class LoadingScreen():
-    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, inputHandler):
+    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, inputHandler, menuHandler):
         self.enabled = False
         self.screen = screen
         self.HT = handTracking
@@ -29,6 +29,7 @@ class LoadingScreen():
         self.clock = clock
         self.tunneler = tunneler
         self.InputHandler = inputHandler
+        self.MenuHandler = menuHandler
 
         self.menuPlayer.x = 0
         self.menuPlayer.y = 659

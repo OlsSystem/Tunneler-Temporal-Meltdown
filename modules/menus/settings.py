@@ -22,17 +22,7 @@ Red = (0, 0, 255)
 
 
 class SettingsMenu:
-    def __init__(
-        self,
-        screen,
-        handTracking,
-        cursor,
-        levelGenerator,
-        clock,
-        rootDir,
-        tunneler,
-        InputHandler,
-    ):
+    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler, MenuHandler):
         self.enabled = False
         self.screen = screen
         self.HT = handTracking
@@ -42,6 +32,7 @@ class SettingsMenu:
         self.clock = clock
         self.tunneler = tunneler
         self.InputHandler = InputHandler
+        self.MenuHandler = MenuHandler
 
         self.title = TextLabel(736, 50, "Settings", 64, (255, 255, 255), screen)
 
@@ -58,14 +49,10 @@ class SettingsMenu:
 
         self.radioButtons = RadioButtons(576, 630, 38, self.screen, ["option 1", "option2"])
 
-        self.slider = Slider(
-            200, 300, 300, 6, 38, screen, "Volume", 0, 100, 75
-        )
+        self.slider = Slider(200, 300, 300, 6, 38, screen, "Volume", 0, 100, 75)
 
         self.backButton = TextButton(896, 796, "Back", 36, (200, 50, 50), screen)
-        
-        
-        
+                
     def enableUi(self):
         self.enabled = True
 
@@ -87,9 +74,7 @@ class SettingsMenu:
                 self.InputHandler.inputCheck(event)
                 self.slider.isClicked(event)
 
-                if (
-                    event.type == pygame.MOUSEBUTTONDOWN
-                ):  # When the event is mouse button and down and event button is 1 (keydown)
+                if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
                     print("click")
                     print(self.testToggle.isClicked(event.pos))
                     print(self.testDrop.isClicked(event.pos))
@@ -98,3 +83,6 @@ class SettingsMenu:
                     if self.applyButton.isClicked(event.pos):
                         print('apply settings.')
                         pygame.mixer.music.set_volume(self.slider.fetchValue() / 100)
+                        
+                    if self.backButton.isClicked(event.pos):
+                        self.MenuHandler.enableMenu("Main")

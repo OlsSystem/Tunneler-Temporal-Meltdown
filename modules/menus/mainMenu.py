@@ -18,7 +18,7 @@ Red = (0, 0, 255)
 
 
 class MainMenu():
-    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler):
+    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler, MenuHandler):
         self.enabled = False
         self.screen = screen
         self.HT = handTracking
@@ -29,6 +29,7 @@ class MainMenu():
         self.clock = clock
         self.tunneler = tunneler
         self.InputHandler = InputHandler
+        self.MenuHandler = MenuHandler
 
         self.menuPlayer.x = 0
         self.menuPlayer.y = 659
@@ -44,6 +45,8 @@ class MainMenu():
 
         self.testLevelLoad1 = TextButton(300, 100, "Test Level 1", 38, (255,209, 21), self.screen) 
         self.testLevelLoad2 = TextButton(300, 200, "Test Level 2", 38, (255,209, 21), self.screen)
+        
+        self.settingsButton = TextButton(400, 400, "Settings", 38, (255,0,255), self.screen)
 
         self.testLabel = TextLabel(210, 200, "This is a Test Label", 60, (255,0,255), self.screen) # Creates a new Label    
         
@@ -62,6 +65,7 @@ class MainMenu():
             self.testLevelLoad2.draw()
             self.endButton.draw() # Draws on the end Button
             self.testLabel.draw() # Draw on the text
+            self.settingsButton.draw()
                                     
             if self.HT.menuTracked and self.cursor.handMode == "Select":
                 if self.endButton.isClicked(self.cursor.rectangle.topleft):
@@ -76,8 +80,7 @@ class MainMenu():
             
                 if self.testLevelLoad1.isClicked(self.cursor.rectangle.topleft):
                     print('CLICKED TEST LOAD 1')
-                    self.LG.loadLevel("CH1", "LV1")
-                
+                    self.LG.loadLevel("CH1", "LV1")                
                 
             for event in pygame.event.get(): # Constantly Event Checking.    
                 self.InputHandler.inputCheck(event)
@@ -92,5 +95,9 @@ class MainMenu():
                         self.HT.stop() # Closes out the Hand Tracking Client
                         self.HT.disableMenuTracking() # Disabes the menu hand tracking.
                         self.LG.levelEnded()
+                        
+                    if self.settingsButton.isClicked(event.pos):
+                        self.MenuHandler.enableMenu("Settings")
+
             
                     print(event.pos)
