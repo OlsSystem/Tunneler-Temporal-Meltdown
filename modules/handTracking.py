@@ -38,7 +38,7 @@ class TrackHands():
         #camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1920) # Allows me to test out the camera in a bigger size
         #camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
-        self.cameraUiEnabled = True # used to turn off the camera when its not needed.
+        self.cameraUiEnabled = False # used to turn off the camera when its not needed.
         self.mpHandsSolution = mediapipe.solutions.hands # Imports the hands solution from Mediapipe
 
         self.hand = self.mpHandsSolution.Hands() # Initialises the Hands moduel from the hands solution

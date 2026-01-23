@@ -26,8 +26,12 @@ class KeyInputs:
         if event.type == pygame.QUIT: # If the pygame window is closed.
             self.isRunning = False # Closes out the while loop by setting isRunning to false.
             pygame.quit() # Quits out of pygame.
-            self.HT.stop() # Stops the hand tracking client.
-
+            
+            if self.HT.cameraUiEnabled:
+                self.HT.stop() # Stops the hand tracking client.
+            
+            exit()
+        
         if event.type == pygame.KEYDOWN: # when a key is pressed
             print('pressed')
             self.Player.keyDown(event)
