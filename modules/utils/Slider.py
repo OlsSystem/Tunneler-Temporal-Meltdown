@@ -90,7 +90,6 @@ class Slider:
                 self.setSliderPos(event.pos)
 
         elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-            print('no drag')
             self.dragging = False
             pygame.mixer.music.set_volume(self.fetchValue() / 100)
 

@@ -33,7 +33,6 @@ class KeyInputs:
             exit()
         
         if event.type == pygame.KEYDOWN: # when a key is pressed
-            print('pressed')
             self.Player.keyDown(event)
             
             if event.key == pygame.K_j:
