@@ -5,6 +5,7 @@ from threading import Thread
 # ---- Menu Files ---- #
 from modules.menus.mainMenu import MainMenu
 from modules.menus.loadingScreen import LoadingScreen
+from modules.menus.settings import SettingsMenu
 
 # ---- Initialising Variables ---- # 
 
@@ -26,10 +27,12 @@ class MenuHandler():
         # load in every menu class to prepare it.
         self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs)
         self.loadingScreen = LoadingScreen(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs)
+        self.settingsMenu = SettingsMenu(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs)
         
         # the main menu should enable first. 
-        self.loadingScreen.enableUi()
+        #self.loadingScreen.enableUi()
         #self.mainMenu.enableUi()
+        self.settingsMenu.enableUi()
 
     # hide current menu function to be written later
     def hideCurrentMenu(self):
@@ -40,6 +43,8 @@ class MenuHandler():
         if menuId == "Main" and self.currentMenu == "Main":
             return
         
+        
+        
     # drawing on the curernt menu based on self.CurrentMenu.
     def drawCurrentMenu(self):
-        self.loadingScreen.drawCurrentMenu()
+        self.settingsMenu.drawCurrentMenu()
