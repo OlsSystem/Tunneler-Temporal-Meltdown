@@ -47,6 +47,7 @@ class MainMenu():
         self.testLevelLoad2 = TextButton(300, 200, "Test Level 2", 38, (255,209, 21), self.screen)
         
         self.settingsButton = TextButton(400, 400, "Settings", 38, (255,0,255), self.screen)
+        self.levelButton = TextButton(500, 400, "Play", 38, (255,0,255), self.screen)
 
 
         self.testLabel = TextLabel(210, 200, "This is a Test Label", 60, (255,0,255), self.screen) # Creates a new Label    
@@ -67,6 +68,7 @@ class MainMenu():
             self.endButton.draw() # Draws on the end Button
             self.testLabel.draw() # Draw on the text
             self.settingsButton.draw()
+            self.levelButton.draw()
                                     
             if self.HT.menuTracked and self.cursor.handMode == "Select":
                 if self.endButton.isClicked(self.cursor.rectangle.topleft):
@@ -99,6 +101,9 @@ class MainMenu():
                         
                     if self.settingsButton.isClicked(event.pos):
                         self.MenuHandler.enableMenu("Settings")
+                        
+                    if self.levelButton.isClicked(event.pos):
+                        self.MenuHandler.enableMenu("LevelSelect")
 
             
                     print(event.pos)

@@ -6,6 +6,8 @@ from threading import Thread
 from modules.menus.mainMenu import MainMenu
 from modules.menus.loadingScreen import LoadingScreen
 from modules.menus.settings import SettingsMenu
+from modules.menus.levelSelect import LevelSelect
+from modules.menus.levelUI import LevelUI
 
 # ---- Initialising Variables ---- # 
 
@@ -13,7 +15,7 @@ from modules.menus.settings import SettingsMenu
 class MenuHandler():
     def __init__(self, screen, handTracking, levelGenerator, cursor, player, tunneler, clock, root, Inputs, brightnessHandler):
         # Variables for everything each menu option may require
-        self.currentMenu = "Test"
+        self.currentMenu = "Main"
         self.previousMenu = []
         self.screen = screen
         self.HT = handTracking
@@ -29,12 +31,16 @@ class MenuHandler():
         self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs, self)
         self.loadingScreen = LoadingScreen(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs, self)
         self.settingsMenu = SettingsMenu(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self, brightnessHandler)
+        self.levelSelect = LevelSelect(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
+        self.levelUi = LevelUI(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
         
         # all menus avaliable to use
         self.menuDictionary = {
             "Main": self.mainMenu,
             "Settings": self.settingsMenu,
             "LoadingScreen": self.loadingScreen,
+            "LevelSelect": self.levelSelect,
+            "LevelUI": self.levelUi
         }
         
         self.menuDictionary[self.currentMenu].enableUi()
@@ -52,6 +58,14 @@ class MenuHandler():
         self.menuDictionary[previous].enableUi()
         self.currentMenu = previous
 
+    def enableLevel(self, chapterId, levelId):
+        # enable the level UI
+        # enable level gen
+        # enable player n stuff
+        # pause ability etc
+        self.LG.loadLevel(chapterId, levelId) 
+        self.enableMenu("LevelUI")               
+        print('enable level')
     
     # menu enabling script
     def enableMenu(self, menuId):
