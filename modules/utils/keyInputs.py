@@ -1,8 +1,5 @@
 # ---- Python Modules ---- #
-import cv2
-import time
 import pygame
-import os
 
 # ---- Custom Modules ---- #
 

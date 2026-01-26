@@ -40,8 +40,8 @@ class LoadingScreen():
         self.menuTunnelA = pygame.Rect(3, 680, 20, 86) # creates a rectangle to be used.
         self.menuTunnelB = pygame.Rect(1452, 680, 20, 86) # creates a rectangle to be used.
 
-
         self.testLabel = TextLabel(736, 448, "Loading Level", 60, (255,0,255), self.screen) # Creates a new Label    
+        
     def enableUi(self):
         self.enabled = True
 
@@ -65,4 +65,3 @@ class LoadingScreen():
             
             for event in pygame.event.get(): # Constantly Event Checking.    
                 self.InputHandler.inputCheck(event)
-            

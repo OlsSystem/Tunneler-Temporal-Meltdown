@@ -11,9 +11,10 @@ from modules.menus.settings import SettingsMenu
 
 
 class MenuHandler():
-    def __init__(self, screen, handTracking, levelGenerator, cursor, player, tunneler, clock, root, Inputs):
+    def __init__(self, screen, handTracking, levelGenerator, cursor, player, tunneler, clock, root, Inputs, brightnessHandler):
         # Variables for everything each menu option may require
-        self.currentMenu = "Settings"
+        self.currentMenu = "Test"
+        self.previousMenu = []
         self.screen = screen
         self.HT = handTracking
         self.LG = levelGenerator
@@ -27,29 +28,42 @@ class MenuHandler():
         # load in every menu class to prepare it.
         self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs, self)
         self.loadingScreen = LoadingScreen(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs, self)
-        self.settingsMenu = SettingsMenu(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
+        self.settingsMenu = SettingsMenu(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self, brightnessHandler)
         
+        # all menus avaliable to use
         self.menuDictionary = {
             "Main": self.mainMenu,
             "Settings": self.settingsMenu,
-            "LoadingScreen": self.loadingScreen
+            "LoadingScreen": self.loadingScreen,
         }
         
-        self.enableMenu(self.currentMenu)
+        self.menuDictionary[self.currentMenu].enableUi()
 
     # hide current menu function to be written later
     def hideCurrentMenu(self):
         print('hide')
+        
+    def enablePreviousMenu(self):
+        if not self.previousMenu:
+            return
+        
+        previous = self.previousMenu.pop()
+        
+        self.menuDictionary[previous].enableUi()
+        self.currentMenu = previous
+
     
     # menu enabling script
     def enableMenu(self, menuId):
-        if menuId == "Main" and self.currentMenu == "Main":
-            return
-        
+        # checks if the menus found in the menu dictionary
         if self.menuDictionary[menuId]:
-            self.menuDictionary[menuId].enableUi()
-            self.currentMenu = menuId        
+            
+            if self.currentMenu is not None:
+                self.previousMenu.append(self.currentMenu)
+
+            self.menuDictionary[menuId].enableUi() # enables menu selected
+            self.currentMenu = menuId # sets id of the current menu
         
     # drawing on the curernt menu based on self.CurrentMenu.
     def drawCurrentMenu(self):
-        self.menuDictionary[self.currentMenu].drawCurrentMenu()
+        self.menuDictionary[self.currentMenu].drawCurrentMenu() # draws selected menu

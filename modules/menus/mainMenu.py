@@ -48,6 +48,7 @@ class MainMenu():
         
         self.settingsButton = TextButton(400, 400, "Settings", 38, (255,0,255), self.screen)
 
+
         self.testLabel = TextLabel(210, 200, "This is a Test Label", 60, (255,0,255), self.screen) # Creates a new Label    
         
         

@@ -1,5 +1,4 @@
 # ---- Python Modules ---- #
-import cv2
 import time
 import pygame
 import os
@@ -44,14 +43,18 @@ tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.pa
 LG.setTunneler(tunneler)
 InputHandler = KeyInputs(HT, tunneler, player, LG, True)
 
+brightnessSurface = pygame.Surface(screen.get_size())
+brightnessSurface.set_alpha(int((100 - 100) * 2.55))
 
 
-MH = MenuHandler(screen, HT, LG, cursor, player, tunneler, clock, os.path.dirname(os.path.abspath(__file__)), InputHandler)
+MH = MenuHandler(screen, HT, LG, cursor, player, tunneler, clock, os.path.dirname(os.path.abspath(__file__)), InputHandler, brightnessSurface)
 
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
+    brightnessSurface.fill((0,0,0))
     player.draw(LG.inLevel)    
     MH.drawCurrentMenu()
+    screen.blit(brightnessSurface, (0,0))
                     
     HT.menuTracking() # Runs update image position
     LG.generateLevel() # Runs the level drawing
