@@ -8,7 +8,7 @@ import pygame
 
 
 class DropdownSelect():
-    def __init__(self, x, y, w, h, font_size, screen, options, default=None):
+    def __init__(self, x, y, w, h, font_size, screen, text, options, default=None):
       
         # Requested variables from when creating a new instance of this class.
         self.screen = screen
@@ -18,6 +18,8 @@ class DropdownSelect():
         self.options = options 
         self.selected = default or options[0] # what the drop down should display before any interaction
         self.open = False # sets the dropdown to closed.
+        self.text = text
+        self.x,self.y = x,y
         
         self.optionsRect = [pygame.Rect(x, y + (i + 1) * h,w,h) for i in range(len(self.options))] # creates rectangles for the options before hand
 
@@ -25,6 +27,10 @@ class DropdownSelect():
         # Main box
         pygame.draw.rect(self.screen, (50, 50, 50), self.rect)
         pygame.draw.rect(self.screen, (200, 200, 200), self.rect, 2)
+
+        # Text
+        textRender = self.font.render(self.text, True, (255, 255, 255)) # renders the label text
+        self.screen.blit(textRender, (self.x, self.y - 35))
 
         # renders the text onto the closed state
         text = self.font.render(self.selected, True, (255, 255, 255))
@@ -59,3 +65,6 @@ class DropdownSelect():
             return False
 
         return False
+    
+    def fetchSelected(self):
+        return self.selected
