@@ -36,6 +36,8 @@ class LevelUI:
 
         self.title = TextLabel(736, 50, "Level", 64, (255, 255, 255), screen)
 
+        self.backButton = TextButton(760, 50, "Back to Menu", 36, (200, 50, 50), screen)
+
     def enableUi(self):
         self.enabled = True
 
@@ -46,6 +48,12 @@ class LevelUI:
         if self.enabled == True:
 
             self.title.draw()
+            self.backButton.draw()
 
             for event in pygame.event.get(): # Constantly Event Checking.    
                 self.InputHandler.inputCheck(event)
+                
+                if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
+
+                    if self.backButton.isClicked(event.pos):
+                        self.MenuHandler.disableLevel()

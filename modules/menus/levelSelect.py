@@ -37,7 +37,6 @@ class LevelSelect:
         self.title = TextLabel(736, 50, "Select a Level", 64, (255, 255, 255), screen)
         
         self.testLevelButton = TextButton(736, 200, "Level 1", 36, (200, 50, 50), screen)
-
           
         self.backButton = TextButton(736, 796, "Back to Menu", 36, (200, 50, 50), screen)
 

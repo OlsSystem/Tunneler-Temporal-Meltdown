@@ -66,13 +66,20 @@ class MenuHandler():
         self.LG.loadLevel(chapterId, levelId) 
         self.enableMenu("LevelUI")               
         print('enable level')
+        
+    def disableLevel(self):
+        # disable the level ui
+        # disable level gen
+        # disable player n stuff
+        self.LG.levelEnded()
+        self.enableMenu("LevelSelect")
     
     # menu enabling script
     def enableMenu(self, menuId):
         # checks if the menus found in the menu dictionary
         if self.menuDictionary[menuId]:
             
-            if self.currentMenu is not None:
+            if self.currentMenu is not None and self.currentMenu is not "LevelUI":
                 self.previousMenu.append(self.currentMenu)
 
             self.menuDictionary[menuId].enableUi() # enables menu selected
