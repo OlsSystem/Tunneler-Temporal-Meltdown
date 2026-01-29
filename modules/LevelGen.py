@@ -4,7 +4,7 @@ import os
 import csv
 
 from modules.utils.LevelDictionary import levelById
-from modules.utils.ItemMapping import itemMap, itemImageMap, collisionItems
+from modules.utils.ItemMapping import itemMap, itemImageMap, collisionItems, moveableItems
 
 # ---- Misc Variables ---- #
 
@@ -25,6 +25,7 @@ class LevelGenerator():
         self.levelGrid = [] # Creates the level into a grid
         self.levelAssets = {} # Adds all assets that are defined in itemImageMap to a loaded state
         self.canCollide = [] # Lists all items that can be collided with
+        self.canMove = []
         self.tunneler = None
         self.player = None
         self.menuHandler = None
@@ -56,8 +57,7 @@ class LevelGenerator():
                     for code in row
                 ]) 
                 
-        print(self.levelGrid)   
-        shouldContinue = self.loadStartAndFinish()     
+        shouldContinue = self.loadStartAndFinish()
         
         if not shouldContinue:
             self.menuHandler.enableMenu("LevelSelect")
@@ -66,6 +66,7 @@ class LevelGenerator():
         self.inLevel = True # sets in level to true
         self.tunneler.disableTunnelShooting()
         self.tunneler.enableTunnelShooting()
+        return True
         
     def levelStatus(self):
         self.inLevel = not self.inLevel
@@ -128,16 +129,32 @@ class LevelGenerator():
                 break
                  
         print(finishCoords)         
-        print(startX, startY, finishX, finishY, finishW, finishH)             
+        print(startX, startY, finishX, finishY, finishW, finishH)
        
         if startY and startX and finishX and finishY and finishW and finishH:
-            self.player.levelStarted(startX, startY, finishX, finishY, finishW, finishH) 
+            self.player.levelStarted(startX, startY, finishX, finishY, finishW, finishH)
             return True 
         else:
             print('err')
             return False       
-                    
-                     
+
+    def loadMoveables(self):
+        self.canMove = [] # prevent memory leaks
+        for y, row in enumerate(self.levelGrid):
+            for x, code in enumerate(row):
+                if code in moveableItems:
+                    self.canMove.append({
+                        "rect": pygame.Rect(x * assetSize, y * assetSize, assetSize, assetSize),
+                        "coordinates": (x * assetSize, y * assetSize),
+                        "asset": self.levelAssets[code],
+                    })
+
+    def moveMoveable(self, moveable):
+        # find the moveable
+        # change up the coords
+        print('move')
+
+
     def generateLevel(self):
         self.canCollide = [] # not having this causes a memory leak
         if self.inLevel: # check that the users in a level before attempting to draw
@@ -147,16 +164,19 @@ class LevelGenerator():
                         # invis boxes.
                         # start checks if person walks on F 
                         # move player to S levelStarted
-                        print('start n finish')
-                        
-                    else: 
+                        continue
+                    else:
+                        if code == None:
+                            continue
+
                         if code in collisionItems: # checks if the item has collisions
                             collisionBox = pygame.Rect(x * assetSize, y * assetSize, assetSize, assetSize) # creates a collision box around it
                             self.canCollide.append(collisionBox) # adds collision box to a list
                             #pygame.draw.rect(self.screen, (200,200,200), collisionBox) # test draw for collision boxes
-                            
-                        self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize)) # draws assets
+                            self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize)) # draws assets
 
+                        for rect, coordinates, asset in self.canMove:
+                            self.screen.blit(asset, coordinates)  # draws assets
 
         # disable loading screen and enable game.
         

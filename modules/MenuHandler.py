@@ -68,7 +68,7 @@ class MenuHandler():
         # enable level gen
         # enable player n stuff
         # pause ability etc
-        hasLoaded = self.LG.loadLevel(chapterId, levelId) 
+        hasLoaded = self.LG.loadLevel(chapterId, levelId)
         if hasLoaded:
             self.enableMenu("LevelUI")               
             print('enable level')

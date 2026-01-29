@@ -79,8 +79,8 @@ class Player(pygame.sprite.Sprite):
             
     def movePlayerToCoordinates(self, x, y):
         self.rectangle.x = x
-        self.rectangle.y = y        
-    
+        self.rectangle.y = y - 48
+
     def tunnelPlayer(self, x, y, tunnelColour):
         # moves the player to where the tunnel is.
         self.rectangle.x = x
@@ -95,8 +95,9 @@ class Player(pygame.sprite.Sprite):
         
         self.finishRect = pygame.Rect(finishX, finishY, finishW, finishH)
                 
-    def movePlayer(self, canCollide=None, isInLevel=False):
+    def movePlayer(self, canCollide=None, hasMoveables=None, isInLevel=False):
         hasCollided = False # checks for collisions
+        attemptingMove = False
         if canCollide: # if there are any collidable objects in the map.
             for object in canCollide: # loops through each object in the can collide list.
                 
@@ -120,6 +121,9 @@ class Player(pygame.sprite.Sprite):
                     if self.y_direction != 0:
                         self.y_direction = 0
                     break
+
+        if hasMoveables:
+            print('moveable item')
         
         if not hasCollided: # if theres no collisions start to move the players x and y values
             self.rectangle.x += self.speed * self.x_direction

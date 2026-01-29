@@ -11,7 +11,7 @@ itemMap = {
 collisionItems = ["Wall"]
 
 # Name of all items you can move
-moveables = []
+moveableItems = []
 
 # Items linked to their image
 itemImageMap = {
