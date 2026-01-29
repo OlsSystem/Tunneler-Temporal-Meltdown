@@ -2,7 +2,9 @@
 itemMap = {
     0: None,
     1: "Wall",
-    2: "Enemy"
+    2: "Enemy",
+    "S": "Spawn",
+    "F": "Finish"
 }
 
 # Names of all items you can collide with

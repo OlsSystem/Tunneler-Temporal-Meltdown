@@ -10,12 +10,13 @@ from modules.utils.Particles import Dust, dustParticles
 threshold = 138 # threshold for teleporting a person with a tunnel
 
 class Tunneler():
-    def __init__(self, screen, tunnelAImg, tunnelBImg, player):
+    def __init__(self, screen, tunnelAImg, tunnelBImg, player, LG):
         # Initialising Variables used within the class
         self.screen = screen
         self.tunnelA = tunnelAImg
         self.tunnelB = tunnelBImg
         self.player = player
+        self.LG = LG
         self.collisions = None
         self.threashold = None
         
@@ -83,7 +84,7 @@ class Tunneler():
 
         
     def drawTunnels(self):
-        if self.tunnelActive: # only draws if tunnels if one or multiple tunnels are active
+        if self.tunnelActive and self.LG.inLevel: # only draws if tunnels if one or multiple tunnels are active
             
             # maybe do the drawing x based on if its left or right????
             if self.tunnelAPlaced: # checks if tunnel is placed 

@@ -8,6 +8,7 @@ from modules.menus.loadingScreen import LoadingScreen
 from modules.menus.settings import SettingsMenu
 from modules.menus.levelSelect import LevelSelect
 from modules.menus.levelUI import LevelUI
+from modules.menus.pauseMenu import PauseLevelUI
 
 # ---- Initialising Variables ---- # 
 
@@ -33,6 +34,7 @@ class MenuHandler():
         self.settingsMenu = SettingsMenu(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self, brightnessHandler)
         self.levelSelect = LevelSelect(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
         self.levelUi = LevelUI(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
+        self.levelPause = PauseLevelUI(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
         
         # all menus avaliable to use
         self.menuDictionary = {
@@ -40,8 +42,11 @@ class MenuHandler():
             "Settings": self.settingsMenu,
             "LoadingScreen": self.loadingScreen,
             "LevelSelect": self.levelSelect,
-            "LevelUI": self.levelUi
+            "LevelUI": self.levelUi,
+            "LevelPause": self.levelPause
         }
+        
+        self.ignoredPreviousMenus = ["LevelUI", "LevelPause"]
         
         self.menuDictionary[self.currentMenu].enableUi()
 
@@ -63,9 +68,10 @@ class MenuHandler():
         # enable level gen
         # enable player n stuff
         # pause ability etc
-        self.LG.loadLevel(chapterId, levelId) 
-        self.enableMenu("LevelUI")               
-        print('enable level')
+        hasLoaded = self.LG.loadLevel(chapterId, levelId) 
+        if hasLoaded:
+            self.enableMenu("LevelUI")               
+            print('enable level')
         
     def disableLevel(self):
         # disable the level ui
@@ -79,7 +85,7 @@ class MenuHandler():
         # checks if the menus found in the menu dictionary
         if self.menuDictionary[menuId]:
             
-            if self.currentMenu is not None and self.currentMenu is not "LevelUI":
+            if self.currentMenu is not None and self.currentMenu in self.ignoredPreviousMenus:
                 self.previousMenu.append(self.currentMenu)
 
             self.menuDictionary[menuId].enableUi() # enables menu selected

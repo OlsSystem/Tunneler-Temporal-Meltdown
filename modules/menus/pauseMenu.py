@@ -21,7 +21,7 @@ Red = (0, 0, 255)
 # ---- Initialising Variables ---- #
 
 
-class LevelUI:
+class PauseLevelUI:
     def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler, MenuHandler):
         self.enabled = False
         self.screen = screen
@@ -34,9 +34,9 @@ class LevelUI:
         self.InputHandler = InputHandler
         self.MenuHandler = MenuHandler
 
-        self.title = TextLabel(736, 50, "Level", 64, (255, 255, 255), screen)
+        self.title = TextLabel(736, 50, "Gane Paused", 64, (255, 255, 255), screen)
 
-        self.Pause = TextButton(800, 50, "Pause", 36, (200, 50, 50), screen)
+        self.backButton = TextButton(760, 50, "Return to Game", 36, (200, 50, 50), screen)
 
     def enableUi(self):
         self.enabled = True
@@ -48,13 +48,13 @@ class LevelUI:
         if self.enabled == True:
 
             self.title.draw()
-            self.Pause.draw()
+            self.backButton.draw()
 
             for event in pygame.event.get(): # Constantly Event Checking.    
                 self.InputHandler.inputCheck(event)
                 
                 if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
 
-                    if self.Pause.isClicked(event.pos):
+                    if self.backButton.isClicked(event.pos):
                         self.LG.levelStatus()
-                        self.MenuHandler.enableMenu("LevelPause")
+                        self.MenuHandler.enableMenu("LevelUI")

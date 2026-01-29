@@ -22,6 +22,8 @@ class Player(pygame.sprite.Sprite):
         self.x_direction = 0
         self.y_direction = 0
         
+        self.finishRect = None
+        
         self.isMoving = False
         self.Facing = "Right"
         
@@ -75,6 +77,10 @@ class Player(pygame.sprite.Sprite):
             self.x_direction = 0
             self.isMoving = False # sets moving to false as they aren holding the move key down no more      
             
+    def movePlayerToCoordinates(self, x, y):
+        self.rectangle.x = x
+        self.rectangle.y = y        
+    
     def tunnelPlayer(self, x, y, tunnelColour):
         # moves the player to where the tunnel is.
         self.rectangle.x = x
@@ -82,7 +88,12 @@ class Player(pygame.sprite.Sprite):
         
         # adds dust onto the player to show them coming out of tunnel
         particles = Dust(self.rectangle.center, tunnelColour, None, 12)
-        dustParticles.append(particles)             
+        dustParticles.append(particles)     
+        
+    def levelStarted(self, startX, startY, finishX, finishY, finishW, finishH):
+        self.movePlayerToCoordinates(startX, startY)        
+        
+        self.finishRect = pygame.Rect(finishX, finishY, finishW, finishH)
                 
     def movePlayer(self, canCollide=None, isInLevel=False):
         hasCollided = False # checks for collisions
@@ -94,6 +105,10 @@ class Player(pygame.sprite.Sprite):
                     break
                     
                 if object.collidepoint(self.rectangle.topright) and self.x_direction == -2:
+                    break
+                
+                if self.finishRect.collidepoint(self.rectangle.topright):
+                    print('they reached the end!')
                     break
                     
                 # if they have collided with the wall then stop movement

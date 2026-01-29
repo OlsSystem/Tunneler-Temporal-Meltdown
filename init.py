@@ -38,16 +38,18 @@ cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.
 player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\spritesheet.png')).convert_alpha(), 0.6)
 
 # Initialise the Tunneler Class
-tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalA.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalB.png')).convert_alpha(), player)
+tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalA.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalB.png')).convert_alpha(), player, LG)
 
 LG.setTunneler(tunneler)
+LG.setPlayer(player)
 InputHandler = KeyInputs(HT, tunneler, player, LG, True)
 
 brightnessSurface = pygame.Surface(screen.get_size())
 brightnessSurface.set_alpha(int((100 - 100) * 2.55))
 
-
 MH = MenuHandler(screen, HT, LG, cursor, player, tunneler, clock, os.path.dirname(os.path.abspath(__file__)), InputHandler, brightnessSurface)
+
+LG.setMenuHandler(MH)
 
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
