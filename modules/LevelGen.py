@@ -9,6 +9,7 @@ from modules.utils.ItemMapping import itemMap, itemImageMap, collisionItems
 # ---- Misc Variables ---- #
 
 assetSize = 64
+stringCodes = ["S", "F"]
 
 # ---- Initialising Variables ---- # 
 
@@ -50,8 +51,12 @@ class LevelGenerator():
             levelReader = csv.reader(lvl) # changes the csv file into a readable list you can iterate through
             for row in levelReader:
                 # needs to allow strings too. <3
-                self.levelGrid.append([itemMap.get(int(code), "Unknown") for code in row]) # adds each row of items to the grid
-         
+                self.levelGrid.append([
+                    itemMap.get(int(code) if code.isdigit() else code, "Unknown")
+                    for code in row
+                ]) 
+                
+        print(self.levelGrid)   
         shouldContinue = self.loadStartAndFinish()     
         
         if not shouldContinue:
@@ -84,6 +89,7 @@ class LevelGenerator():
                 self.levelAssets[code] = image # adds the asset and the code into the levelAssets list
             
     def createFinishCoords(self, finishCoords):
+        print('generating coords')
         if not finishCoords:
             return 0, 0, 0, 0  
 
@@ -93,8 +99,8 @@ class LevelGenerator():
         for x, y in finishCoords:
             left = min(left, x)
             top = min(top, y)
-            right = max(right, x + self.assetSize)
-            bottom = max(bottom, y + self.assetSize)
+            right = max(right, x + assetSize)
+            bottom = max(bottom, y + assetSize)
 
         return left, top, right - left, bottom - top
 
@@ -105,24 +111,28 @@ class LevelGenerator():
         finishCoords = []
         finishCount = 0
         for y, row in enumerate(self.levelGrid): # iterates through the grid getting the row and y value
+            print(row)
             for x, code in enumerate(row): # iterates through the rows getting a value for x
-                if code == "S" and startCount != 1:
+                print(code)
+                if code == "Spawn" and startCount == 0:
                     startX = x * assetSize
                     startY = y * assetSize   
                     startCount += 1
-                elif code == "F":
+                elif code == "Finish":
                     boxCoords = (x * assetSize, y * assetSize)
                     finishCoords.append(boxCoords)
-                    finishCount += 1  
-                elif self.levelGrid.count("F") == finishCount:
-                    finishX,finishY,finishW,finishH = self.createFinishCoords(finishCoords)
-                    break
-                
-            if self.levelGrid.count("F") and startCount == 1:
-                break
+                    finishCount += 1
                     
+            if finishCount >= 1 and startCount == 1:
+                finishX,finishY,finishW,finishH = self.createFinishCoords(finishCoords)
+                break
+                 
+        print(finishCoords)         
+        print(startX, startY, finishX, finishY, finishW, finishH)             
+       
         if startY and startX and finishX and finishY and finishW and finishH:
-            self.player.levelStarted(startX, startY, finishX, finishY, finishW, finishH)  
+            self.player.levelStarted(startX, startY, finishX, finishY, finishW, finishH) 
+            return True 
         else:
             print('err')
             return False       
@@ -133,13 +143,13 @@ class LevelGenerator():
         if self.inLevel: # check that the users in a level before attempting to draw
             for y, row in enumerate(self.levelGrid): # iterates through the grid getting the row and y value
                 for x, code in enumerate(row): # iterates through the rows getting a value for x
-                    if code == "S" or code == "F":
+                    if code == "Spawn" or code == "Finish":
                         # invis boxes.
                         # start checks if person walks on F 
                         # move player to S levelStarted
                         print('start n finish')
                         
-                    elif code in self.levelAssets: 
+                    else: 
                         if code in collisionItems: # checks if the item has collisions
                             collisionBox = pygame.Rect(x * assetSize, y * assetSize, assetSize, assetSize) # creates a collision box around it
                             self.canCollide.append(collisionBox) # adds collision box to a list
