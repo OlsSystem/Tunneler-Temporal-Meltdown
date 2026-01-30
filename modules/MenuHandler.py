@@ -9,6 +9,7 @@ from modules.menus.settings import SettingsMenu
 from modules.menus.levelSelect import LevelSelect
 from modules.menus.levelUI import LevelUI
 from modules.menus.pauseMenu import PauseLevelUI
+from modules.menus.deadScreen import PlayerDiedScreen
 
 # ---- Initialising Variables ---- # 
 
@@ -35,7 +36,8 @@ class MenuHandler():
         self.levelSelect = LevelSelect(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
         self.levelUi = LevelUI(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
         self.levelPause = PauseLevelUI(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
-        
+        self.deadScreen = PlayerDiedScreen(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
+
         # all menus avaliable to use
         self.menuDictionary = {
             "Main": self.mainMenu,
@@ -43,10 +45,11 @@ class MenuHandler():
             "LoadingScreen": self.loadingScreen,
             "LevelSelect": self.levelSelect,
             "LevelUI": self.levelUi,
-            "LevelPause": self.levelPause
+            "LevelPause": self.levelPause,
+            "DeadScreen": self.deadScreen,
         }
         
-        self.ignoredPreviousMenus = ["LevelUI", "LevelPause"]
+        self.ignoredPreviousMenus = ["LevelUI", "LevelPause", "DeadScreen"]
         
         self.menuDictionary[self.currentMenu].enableUi()
 
@@ -62,6 +65,13 @@ class MenuHandler():
         
         self.menuDictionary[previous].enableUi()
         self.currentMenu = previous
+
+    def restartLevel(self):
+        # reload level.
+        hasLoaded = self.LG.reloadCurrentLevel()
+        if hasLoaded:
+            self.enableMenu("LevelUI")
+            print('reloaded level')
 
     def enableLevel(self, chapterId, levelId):
         # enable the level UI
@@ -87,6 +97,9 @@ class MenuHandler():
             
             if self.currentMenu is not None and self.currentMenu in self.ignoredPreviousMenus:
                 self.previousMenu.append(self.currentMenu)
+
+            if menuId == "DeadScreen":
+                self.LG.levelStatus()
 
             self.menuDictionary[menuId].enableUi() # enables menu selected
             self.currentMenu = menuId # sets id of the current menu

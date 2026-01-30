@@ -19,11 +19,13 @@ Blue = (255, 0, 0)
 Green = (0, 255, 0)
 Red = (0, 0, 255)
 
+
 # ---- Initialising Variables ---- #
 
 
-class LevelUI:
-    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler, MenuHandler):
+class PlayerDiedScreen:
+    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler,
+                 MenuHandler):
         self.enabled = False
         self.screen = screen
         self.HT = handTracking
@@ -35,11 +37,9 @@ class LevelUI:
         self.InputHandler = InputHandler
         self.MenuHandler = MenuHandler
 
-        self.title = TextLabel(736, 50, "Level", 64, (255, 255, 255), screen)
+        self.title = TextLabel(736, 50, "You Died", 64, (255, 255, 255), screen)
 
-        self.Pause = TextButton(800, 50, "Pause", 36, (200, 50, 50), screen)
-
-        self.timer = LevelTimer(self.screen, self.LG, 400, 50)
+        self.restartButton = TextButton(400, 50, "Try Again?", 36, (200, 50, 50), screen)
 
     def enableUi(self):
         self.enabled = True
@@ -51,14 +51,12 @@ class LevelUI:
         if self.enabled == True:
 
             self.title.draw()
-            self.Pause.draw()
-            self.timer.drawTimer()
+            self.restartButton.draw()
 
-            for event in pygame.event.get(): # Constantly Event Checking.    
+            for event in pygame.event.get():  # Constantly Event Checking.
                 self.InputHandler.inputCheck(event)
-                
+
                 if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
 
-                    if self.Pause.isClicked(event.pos):
-                        self.LG.levelStatus()
-                        self.MenuHandler.enableMenu("LevelPause")
+                    if self.restartButton.isClicked(event.pos):
+                        self.MenuHandler.restartLevel()

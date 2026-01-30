@@ -15,6 +15,7 @@ class Player(pygame.sprite.Sprite):
         # Initialise variables from the imports.
         self.screen = screen
         self.LG = LG
+        self.MenuHandler = None
         self.spriteSheet = SpriteSheet(sheet)
         self.animationList = []
         self.animationSteps = 3
@@ -39,7 +40,11 @@ class Player(pygame.sprite.Sprite):
         # Sets the current frame
         self.image = self.animationList[self.currentFrame]
         self.rectangle = self.image.get_rect(topleft=(self.x, self.y))
-    
+
+    def setMenuHandler(self, MH):
+        self.MenuHandler = MH
+        print('mh set')
+
     def listAnimations(self):
         for x in range(self.animationSteps):
             self.animationList.append(self.spriteSheet.getSprite(x, 138, 182, self.scale, (30,50,30))) # Adds each mage frame to a list.
@@ -92,13 +97,14 @@ class Player(pygame.sprite.Sprite):
         dustParticles.append(particles)     
         
     def levelStarted(self, startX, startY, finishX, finishY, finishW, finishH):
-        self.movePlayerToCoordinates(startX, startY)        
+        self.movePlayerToCoordinates(startX, startY)
         
         self.finishRect = pygame.Rect(finishX, finishY, finishW, finishH)
-                
+
+
     def movePlayer(self, canCollide=None, hasMoveables=None, isInLevel=False):
         hasCollided = False # checks for collisions
-        attemptingMove = False
+        shouldMove = True
         if canCollide: # if there are any collidable objects in the map.
             for object in canCollide: # loops through each object in the can collide list.
                 
@@ -111,6 +117,7 @@ class Player(pygame.sprite.Sprite):
                 
                 if self.finishRect.collidepoint(self.rectangle.topright):
                     hasCollided = False
+                    self.MenuHandler.enableMenu("DeadScreen")
                     break
                     
                 # if they have collided with the wall then stop movement
@@ -134,41 +141,38 @@ class Player(pygame.sprite.Sprite):
 
                     if canCollide:
                         for object in canCollide:
-                            if object.collidepoint(data["rect"].topright):
-                                print('touch right')
+                            if object.collidepoint(data["rect"].topleft) and self.x_direction == 2:
+                                shouldMove = False
+                                break
+
+                            if object.collidepoint(data["rect"].bottomright) and self.x_direction == -2:
+                                shouldMove = False
+                                break
+
+                            if object.collidepoint(data["rect"].topleft):
                                 collidedWithWall = True
 
-
                             if object.collidepoint(data["rect"].bottomright):
-                                print('touch bottom right')
                                 collidedWithWall = True
 
                             if collidedWithWall:
-                                if object.collidepoint(data["rect"].topleft) and self.x_direction == 2:
-                                    break
-
-                                if object.collidepoint(data["rect"].bottomright) and self.x_direction == -2:
-                                    break
-
+                                hasCollided = True
+                                shouldMove = False
                                 if self.x_direction != 0:
                                     self.x_direction = 0
-                                    hasCollided = True
                                 if self.y_direction != 0:
                                     self.y_direction = 0
-                                    hasCollided = True
-
+                                break
 
                     # Only push if player is actually moving
-                    if (dx != 0 or dy != 0) and collidedWithWall == False:
+                    if (dx != 0 or dy != 0) and collidedWithWall == False and shouldMove:
                         self.LG.moveMoveable(i)
 
-                    if collidedWithWall:
-                        break
-        
-        if not hasCollided: # if theres no collisions start to move the players x and y values
+
+        if not hasCollided: # if there's no collisions start to move the players x and y values
             self.rectangle.x += self.speed * self.x_direction
             self.rectangle.y += self.speed * self.y_direction
-            
+
             
         self.draw(isInLevel) # draw the sprite in the new location
     

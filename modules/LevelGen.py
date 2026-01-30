@@ -19,6 +19,8 @@ class LevelGenerator():
         self.rootDir = os.path.dirname(__file__) # Root directory of where this file is.
         self.screen = pygameInstance # Add the screen from the main file.
         self.levelName = None # Defines level name
+        self.chapterId = None # Gives chapter id
+        self.levelId = None # Gives level id
         self.levelPath = None # Defines level path
         self.inLevel = False # Check for if a users in a level
         self.levelLocation = os.path.normpath(os.path.join(self.rootDir, "../levels")) # Normalised path for central level folder
@@ -67,6 +69,8 @@ class LevelGenerator():
         self.loadMoveables()
                 
         self.inLevel = True # sets in level to true
+        self.chapterId = chapterId
+        self.levelId = levelId
         self.tunneler.disableTunnelShooting()
         self.tunneler.enableTunnelShooting()
         return True
@@ -78,8 +82,16 @@ class LevelGenerator():
         self.levelGrid = []
         self.canCollide = []
         self.inLevel = False
+        self.chapterId = None
+        self.levelId = None
         self.tunneler.disableTunnelShooting()
         self.tunneler.destoryTunnels()
+
+    def reloadCurrentLevel(self):
+        chapterId = self.chapterId
+        levelId = self.levelId
+        self.levelEnded()
+        return self.loadLevel(chapterId, levelId)
         
     def loadAssets(self):
         for assetId, filePath in itemImageMap.items(): # iterates through each item in the map
@@ -147,8 +159,8 @@ class LevelGenerator():
             for x, code in enumerate(row):
                 if code in moveableItems:
                     self.canMove.append({
-                        "rect": pygame.Rect(x * assetSize, y * assetSize + 1, assetSize, assetSize),
-                        "coordinates": (x * assetSize, y * assetSize + 1),
+                        "rect": pygame.Rect(x * assetSize, y * assetSize - 1, assetSize, assetSize),
+                        "coordinates": (x * assetSize, y * assetSize - 1),
                         "asset": self.levelAssets[code],
                     })
 
@@ -185,7 +197,9 @@ class LevelGenerator():
                             self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize)) # draws assets
 
                         for id, data in enumerate(self.canMove):
-                            self.screen.blit(data["asset"], data["coordinates"])  # draws assets
+                            #self.screen.blit(data["asset"], data["coordinates"])  # draws assets
+                            pygame.draw.rect(self.screen, (200,200,200), data["rect"]) # test draw for collision boxes
+
 
         # disable loading screen and enable game.
         
