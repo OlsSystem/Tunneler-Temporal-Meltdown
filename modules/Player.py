@@ -110,7 +110,7 @@ class Player(pygame.sprite.Sprite):
                     break
                 
                 if self.finishRect.collidepoint(self.rectangle.topright):
-                    print('they reached the end!')
+                    hasCollided = False
                     break
                     
                 # if they have collided with the wall then stop movement
@@ -125,17 +125,45 @@ class Player(pygame.sprite.Sprite):
 
 
         if hasMoveables:
+            collidedWithWall = False
             for i, data in enumerate(hasMoveables):
                 if self.rectangle.colliderect(data["rect"]):
 
                     dx = self.speed * self.x_direction
                     dy = self.speed * self.y_direction
 
-                    # check if box has collided with a wall.
+                    if canCollide:
+                        for object in canCollide:
+                            if object.collidepoint(data["rect"].topright):
+                                print('touch right')
+                                collidedWithWall = True
+
+
+                            if object.collidepoint(data["rect"].bottomright):
+                                print('touch bottom right')
+                                collidedWithWall = True
+
+                            if collidedWithWall:
+                                if object.collidepoint(data["rect"].topleft) and self.x_direction == 2:
+                                    break
+
+                                if object.collidepoint(data["rect"].bottomright) and self.x_direction == -2:
+                                    break
+
+                                if self.x_direction != 0:
+                                    self.x_direction = 0
+                                    hasCollided = True
+                                if self.y_direction != 0:
+                                    self.y_direction = 0
+                                    hasCollided = True
+
 
                     # Only push if player is actually moving
-                    if dx != 0 or dy != 0:
+                    if (dx != 0 or dy != 0) and collidedWithWall == False:
                         self.LG.moveMoveable(i)
+
+                    if collidedWithWall:
+                        break
         
         if not hasCollided: # if theres no collisions start to move the players x and y values
             self.rectangle.x += self.speed * self.x_direction

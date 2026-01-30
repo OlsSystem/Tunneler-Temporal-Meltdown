@@ -147,8 +147,8 @@ class LevelGenerator():
             for x, code in enumerate(row):
                 if code in moveableItems:
                     self.canMove.append({
-                        "rect": pygame.Rect(x * assetSize, y * assetSize, assetSize, assetSize),
-                        "coordinates": (x * assetSize, y * assetSize),
+                        "rect": pygame.Rect(x * assetSize, y * assetSize + 1, assetSize, assetSize),
+                        "coordinates": (x * assetSize, y * assetSize + 1),
                         "asset": self.levelAssets[code],
                     })
 

@@ -18,5 +18,5 @@ moveableItems = ["Box"]
 itemImageMap = {
     "Wall": "assets/wall.png",
     "Enemy": "assets/jay.png",
-    "Box": "assets/ice.png",
+    "Box": "assets/portalA.png",
 }
