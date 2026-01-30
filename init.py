@@ -35,7 +35,7 @@ clock = pygame.time.Clock()
 cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\CursorSelect.png')).convert_alpha(), 0.05, screen)    
 
 # Initialises the Player Class
-player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\spritesheet.png')).convert_alpha(), 0.6)
+player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\spritesheet.png')).convert_alpha(), 0.6, LG)
 
 # Initialise the Tunneler Class
 tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalA.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalB.png')).convert_alpha(), player, LG)
@@ -63,7 +63,7 @@ while isRunning: # While isRunning is set to true
     
     RunParticles(screen)
     
-    player.movePlayer(LG.canCollide, LG.inLevel) # Moves the player 
+    player.movePlayer(LG.canCollide, LG.canMove, LG.inLevel) # Moves the player
     tunneler.drawTunnels()
     tunneler.canTunnel(player)
     clock.tick(120)

@@ -9,6 +9,7 @@ from modules.utils.ItemMapping import itemMap, itemImageMap, collisionItems, mov
 # ---- Misc Variables ---- #
 
 assetSize = 64
+moveItemBy = 0.3
 stringCodes = ["S", "F"]
 
 # ---- Initialising Variables ---- # 
@@ -62,6 +63,8 @@ class LevelGenerator():
         if not shouldContinue:
             self.menuHandler.enableMenu("LevelSelect")
             return False
+
+        self.loadMoveables()
                 
         self.inLevel = True # sets in level to true
         self.tunneler.disableTunnelShooting()
@@ -149,11 +152,17 @@ class LevelGenerator():
                         "asset": self.levelAssets[code],
                     })
 
-    def moveMoveable(self, moveable):
-        # find the moveable
-        # change up the coords
-        print('move')
+    def moveMoveable(self, moveableId):
+        coordinates = self.canMove[moveableId]["coordinates"]
+        asset = self.canMove[moveableId]["asset"]
 
+        new_x = coordinates[0] + moveItemBy * assetSize
+
+        self.canMove[moveableId] = {
+            "rect": pygame.Rect(new_x, coordinates[1], assetSize, assetSize),
+            "coordinates": (new_x, coordinates[1]),
+            "asset": asset,
+        }
 
     def generateLevel(self):
         self.canCollide = [] # not having this causes a memory leak
@@ -175,8 +184,8 @@ class LevelGenerator():
                             #pygame.draw.rect(self.screen, (200,200,200), collisionBox) # test draw for collision boxes
                             self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize)) # draws assets
 
-                        for rect, coordinates, asset in self.canMove:
-                            self.screen.blit(asset, coordinates)  # draws assets
+                        for id, data in enumerate(self.canMove):
+                            self.screen.blit(data["asset"], data["coordinates"])  # draws assets
 
         # disable loading screen and enable game.
         

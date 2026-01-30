@@ -10,10 +10,11 @@ from modules.utils.Particles import Dust, dustParticles
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, screen, sheet, scale):
+    def __init__(self, screen, sheet, scale, LG):
         super().__init__() # allows use of the pygame Sprite class
         # Initialise variables from the imports.
         self.screen = screen
+        self.LG = LG
         self.spriteSheet = SpriteSheet(sheet)
         self.animationList = []
         self.animationSteps = 3
@@ -122,8 +123,19 @@ class Player(pygame.sprite.Sprite):
                         self.y_direction = 0
                     break
 
+
         if hasMoveables:
-            print('moveable item')
+            for i, data in enumerate(hasMoveables):
+                if self.rectangle.colliderect(data["rect"]):
+
+                    dx = self.speed * self.x_direction
+                    dy = self.speed * self.y_direction
+
+                    # check if box has collided with a wall.
+
+                    # Only push if player is actually moving
+                    if dx != 0 or dy != 0:
+                        self.LG.moveMoveable(i)
         
         if not hasCollided: # if theres no collisions start to move the players x and y values
             self.rectangle.x += self.speed * self.x_direction

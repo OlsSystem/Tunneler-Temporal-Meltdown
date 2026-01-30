@@ -3,6 +3,7 @@ itemMap = {
     0: None,
     1: "Wall",
     2: "Enemy",
+    3: "Box",
     "S": "Spawn",
     "F": "Finish"
 }
@@ -11,10 +12,11 @@ itemMap = {
 collisionItems = ["Wall"]
 
 # Name of all items you can move
-moveableItems = []
+moveableItems = ["Box"]
 
 # Items linked to their image
 itemImageMap = {
     "Wall": "assets/wall.png",
-    "Enemy": "assets/jay.png"
+    "Enemy": "assets/jay.png",
+    "Box": "assets/ice.png",
 }
