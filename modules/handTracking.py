@@ -42,11 +42,13 @@ class TrackHands():
         self.mpHandsSolution = mediapipe.solutions.hands # Imports the hands solution from Mediapipe
 
         self.hand = self.mpHandsSolution.Hands() # Initialises the Hands moduel from the hands solution
-        
+        self.LG = None
         self.handLocation = "Unknown"
         self.menuTracked = False
         self.x, self.y = 100, 100
 
+    def setLevelGen(self, LG):
+        self.LG = LG
     
     def start(self):
         self.camera = cv2.VideoCapture(0) # Used to fetch the camera feed.
@@ -152,10 +154,9 @@ class TrackHands():
         while self.cameraUiEnabled: # Keeping the camera on when its in use.
             indexLandmark = None
             thumbLandmark = None
+            self.circle = None
             foundCamera, self.cameraImage = self.camera.read() # Reading the image of the camera
             self.cameraImage = cv2.flip(self.cameraImage, 1) # Flips the video image so that you move the hand in the same direction on the camera as you are in real life.
-            self.x = 0
-            self.y = 0
 
             if not foundCamera: # Checks if the camera is found if not itll stop the function.
                 print('Camera not found.. Exiting.')
@@ -181,8 +182,10 @@ class TrackHands():
                         if id == 4 and self.menuTracked:
                             cv2.circle(self.cameraImage, (x, y), 15, (255, 0, 255), cv2.FILLED) 
                             thumbLandmark = (x,y)
-                            
-            
+            elif not handsInView.multi_hand_landmarks and self.LG.inLevel:
+                self.setXandY(0,0)
+                        
+          
             if self.menuTracked:     
                 if indexLandmark and thumbLandmark: # If theres both the index and thumb on the screen.
                     if self.isPinching(indexLandmark, thumbLandmark, 30): # check if they are pinching with a ±30 threashold.

@@ -51,6 +51,7 @@ MH = MenuHandler(screen, HT, LG, cursor, player, tunneler, clock, os.path.dirnam
 
 LG.setMenuHandler(MH)
 player.setMenuHandler(MH)
+HT.setLevelGen(LG)
 
 while isRunning: # While isRunning is set to true
     screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
