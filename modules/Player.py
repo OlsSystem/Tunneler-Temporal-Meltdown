@@ -10,7 +10,7 @@ from modules.utils.Particles import Dust, dustParticles
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, screen, sheet, scale, LG):
+    def __init__(self, screen, sheet, scale, LG, HT):
         super().__init__() # allows use of the pygame Sprite class
         # Initialise variables from the imports.
         self.screen = screen
@@ -43,7 +43,6 @@ class Player(pygame.sprite.Sprite):
 
     def setMenuHandler(self, MH):
         self.MenuHandler = MH
-        print('mh set')
 
     def listAnimations(self):
         for x in range(self.animationSteps):
@@ -65,21 +64,21 @@ class Player(pygame.sprite.Sprite):
                 self.screen.blit(self.animationList[0], self.rectangle.topleft) # On call draws on the idle sprite.
     
     def keyDown(self, event): # as a key is pressed the x direction is changed to signify a left or right movement.
-        if event.key == pygame.K_LEFT:
+        if event == "Left":
             self.x_direction = -2
             self.Facing = "Left"
             self.isMoving = True # sets moving to true
-        elif event.key == pygame.K_RIGHT:
+        elif event == "Right":
             self.x_direction = 2
             self.Facing = "Right"
             self.isMoving = True # sets moving to true
 
 
     def keyUp(self, event): # as a key is pressed the x direction is changed to signify a stopping motion.
-        if event.key == pygame.K_LEFT:
+        if event == "Left":
             self.x_direction = 0
             self.isMoving = False # sets moving to false as they aren holding the move key down no more
-        elif event.key == pygame.K_RIGHT:
+        elif event == "Right":
             self.x_direction = 0
             self.isMoving = False # sets moving to false as they aren holding the move key down no more      
             

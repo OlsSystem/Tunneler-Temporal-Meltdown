@@ -28,14 +28,14 @@ pygame.init() # Initialises pygame and starts it up.
 screen = pygame.display.set_mode((1472,896)) # Sets the window to 1480 by 900px
 isRunning = True # Sets runing to True
 HT = TrackHands() # Initialises HandTracking to be used throughout the program.
-LG = LevelGenerator(screen) # Initialises the Level Generator and pre generates the sprite images
+LG = LevelGenerator(screen, HT) # Initialises the Level Generator and pre generates the sprite images
 clock = pygame.time.Clock()
 
 # Initialises the Cursor Class 
 cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\CursorSelect.png')).convert_alpha(), 0.05, screen)    
 
 # Initialises the Player Class
-player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\spritesheet.png')).convert_alpha(), 0.6, LG)
+player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\spritesheet.png')).convert_alpha(), 0.6, LG, HT)
 
 # Initialise the Tunneler Class
 tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalA.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalB.png')).convert_alpha(), player, LG)

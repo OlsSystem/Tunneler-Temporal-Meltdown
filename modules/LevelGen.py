@@ -5,6 +5,7 @@ import csv
 
 from modules.utils.LevelDictionary import levelById
 from modules.utils.ItemMapping import itemMap, itemImageMap, collisionItems, moveableItems
+from modules.utils.Timer import LevelTimer
 
 # ---- Misc Variables ---- #
 
@@ -15,7 +16,7 @@ stringCodes = ["S", "F"]
 # ---- Initialising Variables ---- # 
 
 class LevelGenerator():
-    def __init__(self, pygameInstance):
+    def __init__(self, pygameInstance, handTracking):
         self.rootDir = os.path.dirname(__file__) # Root directory of where this file is.
         self.screen = pygameInstance # Add the screen from the main file.
         self.levelName = None # Defines level name
@@ -32,6 +33,10 @@ class LevelGenerator():
         self.tunneler = None
         self.player = None
         self.menuHandler = None
+        self.HT = handTracking
+        
+        self.timer = LevelTimer(self.screen, self, 400, 50)
+
         
         self.loadAssets() # Loads all assets to be used in levels.
 
@@ -73,10 +78,16 @@ class LevelGenerator():
         self.levelId = levelId
         self.tunneler.disableTunnelShooting()
         self.tunneler.enableTunnelShooting()
+        self.HT.start() # Opens up the Hand Tracking Client
+        self.timer.startTimer()
         return True
         
     def levelStatus(self):
         self.inLevel = not self.inLevel
+        if not self.inLevel:
+            self.timer.pauseTimer()
+        else:
+            self.timer.startTimer()
         
     def levelEnded(self): # resets all values to zero ready for the next level
         self.levelGrid = []
@@ -84,6 +95,8 @@ class LevelGenerator():
         self.inLevel = False
         self.chapterId = None
         self.levelId = None
+        self.timer.pauseTimer()
+        self.HT.stop()
         self.tunneler.disableTunnelShooting()
         self.tunneler.destoryTunnels()
 
@@ -91,6 +104,9 @@ class LevelGenerator():
         chapterId = self.chapterId
         levelId = self.levelId
         self.levelEnded()
+        self.timer.resetTimer()
+        self.player.isMoving = False
+        self.player.x_direction = 0
         return self.loadLevel(chapterId, levelId)
         
     def loadAssets(self):
@@ -105,7 +121,6 @@ class LevelGenerator():
                 self.levelAssets[code] = image # adds the asset and the code into the levelAssets list
             
     def createFinishCoords(self, finishCoords):
-        print('generating coords')
         if not finishCoords:
             return 0, 0, 0, 0  
 
@@ -127,9 +142,7 @@ class LevelGenerator():
         finishCoords = []
         finishCount = 0
         for y, row in enumerate(self.levelGrid): # iterates through the grid getting the row and y value
-            print(row)
             for x, code in enumerate(row): # iterates through the rows getting a value for x
-                print(code)
                 if code == "Spawn" and startCount == 0:
                     startX = x * assetSize
                     startY = y * assetSize   
@@ -142,10 +155,7 @@ class LevelGenerator():
             if finishCount >= 1 and startCount == 1:
                 finishX,finishY,finishW,finishH = self.createFinishCoords(finishCoords)
                 break
-                 
-        print(finishCoords)         
-        print(startX, startY, finishX, finishY, finishW, finishH)
-       
+                        
         if startY and startX and finishX and finishY and finishW and finishH:
             self.player.levelStarted(startX, startY, finishX, finishY, finishW, finishH)
             return True 

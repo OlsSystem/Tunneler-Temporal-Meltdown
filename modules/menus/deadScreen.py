@@ -38,6 +38,8 @@ class PlayerDiedScreen:
         self.MenuHandler = MenuHandler
 
         self.title = TextLabel(736, 50, "You Died", 64, (255, 255, 255), screen)
+        
+        self.time = TextLabel(736, 300, self.LG.timer.getCurrentTime(), 64, (255,255,255), screen)
 
         self.restartButton = TextButton(400, 50, "Try Again?", 36, (200, 50, 50), screen)
 
@@ -52,6 +54,8 @@ class PlayerDiedScreen:
 
             self.title.draw()
             self.restartButton.draw()
+            self.time.updateText(self.LG.timer.getCurrentTime())
+            self.time.draw()
 
             for event in pygame.event.get():  # Constantly Event Checking.
                 self.InputHandler.inputCheck(event)

@@ -154,6 +154,8 @@ class TrackHands():
             thumbLandmark = None
             foundCamera, self.cameraImage = self.camera.read() # Reading the image of the camera
             self.cameraImage = cv2.flip(self.cameraImage, 1) # Flips the video image so that you move the hand in the same direction on the camera as you are in real life.
+            self.x = 0
+            self.y = 0
 
             if not foundCamera: # Checks if the camera is found if not itll stop the function.
                 print('Camera not found.. Exiting.')
@@ -180,15 +182,17 @@ class TrackHands():
                             cv2.circle(self.cameraImage, (x, y), 15, (255, 0, 255), cv2.FILLED) 
                             thumbLandmark = (x,y)
                             
-                        
-            if indexLandmark and thumbLandmark: # If theres both the index and thumb on the screen.
-                if self.isPinching(indexLandmark, thumbLandmark, 30): # check if they are pinching with a ±30 threashold.
-                    self.cursor.setImage("Select") # If it passes then change to the select.
-                else: # Otherwise it goes to the idle mode.
+            
+            if self.menuTracked:     
+                if indexLandmark and thumbLandmark: # If theres both the index and thumb on the screen.
+                    if self.isPinching(indexLandmark, thumbLandmark, 30): # check if they are pinching with a ±30 threashold.
+                        self.cursor.setImage("Select") # If it passes then change to the select.
+                    else: # Otherwise it goes to the idle mode.
+                        self.cursor.setImage("Idle")
+                else: # Defaults to the idle mode if not pinching or no thumb.
                     self.cursor.setImage("Idle")
-            else: # Defaults to the idle mode if not pinching or no thumb.
-                self.cursor.setImage("Idle")
 
+            self.checkHand(self.x, self.y)
 
             cv2.imshow('image', self.cameraImage) # Displaying the cameras image in a window
             cv2.setMouseCallback('image', self.showCoords) # Displays the mouse coords after clicking

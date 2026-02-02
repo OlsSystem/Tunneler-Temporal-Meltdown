@@ -10,7 +10,6 @@ from modules.utils.DropDowns import DropdownSelect
 from modules.utils.RadioButtons import RadioButtons
 from modules.utils.Slider import Slider
 from modules.Player import Player
-from modules.utils.Timer import LevelTimer
 
 # ---- Misc Variables ---- #
 
@@ -23,7 +22,7 @@ Red = (0, 0, 255)
 
 
 class LevelUI:
-    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler, MenuHandler):
+    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler, MenuHandler, Player):
         self.enabled = False
         self.screen = screen
         self.HT = handTracking
@@ -34,12 +33,12 @@ class LevelUI:
         self.tunneler = tunneler
         self.InputHandler = InputHandler
         self.MenuHandler = MenuHandler
+        self.Player = Player
 
         self.title = TextLabel(736, 50, "Level", 64, (255, 255, 255), screen)
 
         self.Pause = TextButton(800, 50, "Pause", 36, (200, 50, 50), screen)
 
-        self.timer = LevelTimer(self.screen, self.LG, 400, 50)
 
     def enableUi(self):
         self.enabled = True
@@ -52,8 +51,24 @@ class LevelUI:
 
             self.title.draw()
             self.Pause.draw()
-            self.timer.drawTimer()
+            
+            self.LG.timer.handleTimer()
+            self.LG.timer.drawTimer()
+            
+            if self.HT.handLocation == "Top Right":
+                self.Player.keyUp("Left")
+                self.Player.keyDown("Right")
+                
+            elif self.HT.handLocation == "Top Left":
+                self.Player.keyUp("Right")
+                self.Player.keyDown("Left")
+            
+            else:
+                self.Player.keyUp("Right")
+                self.Player.keyUp("Left")
 
+
+    
             for event in pygame.event.get(): # Constantly Event Checking.    
                 self.InputHandler.inputCheck(event)
                 
@@ -61,4 +76,5 @@ class LevelUI:
 
                     if self.Pause.isClicked(event.pos):
                         self.LG.levelStatus()
+                        self.LG.timer.pauseTimer()
                         self.MenuHandler.enableMenu("LevelPause")
