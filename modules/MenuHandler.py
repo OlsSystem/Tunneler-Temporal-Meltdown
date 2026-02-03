@@ -95,7 +95,7 @@ class MenuHandler():
         # checks if the menus found in the menu dictionary
         if self.menuDictionary[menuId]:
             
-            if self.currentMenu is not None and self.currentMenu in self.ignoredPreviousMenus:
+            if self.currentMenu is not None and self.currentMenu not in self.ignoredPreviousMenus:
                 self.previousMenu.append(self.currentMenu)
 
             if menuId == "DeadScreen":
@@ -103,7 +103,7 @@ class MenuHandler():
 
             self.menuDictionary[menuId].enableUi() # enables menu selected
             self.currentMenu = menuId # sets id of the current menu
-        
+                    
     # drawing on the curernt menu based on self.CurrentMenu.
     def drawCurrentMenu(self):
         self.menuDictionary[self.currentMenu].drawCurrentMenu() # draws selected menu
