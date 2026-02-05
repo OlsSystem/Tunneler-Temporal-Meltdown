@@ -45,10 +45,14 @@ class TrackHands():
         self.LG = None
         self.handLocation = "Unknown"
         self.menuTracked = False
+        self.foundCamera = False
         self.x, self.y = 100, 100
 
     def setLevelGen(self, LG):
         self.LG = LG
+        
+    def checkCamera(self):
+        return self.foundCamera    
     
     def start(self):
         self.camera = cv2.VideoCapture(0) # Used to fetch the camera feed.
@@ -155,10 +159,10 @@ class TrackHands():
             indexLandmark = None
             thumbLandmark = None
             self.circle = None
-            foundCamera, self.cameraImage = self.camera.read() # Reading the image of the camera
+            self.foundCamera, self.cameraImage = self.camera.read() # Reading the image of the camera
             self.cameraImage = cv2.flip(self.cameraImage, 1) # Flips the video image so that you move the hand in the same direction on the camera as you are in real life.
 
-            if not foundCamera: # Checks if the camera is found if not itll stop the function.
+            if not self.foundCamera: # Checks if the camera is found if not itll stop the function.
                 print('Camera not found.. Exiting.')
                 self.cameraUiEnabled = False
                 return "Couldn't use camera feed." # Returns it couldnt find the camera.

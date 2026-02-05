@@ -1,6 +1,7 @@
 # ---- Python Modules ---- #
 import pygame
 from threading import Thread
+import time
 
 # ---- Menu Files ---- #
 from modules.menus.mainMenu import MainMenu
@@ -49,7 +50,7 @@ class MenuHandler():
             "DeadScreen": self.deadScreen,
         }
         
-        self.ignoredPreviousMenus = ["LevelUI", "LevelPause", "DeadScreen"]
+        self.ignoredPreviousMenus = ["LevelUI", "LevelPause", "DeadScreen", "LoadingScreen"]
         
         self.menuDictionary[self.currentMenu].enableUi()
 
@@ -72,14 +73,24 @@ class MenuHandler():
         if hasLoaded:
             self.enableMenu("LevelUI")
             print('reloaded level')
-
+    
     def enableLevel(self, chapterId, levelId):
+        self.enableMenu("LoadingScreen")
+        Thread(target=self.startLevel(chapterId,levelId)).start()
+
+    def startLevel(self, chapterId, levelId):
         # enable the level UI
         # enable level gen
         # enable player n stuff
         # pause ability etc
         hasLoaded = self.LG.loadLevel(chapterId, levelId)
-        if hasLoaded:
+        
+        while self.HT.checkCamera() == False:
+            self.HT.checkCamera()
+            if self.HT.checkCamera() == True:
+                break
+        
+        if hasLoaded and self.HT.checkCamera() == True:
             self.enableMenu("LevelUI")               
             print('enable level')
         

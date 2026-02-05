@@ -36,7 +36,6 @@ class LevelGenerator():
         self.HT = handTracking
         
         self.timer = LevelTimer(self.screen, self, 400, 50)
-
         
         self.loadAssets() # Loads all assets to be used in levels.
 

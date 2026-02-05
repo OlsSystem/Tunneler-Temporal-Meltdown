@@ -63,6 +63,8 @@ while isRunning: # While isRunning is set to true
     HT.menuTracking() # Runs update image position
     LG.generateLevel() # Runs the level drawing
     
+    
+    
     RunParticles(screen)
     
     player.movePlayer(LG.canCollide, LG.canMove, LG.inLevel) # Moves the player
