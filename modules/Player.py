@@ -24,9 +24,14 @@ class Player(pygame.sprite.Sprite):
         self.x_direction = 0
         self.y_direction = 0
         
+        self.jumpHeight = 10
+        self.yGravity = 1
+        self.yVelocity = self.jumpHeight
+        
         self.finishRect = None
         
         self.isMoving = False
+        self.isJumping = False
         self.Facing = "Right"
         
         self.speed = 1
@@ -64,6 +69,7 @@ class Player(pygame.sprite.Sprite):
                 self.screen.blit(self.animationList[0], self.rectangle.topleft) # On call draws on the idle sprite.
     
     def keyDown(self, event): # as a key is pressed the x direction is changed to signify a left or right movement.
+        print(self.isJumping)
         if event == "Left":
             self.x_direction = -2
             self.Facing = "Left"
@@ -72,6 +78,9 @@ class Player(pygame.sprite.Sprite):
             self.x_direction = 2
             self.Facing = "Right"
             self.isMoving = True # sets moving to true
+        elif event == "Jump":
+            self.isJumping = True
+            self.y_direction = 10
 
 
     def keyUp(self, event): # as a key is pressed the x direction is changed to signify a stopping motion.
@@ -105,6 +114,16 @@ class Player(pygame.sprite.Sprite):
     def movePlayer(self, canCollide=None, hasMoveables=None, isInLevel=False):
         hasCollided = False # checks for collisions
         shouldMove = True
+        
+        if self.isJumping:
+            self.y_direction -= self.yVelocity
+            self.yVelocity -= self.yGravity
+            
+            if self.yVelocity < -self.jumpHeight:
+                self.isJumping = False
+                self.y_direction = 0
+                self.yVelocity = self.jumpHeight
+        
         if canCollide: # if there are any collidable objects in the map.
             for object in canCollide: # loops through each object in the can collide list.
                 

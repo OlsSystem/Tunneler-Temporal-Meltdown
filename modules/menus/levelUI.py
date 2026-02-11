@@ -63,10 +63,11 @@ class LevelUI:
             elif self.HT.handLocation == "Top Left":
                 self.Player.keyUp("Right")
                 self.Player.keyDown("Left")
+            elif self.HT.handLocation == "Bottom Left":
+                self.Player.keyUp("Jump")
             else:
                 self.Player.keyUp("Right")
                 self.Player.keyUp("Left")
-
 
     
             for event in pygame.event.get(): # Constantly Event Checking.    
