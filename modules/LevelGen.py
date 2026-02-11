@@ -34,7 +34,6 @@ class LevelGenerator():
         self.player = None
         self.menuHandler = None
         self.HT = handTracking
-        
         self.timer = LevelTimer(self.screen, self, 400, 50)
         
         self.loadAssets() # Loads all assets to be used in levels.
@@ -63,14 +62,16 @@ class LevelGenerator():
                     itemMap.get(int(code) if code.isdigit() else code, "Unknown")
                     for code in row
                 ]) 
-                
+             
+        # loads the start and finish special rects   
         shouldContinue = self.loadStartAndFinish()
         
+        # only continues if theres a start and finish
         if not shouldContinue:
             self.menuHandler.enableMenu("LevelSelect")
             return False
 
-        self.loadMoveables()
+        self.loadMoveables() # loads any moveable objects
                 
         self.inLevel = True # sets in level to true
         self.chapterId = chapterId
@@ -82,6 +83,7 @@ class LevelGenerator():
         return True
         
     def levelStatus(self):
+        # handles turning the timer on and off and setting the level to active and inactive.
         self.inLevel = not self.inLevel
         if not self.inLevel:
             self.timer.pauseTimer()
@@ -94,18 +96,25 @@ class LevelGenerator():
         self.inLevel = False
         self.chapterId = None
         self.levelId = None
-        self.timer.pauseTimer()
-        self.HT.stop()
+        self.timer.pauseTimer() # stops the timer
+        self.HT.stop() # stops hand tracking
+        
+        # resets tunneler logic
         self.tunneler.disableTunnelShooting()
         self.tunneler.destoryTunnels()
 
     def reloadCurrentLevel(self):
+        # resets the chapter and level ids
         chapterId = self.chapterId
         levelId = self.levelId
-        self.levelEnded()
-        self.timer.resetTimer()
+        self.levelEnded() # ends the level
+        self.timer.resetTimer() # restarts the timer
+        
+        # disables movement and sets x direction to 0
         self.player.isMoving = False
         self.player.x_direction = 0
+        
+        # loads up the level again
         return self.loadLevel(chapterId, levelId)
         
     def loadAssets(self):
@@ -120,14 +129,15 @@ class LevelGenerator():
                 self.levelAssets[code] = image # adds the asset and the code into the levelAssets list
             
     def createFinishCoords(self, finishCoords):
-        if not finishCoords:
+        if not finishCoords: # if no finish coords then return 0,0,0,0
             return 0, 0, 0, 0  
 
-        left = top = float("inf")
-        right = bottom = float("-inf")
+        left = top = float("inf") # sets left and top to a positive infinity float
+        right = bottom = float("-inf") # sets right and bottom to a negative infinity float
 
+        # loops through the x and y values in the finishCoords to generate the x,y, width and height values
         for x, y in finishCoords:
-            left = min(left, x)
+            left = min(left, x) 
             top = min(top, y)
             right = max(right, x + assetSize)
             bottom = max(bottom, y + assetSize)
@@ -142,21 +152,21 @@ class LevelGenerator():
         finishCount = 0
         for y, row in enumerate(self.levelGrid): # iterates through the grid getting the row and y value
             for x, code in enumerate(row): # iterates through the rows getting a value for x
-                if code == "Spawn" and startCount == 0:
+                if code == "Spawn" and startCount == 0: # checks for a spawn and if one has already been generated
                     startX = x * assetSize
                     startY = y * assetSize   
                     startCount += 1
-                elif code == "Finish":
+                elif code == "Finish": # checks for a finish block and pushes its coords to a array
                     boxCoords = (x * assetSize, y * assetSize)
                     finishCoords.append(boxCoords)
                     finishCount += 1
                     
-            if finishCount >= 1 and startCount == 1:
+            if finishCount >= 1 and startCount == 1: # checks for a finish and start value made then creates the finish x,y,w,h rect
                 finishX,finishY,finishW,finishH = self.createFinishCoords(finishCoords)
                 break
                         
-        if startY and startX and finishX and finishY and finishW and finishH:
-            self.player.levelStarted(startX, startY, finishX, finishY, finishW, finishH)
+        if startY and startX and finishX and finishY and finishW and finishH: # makes sure all the values are there before starting the level
+            self.player.levelStarted(startX, startY, finishX, finishY, finishW, finishH) # starts the level
             return True 
         else:
             print('err')
@@ -166,7 +176,7 @@ class LevelGenerator():
         self.canMove = [] # prevent memory leaks
         for y, row in enumerate(self.levelGrid):
             for x, code in enumerate(row):
-                if code in moveableItems:
+                if code in moveableItems: # places all moveable items into an array with a rect, coordinates, and asset 
                     self.canMove.append({
                         "rect": pygame.Rect(x * assetSize, y * assetSize - 1, assetSize, assetSize),
                         "coordinates": (x * assetSize, y * assetSize - 1),
@@ -174,12 +184,12 @@ class LevelGenerator():
                     })
 
     def moveMoveable(self, moveableId):
-        coordinates = self.canMove[moveableId]["coordinates"]
-        asset = self.canMove[moveableId]["asset"]
+        coordinates = self.canMove[moveableId]["coordinates"] # fetches coordinates
+        asset = self.canMove[moveableId]["asset"] # fetches asset
 
-        new_x = coordinates[0] + moveItemBy * assetSize
+        new_x = coordinates[0] + moveItemBy * assetSize # creates new x value
 
-        self.canMove[moveableId] = {
+        self.canMove[moveableId] = { # applies x value to the correct place in the can move array
             "rect": pygame.Rect(new_x, coordinates[1], assetSize, assetSize),
             "coordinates": (new_x, coordinates[1]),
             "asset": asset,
@@ -222,4 +232,4 @@ class LevelGenerator():
 
                     if level.split(".")[0] == levelId: # checks the level .csv file is the correct by comparing ids
                         self.levelName = levelById[chapterId][levelId] # level name from the levelById map
-                        self.levelPath = levelPath # add the level path to the self
+                        self.levelPath = levelPath # add the level path to the self 

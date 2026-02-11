@@ -35,6 +35,7 @@ class SettingsMenu:
         self.MenuHandler = MenuHandler
         self.brightnessSurface = brightnessHandler
 
+        # Menu components
         self.title = TextLabel(736, 50, "Settings", 64, (255, 255, 255), screen)
 
         # volume slider
@@ -69,13 +70,15 @@ class SettingsMenu:
                 self.InputHandler.inputCheck(event)
                 self.volumeSlider.isClicked(event)
                 
+                # sets brightness as you slide it along
                 if self.brightnessSlider.isClicked(event) != False:
-                    self.brightnessSurface.set_alpha(int((100 - self.brightnessSlider.fetchValue()) * 2.55))
+                    self.brightnessSurface.set_alpha(int((100 - self.brightnessSlider.fetchValue()) * 2.55)) 
 
                 if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
                     if self.applyButton.isClicked(event.pos):
                         print('apply settings.')
-                        pygame.mixer.music.set_volume(self.volumeSlider.fetchValue() / 100)
+                        pygame.mixer.music.set_volume(self.volumeSlider.fetchValue() / 100) # sets the volume slider 
                         
+                    # to previous menu
                     if self.backButton.isClicked(event.pos):
                         self.MenuHandler.enablePreviousMenu()

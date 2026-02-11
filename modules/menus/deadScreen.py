@@ -37,6 +37,7 @@ class PlayerDiedScreen:
         self.InputHandler = InputHandler
         self.MenuHandler = MenuHandler
 
+        # Menu components
         self.title = TextLabel(736, 50, "You Died", 64, (255, 255, 255), screen)
         
         self.time = TextLabel(736, 300, self.LG.timer.getCurrentTime(), 64, (255,255,255), screen)
@@ -52,6 +53,7 @@ class PlayerDiedScreen:
     def drawCurrentMenu(self):
         if self.enabled == True:
 
+            # draw on the components
             self.title.draw()
             self.restartButton.draw()
             self.time.updateText(self.LG.timer.getCurrentTime())
@@ -63,4 +65,4 @@ class PlayerDiedScreen:
                 if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
 
                     if self.restartButton.isClicked(event.pos):
-                        self.MenuHandler.restartLevel()
+                        self.MenuHandler.restartLevel() # restarts the level when clicked

@@ -14,7 +14,7 @@ collisionItems = ["Wall"]
 # Name of all items you can move
 moveableItems = ["Box"]
 
-# Items linked to their image
+# items linked to their image
 itemImageMap = {
     "Wall": "assets/wall.png",
     "Enemy": "assets/jay.png",

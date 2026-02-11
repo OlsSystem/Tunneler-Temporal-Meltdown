@@ -34,7 +34,8 @@ class LevelUI:
         self.InputHandler = InputHandler
         self.MenuHandler = MenuHandler
         self.Player = Player
-
+        
+        # Menu components
         self.title = TextLabel(736, 50, "Level", 64, (255, 255, 255), screen)
 
         self.Pause = TextButton(800, 50, "Pause", 36, (200, 50, 50), screen)
@@ -55,14 +56,13 @@ class LevelUI:
             self.LG.timer.handleTimer()
             self.LG.timer.drawTimer()
             
+            # player movement handling
             if self.HT.handLocation == "Top Right":
                 self.Player.keyUp("Left")
                 self.Player.keyDown("Right")
-                
             elif self.HT.handLocation == "Top Left":
                 self.Player.keyUp("Right")
                 self.Player.keyDown("Left")
-            
             else:
                 self.Player.keyUp("Right")
                 self.Player.keyUp("Left")
@@ -74,6 +74,7 @@ class LevelUI:
                 
                 if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
 
+                    # pause menu logic
                     if self.Pause.isClicked(event.pos):
                         self.LG.levelStatus()
                         self.LG.timer.pauseTimer()

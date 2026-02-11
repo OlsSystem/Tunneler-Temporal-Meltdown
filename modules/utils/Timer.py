@@ -10,8 +10,6 @@ from modules.utils.TextLabel import TextLabel
 
 # -- Core Script -- #
 
-#https://www.geeksforgeeks.org/python/create-stopwatch-using-python/
-
 # For all core inputs that require checking.
 class LevelTimer:
 
@@ -45,11 +43,13 @@ class LevelTimer:
     def getCurrentTime(self):
         return self.currentTime
         
-    def getExtraZeros(self):
+    # grabs an extra zero if theres the correct amount of digits to format time to XX:XX:XX
+    def getExtraZeros(self): 
         extraMiliseconds = ""
         extraSeconds = ""
         extraMinutes = ""
         
+        # checks the length of the current time if theres only one it adds an extra zero
         if len(str(abs(self.currentMiliSeconds))) == 1: 
             extraMiliseconds = "0"
             
@@ -63,7 +63,10 @@ class LevelTimer:
         
 
     def handleTimer(self):
-        if self.timerActive:
+        if self.timerActive: # checks for active timer status
+            
+            # adds on to start the timer
+            # every 100 currentMili adds a second and every 60 currentSeconds adds a minute
             self.currentMiliSeconds += 1
             if self.currentMiliSeconds == 100:
                 self.currentMiliSeconds = 0
@@ -72,10 +75,11 @@ class LevelTimer:
                 self.currentSecond = 0
                 self.currentMinute += 1
         
-        extraZeros = self.getExtraZeros()
+        extraZeros = self.getExtraZeros() # fetches 0's
             
+        # writes out the time and adds in the extra zeros
         self.currentTime = f"{extraZeros[2]}{self.currentMinute}:{extraZeros[1]}{self.currentSecond}:{extraZeros[0]}{self.currentMiliSeconds}"
-        self.timer.updateText(self.currentTime)
+        self.timer.updateText(self.currentTime) # updates the text.
 
     def drawTimer(self):
         self.timer.draw()

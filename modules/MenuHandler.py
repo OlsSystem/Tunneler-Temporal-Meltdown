@@ -1,7 +1,6 @@
 # ---- Python Modules ---- #
 import pygame
 from threading import Thread
-import time
 
 # ---- Menu Files ---- #
 from modules.menus.mainMenu import MainMenu
@@ -12,8 +11,7 @@ from modules.menus.levelUI import LevelUI
 from modules.menus.pauseMenu import PauseLevelUI
 from modules.menus.deadScreen import PlayerDiedScreen
 
-# ---- Initialising Variables ---- # 
-
+# ---- Initialising Variables ---- #
 
 class MenuHandler():
     def __init__(self, screen, handTracking, levelGenerator, cursor, player, tunneler, clock, root, Inputs, brightnessHandler):
@@ -39,7 +37,7 @@ class MenuHandler():
         self.levelPause = PauseLevelUI(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
         self.deadScreen = PlayerDiedScreen(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
 
-        # all menus avaliable to use
+        # all menus available to use
         self.menuDictionary = {
             "Main": self.mainMenu,
             "Settings": self.settingsMenu,
@@ -50,7 +48,7 @@ class MenuHandler():
             "DeadScreen": self.deadScreen,
         }
         
-        self.ignoredPreviousMenus = ["LevelUI", "LevelPause", "DeadScreen", "LoadingScreen"]
+        self.ignoredPreviousMenus = ["LevelUI", "DeadScreen", "LoadingScreen"]
         
         self.menuDictionary[self.currentMenu].enableUi()
 
@@ -62,19 +60,20 @@ class MenuHandler():
         if not self.previousMenu:
             return
         
-        previous = self.previousMenu.pop()
+        previous = self.previousMenu.pop() # drop the previous menu just selected from the list 
         
-        self.menuDictionary[previous].enableUi()
-        self.currentMenu = previous
+        self.menuDictionary[previous].enableUi() # enables the dropped previous menu from the list
+        self.currentMenu = previous # sets current menu to the previous
 
     def restartLevel(self):
         # reload level.
-        hasLoaded = self.LG.reloadCurrentLevel()
-        if hasLoaded:
+        hasLoaded = self.LG.reloadCurrentLevel() 
+        if hasLoaded: # starts the level once its loaded.
             self.enableMenu("LevelUI")
             print('reloaded level')
     
     def enableLevel(self, chapterId, levelId):
+        # starts the level loading process as a thread to allow for extra while loops to check for the camera.
         self.enableMenu("LoadingScreen")
         Thread(target=self.startLevel(chapterId,levelId)).start()
 
@@ -90,6 +89,7 @@ class MenuHandler():
             if self.HT.checkCamera() == True:
                 break
         
+        # checks that the levels loaded and the cameras on.
         if hasLoaded and self.HT.checkCamera() == True:
             self.enableMenu("LevelUI")               
             print('enable level')
@@ -100,6 +100,11 @@ class MenuHandler():
         # disable player n stuff
         self.LG.levelEnded()
         self.enableMenu("LevelSelect")
+
+        for code in self.previousMenu:
+            if code == "LevelPause":
+                self.previousMenu.remove("LevelPause")
+                print(self.previousMenu)
     
     # menu enabling script
     def enableMenu(self, menuId):

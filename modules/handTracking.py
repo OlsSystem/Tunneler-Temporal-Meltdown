@@ -52,7 +52,7 @@ class TrackHands():
         self.LG = LG
         
     def checkCamera(self):
-        return self.foundCamera    
+        return self.foundCamera # returns if cameras active  
     
     def start(self):
         self.camera = cv2.VideoCapture(0) # Used to fetch the camera feed.
@@ -186,8 +186,8 @@ class TrackHands():
                         if id == 4 and self.menuTracked:
                             cv2.circle(self.cameraImage, (x, y), 15, (255, 0, 255), cv2.FILLED) 
                             thumbLandmark = (x,y)
-            elif not handsInView.multi_hand_landmarks and self.LG.inLevel:
-                self.setXandY(0,0)
+            elif not handsInView.multi_hand_landmarks and self.LG.inLevel: # checks if they theres no hands in view and person in level
+                self.setXandY(0,0) # sets coords to 0,0 so the hand loc is unknown to stop movement
                         
           
             if self.menuTracked:     

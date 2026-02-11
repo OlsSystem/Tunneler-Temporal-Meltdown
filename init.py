@@ -16,7 +16,7 @@ from modules.Player import Player
 from modules.handTracking import TrackHands
 from modules.MenuHandler import MenuHandler
 
-from modules.Items.Tunneler import Tunneler
+from modules.items.Tunneler import Tunneler
 
 # -- Core Variables -- #
 
@@ -35,14 +35,14 @@ clock = pygame.time.Clock()
 cursor = Cursor(100,100, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\Cursor.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\CursorSelect.png')).convert_alpha(), 0.05, screen)    
 
 # Initialises the Player Class
-player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\spritesheet.png')).convert_alpha(), 0.6, LG, HT)
+player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\spritesheet.png')).convert_alpha(), 0.6, LG)
 
 # Initialise the Tunneler Class
 tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalA.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalB.png')).convert_alpha(), player, LG)
 
 LG.setTunneler(tunneler)
 LG.setPlayer(player)
-InputHandler = KeyInputs(HT, tunneler, player, LG, True)
+InputHandler = KeyInputs(HT, tunneler, player, LG)
 
 brightnessSurface = pygame.Surface(screen.get_size())
 brightnessSurface.set_alpha(int((100 - 100) * 2.55))
@@ -62,8 +62,6 @@ while isRunning: # While isRunning is set to true
                     
     HT.menuTracking() # Runs update image position
     LG.generateLevel() # Runs the level drawing
-    
-    
     
     RunParticles(screen)
     

@@ -12,7 +12,7 @@ import pygame
 # For all core inputs that require checking.
 class KeyInputs:
     
-    def __init__(self, HT, tunneler, player, LG, isRunning):
+    def __init__(self, HT, tunneler, player, LG):
         self.HT = HT
         self.Tunneler = tunneler
         self.Player = player

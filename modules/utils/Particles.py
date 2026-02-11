@@ -55,7 +55,7 @@ class Dust:
             if i.rad <= 0:
                 self.particles.remove(i)
                 
-def RunParticles(screen):    
+def RunParticles(screen):
     for dust in dustParticles: # for all the dust particles draw and update them on the screen
         dust.draw(screen)
         dust.update()

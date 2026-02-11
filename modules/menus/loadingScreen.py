@@ -25,7 +25,7 @@ class LoadingScreen():
         self.LG = levelGenerator
         self.cursor = cursor
         self.rootDir = rootDir
-        self.menuPlayer = Player(screen, pygame.image.load(os.path.join(self.rootDir, 'assets/spritesheet.png')).convert_alpha(), 0.6, self.LG, self.HT)
+        self.menuPlayer = Player(screen, pygame.image.load(os.path.join(self.rootDir, 'assets/spritesheet.png')).convert_alpha(), 0.6, self.LG)
         self.clock = clock
         self.tunneler = tunneler
         self.InputHandler = inputHandler

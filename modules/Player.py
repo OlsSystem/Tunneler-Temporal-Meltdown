@@ -10,7 +10,7 @@ from modules.utils.Particles import Dust, dustParticles
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, screen, sheet, scale, LG, HT):
+    def __init__(self, screen, sheet, scale, LG):
         super().__init__() # allows use of the pygame Sprite class
         # Initialise variables from the imports.
         self.screen = screen
@@ -95,6 +95,7 @@ class Player(pygame.sprite.Sprite):
         particles = Dust(self.rectangle.center, tunnelColour, None, 12)
         dustParticles.append(particles)     
         
+    # starts the level by moving the player to the correct coordinates with a y ofset of 48 and sets the finish rect.
     def levelStarted(self, startX, startY, finishX, finishY, finishW, finishH):
         self.movePlayerToCoordinates(startX, startY)
         
@@ -114,9 +115,9 @@ class Player(pygame.sprite.Sprite):
                 if object.collidepoint(self.rectangle.topright) and self.x_direction == -2:
                     break
                 
-                if self.finishRect.collidepoint(self.rectangle.topright):
+                if self.finishRect.collidepoint(self.rectangle.topright): # checks if the player has collided with the finish area
                     hasCollided = False
-                    self.MenuHandler.enableMenu("DeadScreen")
+                    self.MenuHandler.enableMenu("DeadScreen") # sets a "win screen"
                     break
                     
                 # if they have collided with the wall then stop movement
@@ -130,16 +131,18 @@ class Player(pygame.sprite.Sprite):
                     break
 
 
-        if hasMoveables:
+        if hasMoveables: # if theres moveables
             collidedWithWall = False
-            for i, data in enumerate(hasMoveables):
-                if self.rectangle.colliderect(data["rect"]):
+            for i, data in enumerate(hasMoveables): # loops through all the moveab;es
+                if self.rectangle.colliderect(data["rect"]): # checks if the player has collided with a rect of the moveable.
 
+                    # gets the x and y of the player
                     dx = self.speed * self.x_direction
                     dy = self.speed * self.y_direction
 
-                    if canCollide:
+                    if canCollide: # checks if theres collidables
                         for object in canCollide:
+                            # loops through each collideable checking if the players touching it and moveing. if moving in the opposite way it ignores
                             if object.collidepoint(data["rect"].topleft) and self.x_direction == 2:
                                 shouldMove = False
                                 break
@@ -148,15 +151,18 @@ class Player(pygame.sprite.Sprite):
                                 shouldMove = False
                                 break
 
+                            # if box isnt moving and collided the player has collided
                             if object.collidepoint(data["rect"].topleft):
                                 collidedWithWall = True
 
                             if object.collidepoint(data["rect"].bottomright):
                                 collidedWithWall = True
 
-                            if collidedWithWall:
-                                hasCollided = True
-                                shouldMove = False
+                            if collidedWithWall: # checks if box collided with the wall
+                                hasCollided = True # sets collided to true doesnt allow player to move and box
+                                shouldMove = False # sets should move to false to not move the box
+                                
+                                # resets the x and y
                                 if self.x_direction != 0:
                                     self.x_direction = 0
                                 if self.y_direction != 0:

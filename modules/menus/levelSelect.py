@@ -34,6 +34,7 @@ class LevelSelect:
         self.InputHandler = InputHandler
         self.MenuHandler = MenuHandler
 
+        # Menu components
         self.title = TextLabel(736, 50, "Select a Level", 64, (255, 255, 255), screen)
         
         self.testLevelButton = TextButton(736, 200, "Level 1", 36, (200, 50, 50), screen)
@@ -61,5 +62,6 @@ class LevelSelect:
                     if self.backButton.isClicked(event.pos):
                         self.MenuHandler.enablePreviousMenu()
                         
+                    # listeners for each of the level buttons
                     if self.testLevelButton.isClicked(event.pos):
                         self.MenuHandler.enableLevel("CH1", "LV2")
