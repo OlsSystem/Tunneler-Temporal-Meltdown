@@ -64,7 +64,7 @@ class LevelUI:
                 self.Player.keyUp("Right")
                 self.Player.keyDown("Left")
             elif self.HT.handLocation == "Bottom Left":
-                self.Player.keyUp("Jump")
+                self.Player.keyDown("Jump")
             else:
                 self.Player.keyUp("Right")
                 self.Player.keyUp("Left")
