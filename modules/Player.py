@@ -122,28 +122,29 @@ class Player(pygame.sprite.Sprite):
     
     def movePlayer(self, canCollide=None, hasMoveables=None, isInLevel=False):
         hasCollided = False # checks for collisions
-        isJumping = False
+        shouldJump = False
         shouldMove = True
         jumpForce = (1/2) * self.mass * (self.yVelocity**2)
 
         if self.isJumping and not self.jumpOnCooldown:
-            isJumping = True
+            shouldJump = True
             self.yVelocity -= 0.4
             
             if self.yVelocity < 0:
                 self.mass = -1
                 
-            print(-(self.jumpHeight + 1))
+            print(-(self.jumpHeight))
 
-            if self.yVelocity == -(self.jumpHeight + 1):
-                print(-(self.jumpHeight + 1))
+            if self.yVelocity <= -(self.jumpHeight - 1):
+                print(-(self.jumpHeight), "setting stuff back")
                 self.isJumping = False
+                shouldJump = False
                 Thread(target=self.jumpCooldown).start()
 
                 self.yVelocity = self.jumpHeight
                 self.mass = self.playerWeight
 
-                self.rectangle.y = self.y + 48
+                self.rectangle.y = self.y
         
         if canCollide: # if there are any collidable objects in the map.
             for object in canCollide: # loops through each object in the can collide list.
@@ -216,7 +217,7 @@ class Player(pygame.sprite.Sprite):
 
         if not hasCollided: # if there's no collisions start to move the players x and y values
             self.rectangle.x += self.speed * self.x_direction
-            if isJumping and not self.jumpOnCooldown:
+            if shouldJump and not self.jumpOnCooldown:
                 self.rectangle.y -= jumpForce
             
         self.draw(isInLevel) # draw the sprite in the new location
