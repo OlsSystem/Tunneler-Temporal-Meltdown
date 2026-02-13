@@ -7,6 +7,8 @@ from modules.utils.LevelDictionary import levelById
 from modules.utils.ItemMapping import itemMap, itemImageMap, collisionItems, moveableItems
 from modules.utils.Timer import LevelTimer
 
+from modules.gameObjects.button import GameButton
+
 # ---- Misc Variables ---- #
 
 assetSize = 64
@@ -29,6 +31,7 @@ class LevelGenerator():
         self.levelGrid = [] # Creates the level into a grid
         self.levelAssets = {} # Adds all assets that are defined in itemImageMap to a loaded state
         self.canCollide = [] # Lists all items that can be collided with
+        self.interactables = []
         self.canMove = []
         self.tunneler = None
         self.player = None
@@ -215,10 +218,20 @@ class LevelGenerator():
                             self.canCollide.append(collisionBox) # adds collision box to a list
                             #pygame.draw.rect(self.screen, (200,200,200), collisionBox) # test draw for collision boxes
                             self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize)) # draws assets
+                        elif code in moveableItems:
+                            continue
+                        else:
+                            if code == "Button":
+                                # init a new class. push to an array to be used in the player contorler
+                                # dont draw the button but draw the collideables
+                                # push into interactables array
+                                print('button')
+                                
+                            self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize)) # draws assets
 
-                        for id, data in enumerate(self.canMove):
-                            #self.screen.blit(data["asset"], data["coordinates"])  # draws assets
-                            pygame.draw.rect(self.screen, (200,200,200), data["rect"]) # test draw for collision boxes
+                for id, data in enumerate(self.canMove):
+                    #self.screen.blit(data["asset"], data["coordinates"])  # draws assets
+                    pygame.draw.rect(self.screen, (200,200,200), data["rect"]) # test draw for collision boxes
 
 
         # disable loading screen and enable game.

@@ -4,6 +4,7 @@ itemMap = {
     1: "Wall",
     2: "Enemy",
     3: "Box",
+    4: "Button",
     "S": "Spawn",
     "F": "Finish"
 }
@@ -19,4 +20,5 @@ itemImageMap = {
     "Wall": "assets/wall.png",
     "Enemy": "assets/jay.png",
     "Box": "assets/portalA.png",
+    "Button": "assets/button.png"
 }
