@@ -1,5 +1,7 @@
 # ---- Python Modules ---- #
 import pygame
+import time
+from threading import Thread
 
 from modules.utils.Spritesheet import SpriteSheet
 from modules.utils.Particles import Dust, dustParticles
@@ -24,9 +26,12 @@ class Player(pygame.sprite.Sprite):
         self.x_direction = 0
         self.y_direction = 0
         
-        self.jumpHeight = 10
         self.yGravity = 1
+        self.jumpHeight = 7
+        self.playerWeight = 1
+        self.jumpOnCooldown = False
         self.yVelocity = self.jumpHeight
+        self.mass = self.playerWeight
         
         self.finishRect = None
         
@@ -80,7 +85,6 @@ class Player(pygame.sprite.Sprite):
             self.isMoving = True # sets moving to true
         elif event == "Jump":
             self.isJumping = True
-            self.y_direction = 10
 
 
     def keyUp(self, event): # as a key is pressed the x direction is changed to signify a stopping motion.
@@ -89,11 +93,12 @@ class Player(pygame.sprite.Sprite):
             self.isMoving = False # sets moving to false as they aren holding the move key down no more
         elif event == "Right":
             self.x_direction = 0
-            self.isMoving = False # sets moving to false as they aren holding the move key down no more      
+            self.isMoving = False # sets moving to false as they aren holding the move key down no more 
             
     def movePlayerToCoordinates(self, x, y):
         self.rectangle.x = x
         self.rectangle.y = y - 48
+        self.y = y - 48
 
     def tunnelPlayer(self, x, y, tunnelColour):
         # moves the player to where the tunnel is.
@@ -110,19 +115,35 @@ class Player(pygame.sprite.Sprite):
         
         self.finishRect = pygame.Rect(finishX, finishY, finishW, finishH)
 
-
+    def jumpCooldown(self):
+        self.jumpOnCooldown = True
+        time.sleep(1)
+        self.jumpOnCooldown = False
+    
     def movePlayer(self, canCollide=None, hasMoveables=None, isInLevel=False):
         hasCollided = False # checks for collisions
+        isJumping = False
         shouldMove = True
-        
-        if self.isJumping:
-            self.y_direction -= self.yVelocity
-            self.yVelocity -= self.yGravity
+        jumpForce = (1/2) * self.mass * (self.yVelocity**2)
+
+        if self.isJumping and not self.jumpOnCooldown:
+            isJumping = True
+            self.yVelocity -= 0.4
             
-            if self.yVelocity < -self.jumpHeight:
+            if self.yVelocity < 0:
+                self.mass = -1
+                
+            print(-(self.jumpHeight + 1))
+
+            if self.yVelocity == -(self.jumpHeight + 1):
+                print(-(self.jumpHeight + 1))
                 self.isJumping = False
-                self.y_direction = 0
+                Thread(target=self.jumpCooldown).start()
+
                 self.yVelocity = self.jumpHeight
+                self.mass = self.playerWeight
+
+                self.rectangle.y = self.y + 48
         
         if canCollide: # if there are any collidable objects in the map.
             for object in canCollide: # loops through each object in the can collide list.
@@ -195,8 +216,8 @@ class Player(pygame.sprite.Sprite):
 
         if not hasCollided: # if there's no collisions start to move the players x and y values
             self.rectangle.x += self.speed * self.x_direction
-            self.rectangle.y += self.speed * self.y_direction
-
+            if isJumping and not self.jumpOnCooldown:
+                self.rectangle.y -= jumpForce
             
         self.draw(isInLevel) # draw the sprite in the new location
     

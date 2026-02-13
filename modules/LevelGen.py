@@ -112,6 +112,7 @@ class LevelGenerator():
         
         # disables movement and sets x direction to 0
         self.player.isMoving = False
+        self.player.isJumping = False
         self.player.x_direction = 0
         
         # loads up the level again
