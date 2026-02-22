@@ -222,10 +222,8 @@ class LevelGenerator():
                             continue
                         else:
                             if code == "Button":
-                                # init a new class. push to an array to be used in the player contorler
-                                # dont draw the button but draw the collideables
-                                # push into interactables array
-                                print('button')
+                                button = GameButton(pygame.Rect(x * assetSize, y * assetSize, assetSize, 16), 16, pygame.Rect(x * assetSize, y * 16, assetSize, 16))
+                                self.interactables.append(button)
                                 
                             self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize)) # draws assets
 

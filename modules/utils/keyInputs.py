@@ -32,7 +32,13 @@ class KeyInputs:
         if event.type == pygame.KEYDOWN: # when a key is pressed
             
             if self.LG.inLevel:
-                self.Player.keyDown(event)
+                print('key down')
+                if event.key == pygame.K_LEFT:
+                    self.Player.keyDown("Left")
+                elif event.key == pygame.K_RIGHT:
+                    self.Player.keyDown("Right")
+                elif event.key == pygame.K_SPACE:
+                    self.Player.keyDown("Jump")
             
                 if event.key == pygame.K_j:
                     self.Tunneler.shootTunnel("A", self.LG.canCollide)
@@ -41,4 +47,9 @@ class KeyInputs:
             
         elif event.type == pygame.KEYUP: # when a key is released
             if self.LG.inLevel:
-                self.Player.keyUp(event)
+                if event.key == pygame.K_LEFT:
+                    self.Player.keyUp("Left")
+                elif event.key == pygame.K_RIGHT:
+                    self.Player.keyUp("Right")
+                elif event.key == pygame.K_SPACE:
+                    self.Player.keyUp("Jump")

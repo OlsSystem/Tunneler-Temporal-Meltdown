@@ -74,7 +74,6 @@ class Player(pygame.sprite.Sprite):
                 self.screen.blit(self.animationList[0], self.rectangle.topleft) # On call draws on the idle sprite.
     
     def keyDown(self, event): # as a key is pressed the x direction is changed to signify a left or right movement.
-        print(self.isJumping)
         if event == "Left":
             self.x_direction = -2
             self.Facing = "Left"
@@ -119,6 +118,16 @@ class Player(pygame.sprite.Sprite):
         self.jumpOnCooldown = True
         time.sleep(1)
         self.jumpOnCooldown = False
+
+    def checkIfCollidingInteractable(self, objectToCheck): 
+        for interactable in self.LG.interactables:
+            if interactable.buttonMain.colliderect(objectToCheck):
+                interactable.isPressed = True
+                print('been clicked')
+                return True
+            
+        interactable.isPressed = False
+        return False
     
     def movePlayer(self, canCollide=None, hasMoveables=None, isInLevel=False):
         hasCollided = False # checks for collisions
@@ -136,7 +145,6 @@ class Player(pygame.sprite.Sprite):
             print(-(self.jumpHeight))
 
             if self.yVelocity <= -(self.jumpHeight - 1):
-                print(-(self.jumpHeight), "setting stuff back")
                 self.isJumping = False
                 shouldJump = False
                 Thread(target=self.jumpCooldown).start()
@@ -148,6 +156,9 @@ class Player(pygame.sprite.Sprite):
         
         if canCollide: # if there are any collidable objects in the map.
             for object in canCollide: # loops through each object in the can collide list.
+
+                self.checkIfCollidingInteractable(self.rectangle)
+                self.checkIfCollidingInteractable(self.rectangle)
                 
                 # Checks if they are colliding and are trying to move in the opposite direction of the wall.
                 if object.collidepoint(self.rectangle.topleft) and self.x_direction == 2:
@@ -183,6 +194,10 @@ class Player(pygame.sprite.Sprite):
 
                     if canCollide: # checks if theres collidables
                         for object in canCollide:
+                            
+                            self.checkIfCollidingInteractable(data["rect"])
+                            self.checkIfCollidingInteractable(data["rect"])
+                            
                             # loops through each collideable checking if the players touching it and moveing. if moving in the opposite way it ignores
                             if object.collidepoint(data["rect"].topleft) and self.x_direction == 2:
                                 shouldMove = False
