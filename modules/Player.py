@@ -120,22 +120,32 @@ class Player(pygame.sprite.Sprite):
         self.jumpOnCooldown = False
 
     def checkIfCollidingInteractable(self, objectToCheck): 
+        collided = False
         for interactable in self.LG.interactables: # check all interactables
             if interactable.buttonMain.colliderect(objectToCheck): # if the object passing through is colliding with the interactable fire that its been clicked.
                 # set is pressed to true
-                interactable.isPressed = True 
-                return True
-            
-            # set is pressed to false
-            interactable.isPressed = False
-            return False
+                collided = True
+                            
+        # set is pressed to collided
+        interactable.isPressed = collided
+        return collided
     
     def movePlayer(self, canCollide=None, hasMoveables=None, isInLevel=False):
+        
+        if not isInLevel: return
+        
         hasCollided = False # checks for collisions
         shouldJump = False
         shouldMove = True
         jumpForce = (1/2) * self.mass * (self.yVelocity**2)
-
+            
+        isInteracting = False    
+        for obj in hasMoveables:
+            isInteracting = self.checkIfCollidingInteractable(obj["rect"])
+          
+        if not isInteracting:  
+            self.checkIfCollidingInteractable(self.rectangle)
+            
         if self.isJumping and not self.jumpOnCooldown:
             shouldJump = True
             self.yVelocity -= 0.4
@@ -143,8 +153,6 @@ class Player(pygame.sprite.Sprite):
             if self.yVelocity < 0:
                 self.mass = -1
                 
-            print(-(self.jumpHeight))
-
             if self.yVelocity <= -(self.jumpHeight - 1):
                 self.isJumping = False
                 shouldJump = False
@@ -157,9 +165,6 @@ class Player(pygame.sprite.Sprite):
         
         if canCollide: # if there are any collidable objects in the map.
             for object in canCollide: # loops through each object in the can collide list.
-
-                self.checkIfCollidingInteractable(self.rectangle)
-                self.checkIfCollidingInteractable(self.rectangle)
                 
                 # Checks if they are colliding and are trying to move in the opposite direction of the wall.
                 if object.collidepoint(self.rectangle.topleft) and self.x_direction == 2:
@@ -195,10 +200,7 @@ class Player(pygame.sprite.Sprite):
 
                     if canCollide: # checks if theres collidables
                         for object in canCollide:
-                            
-                            self.checkIfCollidingInteractable(data["rect"])
-                            self.checkIfCollidingInteractable(data["rect"])
-                            
+                                                    
                             # loops through each collideable checking if the players touching it and moveing. if moving in the opposite way it ignores
                             if object.collidepoint(data["rect"].topleft) and self.x_direction == 2:
                                 shouldMove = False

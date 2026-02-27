@@ -14,7 +14,6 @@ from modules.gameObjects.door import Door
 
 assetSize = 64
 moveItemBy = 0.3
-stringCodes = ["S", "F"]
 
 # ---- Initialising Variables ---- # 
 
@@ -115,6 +114,9 @@ class LevelGenerator():
     def levelEnded(self): # resets all values to zero ready for the next level
         self.levelGrid = []
         self.canCollide = []
+        self.interactables = []
+        self.wildCards = []
+        self.canMove = []
         self.inLevel = False
         self.chapterId = None
         self.levelId = None

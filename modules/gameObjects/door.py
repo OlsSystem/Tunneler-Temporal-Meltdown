@@ -21,10 +21,7 @@ class Door():
         self.x = x
         self.y = y
         
-        self.linkedButton = linkedButton
-        
-        print('door made')
-        
+        self.linkedButton = linkedButton        
         
     def draw(self):
         if not self.linkedButton.beenPressed():

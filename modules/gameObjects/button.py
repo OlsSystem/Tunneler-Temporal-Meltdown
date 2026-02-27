@@ -24,9 +24,7 @@ class GameButton():
         self.levelAsset = asset
         self.x = x
         self.y = y
-        
-        print('button made')
-        
+                
         
     def getId(self):
         return self.id
