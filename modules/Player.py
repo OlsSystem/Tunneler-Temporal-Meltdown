@@ -126,9 +126,9 @@ class Player(pygame.sprite.Sprite):
                 interactable.isPressed = True 
                 return True
             
-        # set is pressed to false
-        interactable.isPressed = False
-        return False
+            # set is pressed to false
+            interactable.isPressed = False
+            return False
     
     def movePlayer(self, canCollide=None, hasMoveables=None, isInLevel=False):
         hasCollided = False # checks for collisions

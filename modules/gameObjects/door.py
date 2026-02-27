@@ -11,10 +11,11 @@ assetSize = 64
 
 
 class Door():
-    def __init__(self, x, y, linkedButton, screen):
+    def __init__(self, x, y, linkedButton, screen, rootdir):
         
+        self.rootDir = rootdir
         self.screen = screen
-        self.doorAsset = pygame.image.load(os.path.normpath(os.path.join(self.rootDir, f'../{itemImageMap["Door"]}'))).convert_alpha() # loads the image ready to be used
+        self.doorAsset = pygame.image.load(os.path.normpath(os.path.join(self.rootDir, f'../{itemImageMap["Door*"]}'))).convert_alpha() # loads the image ready to be used
         self.doorRect = pygame.Rect(x * assetSize, y * assetSize - 1, assetSize, assetSize)
         
         self.x = x
@@ -22,7 +23,9 @@ class Door():
         
         self.linkedButton = linkedButton
         
+        print('door made')
         
-    def drawOnDoor(self):
+        
+    def draw(self):
         if not self.linkedButton.beenPressed():
             self.screen.blit(self.doorAsset, (self.x * assetSize, self.y * assetSize)) # draws assets

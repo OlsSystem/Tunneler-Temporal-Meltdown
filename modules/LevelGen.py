@@ -8,6 +8,7 @@ from modules.utils.ItemMapping import itemMap, itemImageMap, collisionItems, mov
 from modules.utils.Timer import LevelTimer
 
 from modules.gameObjects.button import GameButton
+from modules.gameObjects.door import Door
 
 # ---- Misc Variables ---- #
 
@@ -32,6 +33,7 @@ class LevelGenerator():
         self.levelAssets = {} # Adds all assets that are defined in itemImageMap to a loaded state
         self.canCollide = [] # Lists all items that can be collided with
         self.interactables = []
+        self.wildCards = []
         self.canMove = []
         self.tunneler = None
         self.player = None
@@ -51,6 +53,21 @@ class LevelGenerator():
     def setMenuHandler(self, MH):
         self.menuHandler = MH
         
+    def fetchCode(self, code):
+        if code.isdigit():
+            return itemMap.get(int(code), "Unknown")
+
+        if code in itemMap:
+            return itemMap[code]
+
+        for key in itemMap:
+            if isinstance(key, str) and key.endswith("*"):
+                prefix = key[:-1]  # remove the *
+                if code.startswith(prefix):
+                    return itemMap[key] + code[len(prefix):]
+
+        return "Unknown"
+        
     def loadLevel(self, chapterId, levelId):
         if self.inLevel: # if the users in the level the end the level
             self.levelEnded()
@@ -60,9 +77,10 @@ class LevelGenerator():
         with open(self.levelPath, newline="") as lvl: # opens the csv file of the level requested.
             levelReader = csv.reader(lvl) # changes the csv file into a readable list you can iterate through
             for row in levelReader:
-                # needs to allow strings too. <3
+                # needs to allow strings too. 
+                # needs re writing to all for interaction with the wild cards
                 self.levelGrid.append([
-                    itemMap.get(int(code) if code.isdigit() else code, "Unknown")
+                    self.fetchCode(code)
                     for code in row
                 ]) 
              
@@ -75,7 +93,8 @@ class LevelGenerator():
             return False
 
         self.loadMoveables() # loads any moveable objects
-                
+        self.loadWildCards() # loads any wild card function
+        
         self.inLevel = True # sets in level to true
         self.chapterId = chapterId
         self.levelId = levelId
@@ -180,8 +199,22 @@ class LevelGenerator():
         self.wildCards = [] # prevent memory leaks
         for y, row in enumerate(self.levelGrid):
             for x, code in enumerate(row):
+                if code == None:
+                    continue
+                
                 if "*" in code: # finds the wildcards
-                      
+                    wildcardSplit = code.split("*")
+                    if "Door" in code:
+                        for interactable in self.interactables:
+                            if interactable.getId() == wildcardSplit[1]:
+                                door = Door(x,y, interactable, self.screen, self.rootDir)
+                                self.wildCards.append(door)
+                                break
+                            
+                    if "Button" in code:
+                        button = GameButton(self.screen, pygame.Rect(x * assetSize, y * assetSize, assetSize, 16), 16, pygame.Rect(x * assetSize, y * 16, assetSize, 16), wildcardSplit[1], self.levelAssets["Button*"], x, y)
+                        self.interactables.append(button)
+
 
     def loadMoveables(self):
         self.canMove = [] # prevent memory leaks
@@ -210,16 +243,22 @@ class LevelGenerator():
         self.canCollide = [] # not having this causes a memory leak
         if self.inLevel: # check that the users in a level before attempting to draw
             for y, row in enumerate(self.levelGrid): # iterates through the grid getting the row and y value
-                for x, code in enumerate(row): # iterates through the rows getting a value for x
+                for x, rawCode in enumerate(row): # iterates through the rows getting a value for x
+                    if rawCode == None:
+                        continue
+                        
+                    splitCode = rawCode.split("*")
+                    code = splitCode[0]
+                    
+                    if len(splitCode) > 1:
+                        continue
+                    
                     if code == "Spawn" or code == "Finish":
                         # invis boxes.
                         # start checks if person walks on F 
                         # move player to S levelStarted
                         continue
                     else:
-                        if code == None:
-                            continue
-
                         if code in collisionItems: # checks if the item has collisions
                             collisionBox = pygame.Rect(x * assetSize, y * assetSize, assetSize, assetSize) # creates a collision box around it
                             self.canCollide.append(collisionBox) # adds collision box to a list
@@ -227,16 +266,18 @@ class LevelGenerator():
                             self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize)) # draws assets
                         elif code in moveableItems:
                             continue
-                        else:
-                            if code == "Button":
-                                button = GameButton(pygame.Rect(x * assetSize, y * assetSize, assetSize, 16), 16, pygame.Rect(x * assetSize, y * 16, assetSize, 16))
-                                self.interactables.append(button)
-                                
+                        else:   
                             self.screen.blit(self.levelAssets[code], (x * assetSize, y * assetSize)) # draws assets
 
                 for id, data in enumerate(self.canMove):
                     #self.screen.blit(data["asset"], data["coordinates"])  # draws assets
                     pygame.draw.rect(self.screen, (200,200,200), data["rect"]) # test draw for collision boxes
+                    
+                for wildcard in self.wildCards:
+                    wildcard.draw()
+                    
+                for interactable in self.interactables:
+                    interactable.draw()
 
 
         # disable loading screen and enable game.
