@@ -120,12 +120,13 @@ class Player(pygame.sprite.Sprite):
         self.jumpOnCooldown = False
 
     def checkIfCollidingInteractable(self, objectToCheck): 
-        for interactable in self.LG.interactables:
-            if interactable.buttonMain.colliderect(objectToCheck):
-                interactable.isPressed = True
-                print('been clicked')
+        for interactable in self.LG.interactables: # check all interactables
+            if interactable.buttonMain.colliderect(objectToCheck): # if the object passing through is colliding with the interactable fire that its been clicked.
+                # set is pressed to true
+                interactable.isPressed = True 
                 return True
             
+        # set is pressed to false
         interactable.isPressed = False
         return False
     
