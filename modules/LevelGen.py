@@ -174,7 +174,14 @@ class LevelGenerator():
             return True 
         else:
             print('err')
-            return False       
+            return False    
+        
+    def loadWildCards(self): # used to link interactables together. ie doors n buttons
+        self.wildCards = [] # prevent memory leaks
+        for y, row in enumerate(self.levelGrid):
+            for x, code in enumerate(row):
+                if "*" in code: # finds the wildcards
+                      
 
     def loadMoveables(self):
         self.canMove = [] # prevent memory leaks
