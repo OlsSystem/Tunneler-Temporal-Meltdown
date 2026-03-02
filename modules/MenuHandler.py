@@ -92,7 +92,6 @@ class MenuHandler():
         # checks that the levels loaded and the cameras on.
         if hasLoaded and self.HT.checkCamera() == True:
             self.enableMenu("LevelUI")               
-            print('enable level')
         
     def disableLevel(self):
         # disable the level ui
@@ -104,7 +103,6 @@ class MenuHandler():
         for code in self.previousMenu:
             if code == "LevelPause":
                 self.previousMenu.remove("LevelPause")
-                print(self.previousMenu)
     
     # menu enabling script
     def enableMenu(self, menuId):
