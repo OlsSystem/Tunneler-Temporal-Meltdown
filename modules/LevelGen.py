@@ -206,31 +206,35 @@ class LevelGenerator():
                 
                 if "*" in code: # finds the wildcards
                     wildcardSplit = code.split("*")
-                    if "Door" in code:
-                        interactableFound = False
-                        for interactable in self.interactables:
-                            if interactable.getId() == wildcardSplit[1]:
-                                door = Door(x,y, interactable, self.screen, self.rootDir)
-                                self.wildCards.append(door)
-                                interactableFound = True
+                    
+                    if "&" in code:
+                        print('multi')
+                    else:
+                        if "Door" in code:
+                            interactableFound = False
+                            for interactable in self.interactables:
+                                if interactable.getId() == wildcardSplit[1]:
+                                    door = Door(x,y, interactable, self.screen, self.rootDir, False)
+                                    self.wildCards.append(door)
+                                    interactableFound = True
                                 
-                        if not interactableFound:
-                            button = GameButton(self.screen, None, None, None, wildcardSplit[1], self.levelAssets["Button"], None, None)
-                            door = Door(x,y, button, self.screen, self.rootDir)
-                            self.wildCards.append(door)
-                            self.interactables.append(button)
+                            if not interactableFound:
+                                button = GameButton(self.screen, None, None, None, wildcardSplit[1], self.levelAssets["Button"], None, None)
+                                door = Door(x,y, button, self.screen, self.rootDir, False)
+                                self.wildCards.append(door)
+                                self.interactables.append(button)
                             
-                    if "Button" in code:
-                        buttonFound = False
-                        for interactable in self.interactables:
-                            if interactable.getId() == wildcardSplit[1]:
-                                interactable.setRect(pygame.Rect(x * assetSize, y * assetSize, assetSize, 16))
-                                interactable.setCoords(x, y, 16)
-                                buttonFound = True
+                        if "Button" in code:
+                            buttonFound = False
+                            for interactable in self.interactables:
+                                if interactable.getId() == wildcardSplit[1]:
+                                    interactable.setRect(pygame.Rect(x * assetSize, y * assetSize, assetSize, 16))
+                                    interactable.setCoords(x, y, 16)
+                                    buttonFound = True
                         
-                        if not buttonFound:
-                            button = GameButton(self.screen, pygame.Rect(x * assetSize, y * assetSize, assetSize, 16), 16, pygame.Rect(x * assetSize, y * 16, assetSize, 16), wildcardSplit[1], self.levelAssets["Button"], x, y)
-                            self.interactables.append(button)
+                            if not buttonFound:
+                                button = GameButton(self.screen, pygame.Rect(x * assetSize, y * assetSize, assetSize, 16), 16, pygame.Rect(x * assetSize, y * 16, assetSize, 16), wildcardSplit[1], self.levelAssets["Button"], x, y)
+                                self.interactables.append(button)
 
 
     def loadMoveables(self):
