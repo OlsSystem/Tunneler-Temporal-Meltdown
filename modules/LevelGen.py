@@ -208,7 +208,20 @@ class LevelGenerator():
                     wildcardSplit = code.split("*")
                     
                     if "&" in code:
-                        print('multi')
+                        interactables = []
+                        for id in wildcardSplit:
+                            interactableFound = False
+                            for interactable in self.interactables:
+                                if interactable.getId() == id:
+                                    interactables.append(interactable)
+                                    
+                            if not interactableFound:
+                                button = GameButton(self.screen, None, None, None, id, self.levelAssets["Button"], None, None)
+                                interactables.append(button)
+                        
+                        if "Door" in code:
+                            door = Door(x, y, interactables, self.screen, self.rootDir, True)
+                            self.wildCards.append(door)   
                     else:
                         if "Door" in code:
                             interactableFound = False

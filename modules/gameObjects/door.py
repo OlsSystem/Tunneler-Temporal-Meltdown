@@ -23,6 +23,10 @@ class Door():
         
         self.linkedButton = linkedButton    
         self.multiButton = multiButton
+        
+        print(self.linkedButton)
+        print("door here")
+        
                 
     def draw(self):
         if self.multiButton:
@@ -31,7 +35,7 @@ class Door():
                 if not button.beenPressed():
                     allPressed = False
             
-            if allPressed:
+            if not allPressed:
                 self.screen.blit(self.doorAsset, (self.x * assetSize, self.y * assetSize)) # draws assets
         else:
             if not self.linkedButton.beenPressed():
