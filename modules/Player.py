@@ -118,20 +118,21 @@ class Player(pygame.sprite.Sprite):
         self.jumpOnCooldown = True
         time.sleep(1)
         self.jumpOnCooldown = False
-
-    def checkIfCollidingInteractable(self, objectToCheck): 
+    
+    def checkIfCollidingInteractable(self, objectToCheck):
         collided = False
+
         for interactable in self.LG.interactables: # check all interactables
-            if interactable.buttonMain.colliderect(objectToCheck): # if the object passing through is colliding with the interactable fire that its been clicked.
-                # set is pressed to true
+            isHit = interactable.buttonMain.colliderect(objectToCheck) # if the object passing through is colliding with the interactable fire that its been clicked.
+            # set is pressed to true
+            interactable.isPressed = isHit
+
+            if isHit:
                 collided = True
-                            
-        # set is pressed to collided
-        interactable.isPressed = collided
+
         return collided
     
     def movePlayer(self, canCollide=None, hasMoveables=None, isInLevel=False):
-        
         if not isInLevel: return
         
         hasCollided = False # checks for collisions

@@ -24,7 +24,17 @@ class GameButton():
         self.levelAsset = asset
         self.x = x
         self.y = y
+        
+    def setId(self, id):
+        self.id = id
+    
+    def setRect(self, rect):
+        self.buttonMain = rect
                 
+    def setCoords(self, x, y, h):
+        self.x = x
+        self.y = y
+        self.height = h
         
     def getId(self):
         return self.id
