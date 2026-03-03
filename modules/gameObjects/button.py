@@ -25,6 +25,8 @@ class GameButton():
         self.x = x
         self.y = y
         
+        
+    # -- Set values (Encapsulation) -- #
     def setId(self, id):
         self.id = id
     
@@ -38,9 +40,14 @@ class GameButton():
         
     def getId(self):
         return self.id
-        
+    
+    def setPressed(self, value):
+        self.isPressed = value
+         
     def beenPressed(self):
         return self.isPressed
     
+    
+    # draw on the button
     def draw(self):
         self.screen.blit(self.levelAsset, (self.x * 64, self.y * 64)) # draws assets

@@ -119,18 +119,20 @@ class Player(pygame.sprite.Sprite):
         time.sleep(1)
         self.jumpOnCooldown = False
     
-    def checkIfCollidingInteractable(self, objectToCheck):
-        collided = False
+    def checkIfCollidingInteractable(self, objectToCheck, objectToSkip=None):
+        skipArray = objectToSkip or [] # arry of items to skip from the previous itteration of this so we check for both players and moveable objects
 
         for interactable in self.LG.interactables: # check all interactables
             isHit = interactable.buttonMain.colliderect(objectToCheck) # if the object passing through is colliding with the interactable fire that its been clicked.
-            # set is pressed to true
-            interactable.isPressed = isHit
+            if isHit: # if the buttons been hit then set to true
+                interactable.setPressed(True)
+                skipArray.append(interactable) # add to the skip array to be returned later
+                
+            if interactable not in skipArray: # if the interacton is in the skip array dont set to false
+                interactable.setPressed(False)
 
-            if isHit:
-                collided = True
+        return skipArray
 
-        return collided
     
     def movePlayer(self, canCollide=None, hasMoveables=None, isInLevel=False):
         if not isInLevel: return
@@ -140,25 +142,26 @@ class Player(pygame.sprite.Sprite):
         shouldMove = True
         jumpForce = (1/2) * self.mass * (self.yVelocity**2)
             
-        isInteracting = False    
-        for obj in hasMoveables:
-            isInteracting = self.checkIfCollidingInteractable(obj["rect"])
+        skipArray = []    
+        for obj in hasMoveables: # check all moveables for if they are interacting 
+            skipArray.append(self.checkIfCollidingInteractable(obj["rect"]))
           
-        if not isInteracting:  
-            self.checkIfCollidingInteractable(self.rectangle)
+        # now check for the player colliding and pass through the skip array  
+        self.checkIfCollidingInteractable(self.rectangle, skipArray)
             
-        if self.isJumping and not self.jumpOnCooldown:
+        if self.isJumping and not self.jumpOnCooldown: # check for if the person isnt on cooldown and is currently jumping
             shouldJump = True
-            self.yVelocity -= 0.4
+            self.yVelocity -= 0.4 # change the velocity by 0.4
             
-            if self.yVelocity < 0:
+            if self.yVelocity < 0: # once the velocity is less then 0 reverse the mass
                 self.mass = -1
                 
-            if self.yVelocity <= -(self.jumpHeight - 1):
-                self.isJumping = False
+            if self.yVelocity <= -(self.jumpHeight - 1): # check if the velocity less or equal to -(jumpheight minus 1) 
+                self.isJumping = False # change jumping and should jump to false
                 shouldJump = False
-                Thread(target=self.jumpCooldown).start()
+                Thread(target=self.jumpCooldown).start() # start the cooldown
 
+                # reset all values
                 self.yVelocity = self.jumpHeight
                 self.mass = self.playerWeight
 

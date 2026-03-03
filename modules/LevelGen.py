@@ -52,6 +52,9 @@ class LevelGenerator():
     def setMenuHandler(self, MH):
         self.menuHandler = MH
         
+    # function to clean out codes from the csv files for each level. B*B2 -> Button*B2
+    # anything after the astrisk is kept normal but the first value is checked with the item map
+    # if its unable to do any of this then it will return unknown due to it not knowing what the value is
     def fetchCode(self, code):
         if code.isdigit():
             return itemMap.get(int(code), "Unknown")
@@ -63,7 +66,7 @@ class LevelGenerator():
             if isinstance(key, str) and key.endswith("*"):
                 prefix = key[:-1]  # remove the *
                 if code.startswith(prefix):
-                    return itemMap[key] + code[len(prefix):]
+                    return itemMap[key] + code[len(prefix):] # adds on the code with the astrisk for the id to be used
 
         return "Unknown"
         
@@ -205,46 +208,58 @@ class LevelGenerator():
                     continue
                 
                 if "*" in code: # finds the wildcards
-                    wildcardSplit = code.split("*")
+                    wildcardSplit = code.split("*") # splits the code for where the asterisk is
                     
-                    if "&" in code:
+                    if "&" in code: # if the item requires multiple interactions
                         interactables = []
-                        for id in wildcardSplit:
+                        multiSplit = wildcardSplit[1].split("&") # split the codes by the &
+                        for id in multiSplit: # loop through them all to find if the buttons are already made
                             interactableFound = False
+                            # loop in the interactions to find if they exist 
                             for interactable in self.interactables:
                                 if interactable.getId() == id:
                                     interactables.append(interactable)
                                     
+                            # make a new one and push if it doesnt exist.
                             if not interactableFound:
                                 button = GameButton(self.screen, None, None, None, id, self.levelAssets["Button"], None, None)
                                 interactables.append(button)
+                                self.interactables.append(button)
                         
+                        # if its a door push all interactables through the "linkedButton" and set multi to true making sure to also push to the wildcards array
                         if "Door" in code:
                             door = Door(x, y, interactables, self.screen, self.rootDir, True)
                             self.wildCards.append(door)   
                     else:
                         if "Door" in code:
                             interactableFound = False
+                            # loop through all interactables and if one is found link it to a new door and push to wild cards
                             for interactable in self.interactables:
                                 if interactable.getId() == wildcardSplit[1]:
                                     door = Door(x,y, interactable, self.screen, self.rootDir, False)
                                     self.wildCards.append(door)
                                     interactableFound = True
                                 
+                            # if one isnt found create a new button and the door and push to the respective arrays
                             if not interactableFound:
                                 button = GameButton(self.screen, None, None, None, wildcardSplit[1], self.levelAssets["Button"], None, None)
                                 door = Door(x,y, button, self.screen, self.rootDir, False)
                                 self.wildCards.append(door)
                                 self.interactables.append(button)
                             
+                        
                         if "Button" in code:
                             buttonFound = False
+                            # loop through all interactions and see if one has already been made from previous itterations
                             for interactable in self.interactables:
                                 if interactable.getId() == wildcardSplit[1]:
+                                    # sets all the values from the button
+                                    interactable.setId(wildcardSplit[1])
                                     interactable.setRect(pygame.Rect(x * assetSize, y * assetSize, assetSize, 16))
                                     interactable.setCoords(x, y, 16)
                                     buttonFound = True
                         
+                            # if one wasnt already made then make a new one and append it to the interactables array
                             if not buttonFound:
                                 button = GameButton(self.screen, pygame.Rect(x * assetSize, y * assetSize, assetSize, 16), 16, pygame.Rect(x * assetSize, y * 16, assetSize, 16), wildcardSplit[1], self.levelAssets["Button"], x, y)
                                 self.interactables.append(button)
@@ -307,14 +322,14 @@ class LevelGenerator():
                     #self.screen.blit(data["asset"], data["coordinates"])  # draws assets
                     pygame.draw.rect(self.screen, (200,200,200), data["rect"]) # test draw for collision boxes
                     
+                # loop through all wildcards and draw them
                 for wildcard in self.wildCards:
                     wildcard.draw()
                     
+                # loop through all interactables and draw them
                 for interactable in self.interactables:
                     interactable.draw()
 
-
-        # disable loading screen and enable game.
         
     def findLevel(self, chapterId, levelId):
         for chapter in os.listdir(self.levelLocation): # lists out all chapter files in the levels folder
