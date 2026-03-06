@@ -1,6 +1,7 @@
 # ---- Python Modules ---- #
 import pygame
 import os
+import math
 from threading import Thread
 from modules.utils.ImageButton import ImageButton
 from modules.utils.TextButton import TextButton
@@ -30,7 +31,7 @@ class MainMenu():
         self.tunneler = tunneler
         self.InputHandler = InputHandler
         self.MenuHandler = MenuHandler
-
+        
         self.menuPlayer.x = 0
         self.menuPlayer.y = 659
         self.menuPlayer.x_direction = 1.5
@@ -40,18 +41,22 @@ class MainMenu():
         self.menuTunnelA = pygame.Rect(3, 680, 20, 86) # creates a rectangle to be used.
         self.menuTunnelB = pygame.Rect(1452, 680, 20, 86) # creates a rectangle to be used.
 
-        self.startButton = TextButton(100, 300, "StarT", 38, (255,255,255), self.screen) # Creates a new Start button
-        self.endButton = TextButton(100, 380, "End", 38, (255,255,255), self.screen) # Creates a new End button
-
-        self.testLevelLoad1 = TextButton(300, 100, "Test Level 1", 38, (255,209, 21), self.screen) 
-        self.testLevelLoad2 = TextButton(300, 200, "Test Level 2", 38, (255,209, 21), self.screen)
+        self.titleLabel = TextLabel(445, 120, "TUNNLER - TEMPORAL MELTDOWN", 72, (200, 200, 255), self.screen)
+        self.startButton = TextButton(150, 260, "Start Game", 48, (255,255,255), self.screen)
+        self.levelButton = TextButton(150, 330, "Play Levels", 48, (255,255,255), self.screen)
+        self.settingsButton = TextButton(150, 400, "Settings", 48, (255,255,255), self.screen)
+        self.endButton = TextButton(150, 470, "Quit", 48, (255,255,255), self.screen)
+        self.footerLabel = TextLabel(1290, 885, "© 2026 Aperture-Inspired Systems", 28, (180,180,180), self.screen)
         
-        self.settingsButton = TextButton(400, 400, "Settings", 38, (255,0,255), self.screen)
-        self.levelButton = TextButton(500, 400, "Play", 38, (255,0,255), self.screen)
-
-
-        self.testLabel = TextLabel(210, 200, "This is a Test Label", 60, (255,0,255), self.screen) # Creates a new Label    
-        
+                
+    def movingPlayerAnimation(self):  
+        self.menuPlayer.movePlayer(None, None, True) # plays the moving animation as we move the player
+        self.menuPlayer.draw(True) #draws on the player
+        if self.menuPlayer.rectangle.colliderect(self.menuTunnelB): # when the player reaches the end it tunnels through to the other end and loops back. to show a loading effect
+            self.menuPlayer.tunnelPlayer(0,659, self.tunneler.tunnelAColour)
+            
+        pygame.draw.rect(self.screen, self.tunneler.tunnelAColour, self.menuTunnelA) # draws on the rectangle and correct tunnel colour
+        pygame.draw.rect(self.screen, self.tunneler.tunnelBColour, self.menuTunnelB) # draws on the rectangle and correct tunnel colour
         
     def enableUi(self):
         self.enabled = True
@@ -62,14 +67,17 @@ class MainMenu():
     def drawCurrentMenu(self):
         if self.enabled == True:
             
+            # ---- Drawing on Items ---- #
             self.startButton.draw() # Draws on the start Button
-            self.testLevelLoad1.draw()
-            self.testLevelLoad2.draw()
             self.endButton.draw() # Draws on the end Button
-            self.testLabel.draw() # Draw on the text
             self.settingsButton.draw()
             self.levelButton.draw()
-                                    
+            self.footerLabel.draw()
+            self.titleLabel.draw()
+                           
+            self.movingPlayerAnimation()
+              
+            # ---- Button Functionality ---- # 
             if self.HT.menuTracked and self.cursor.handMode == "Select":
                 if self.endButton.isClicked(self.cursor.rectangle.topleft):
                     print('CLICKED END')

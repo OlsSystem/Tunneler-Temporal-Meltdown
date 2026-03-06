@@ -73,6 +73,7 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.screen.blit(self.animationList[0], self.rectangle.topleft) # On call draws on the idle sprite.
     
+    
     def keyDown(self, event): # as a key is pressed the x direction is changed to signify a left or right movement.
         if event == "Left":
             self.x_direction = -2
@@ -142,9 +143,11 @@ class Player(pygame.sprite.Sprite):
         shouldMove = True
         jumpForce = (1/2) * self.mass * (self.yVelocity**2)
             
-        skipArray = []    
-        for obj in hasMoveables: # check all moveables for if they are interacting 
-            skipArray.append(self.checkIfCollidingInteractable(obj["rect"]))
+        skipArray = []  
+        if hasMoveables:  
+            for obj in hasMoveables:
+                result = self.checkIfCollidingInteractable(obj["rect"])
+                skipArray.extend(result)
           
         # now check for the player colliding and pass through the skip array  
         self.checkIfCollidingInteractable(self.rectangle, skipArray)

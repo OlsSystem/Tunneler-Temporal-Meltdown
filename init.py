@@ -54,10 +54,9 @@ player.setMenuHandler(MH)
 HT.setLevelGen(LG)
 
 while isRunning: # While isRunning is set to true
-    screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
     brightnessSurface.fill((0,0,0))
-    player.draw(LG.inLevel)    
     MH.drawCurrentMenu()
+    player.draw(LG.inLevel)    
     screen.blit(brightnessSurface, (0,0))
                     
     HT.menuTracking() # Runs update image position

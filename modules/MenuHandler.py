@@ -1,5 +1,6 @@
 # ---- Python Modules ---- #
 import pygame
+import math
 from threading import Thread
 
 # ---- Menu Files ---- #
@@ -27,6 +28,8 @@ class MenuHandler():
         self.clock = clock
         self.rootDir = root
         self.Inputs = Inputs
+        
+        self.crt_time = 0
     
         # load in every menu class to prepare it.
         self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs, self)
@@ -51,6 +54,22 @@ class MenuHandler():
         self.ignoredPreviousMenus = ["LevelUI", "DeadScreen", "LoadingScreen"]
         
         self.menuDictionary[self.currentMenu].enableUi()
+        
+    def draw_scanlines(self, surface, spacing=4, opacity=40):
+        # draws on lines with a spacing provided
+        width, height = surface.get_size()
+        line = pygame.Surface((width, 1))
+        line.set_alpha(opacity)
+        line.fill((0, 0, 0))
+        # loop through the amount of lines 
+        for y in range(0, height, spacing):
+            surface.blit(line, (0, y))
+    
+    def draw_ghosting(self):
+        # draws on the ghosting effect to the screen
+        ghost = pygame.transform.smoothscale(self.screen, (1472, 896))
+        ghost.set_alpha(40)
+        self.screen.blit(ghost, (1, 0)) 
 
     # hide current menu function to be written later
     def hideCurrentMenu(self):
@@ -120,4 +139,17 @@ class MenuHandler():
                     
     # drawing on the curernt menu based on self.CurrentMenu.
     def drawCurrentMenu(self):
+        # ---- CRT Effect for the main Menu ---- #
+        if self.currentMenu != "LevelUI":
+            self.draw_ghosting() # draw the ghost effect
+            self.draw_scanlines(self.screen) # draws on the lies accross the screen
+            
+            # add a green tint to the screen
+            tint = pygame.Surface(self.screen.get_size())
+            tint.fill((0, 40, 20))  
+            tint.set_alpha(20)
+            self.screen.blit(tint, (0, 0))
+        else:
+            self.screen.fill((30,30,30)) # Sets the screen colour to 30,30,30 (Blackish)
+        
         self.menuDictionary[self.currentMenu].drawCurrentMenu() # draws selected menu
