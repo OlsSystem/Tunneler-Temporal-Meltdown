@@ -36,10 +36,10 @@ class NewUser:
         # Menu components
         self.title = TextLabel(736, 50, "Welcome New User", 64, (255, 255, 255), screen)
 
-        self.inputBox = TextBox(200, 200, 300, 50, 32, screen, placeholder="Enter username...")
+        self.inputBox = TextBox(736, 200, 300, 50, 32, screen, placeholder="Enter username...")
         self.errorLabel = TextLabel(736, 700, "", 32, (255, 50, 50), screen)
 
-        self.applyButton = TextButton(576, 796, "Apply", 36, (0, 200, 0), screen)
+        self.applyButton = TextButton(736, 796, "Apply", 36, (0, 200, 0), screen)
         
     def enableUi(self):
         self.enabled = True

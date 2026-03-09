@@ -13,10 +13,10 @@ from modules.utils.TextLabel import TextLabel
 # For all core inputs that require checking.
 class LevelTimer:
 
-    def __init__(self, screen, LG, x, y):
+    def __init__(self, screen, LG, x, y, db):
         self.screen = screen
         self.LG = LG
-
+        self.db = db
         self.timerActive = False
         self.currentMiliSeconds = 0
         self.currentMinute = 0
@@ -37,8 +37,21 @@ class LevelTimer:
         self.currentMinute = 0
         self.currentSecond = 0
 
-    def saveTimerScore(self, levelID):
-        print('level time saved')
+    def saveTimerScore(self, chapterID, levelID):
+        Id = f"{chapterID}/{levelID}"
+        currentSavedBest = self.db.fetchLevelTime(Id)
+        
+        if not currentSavedBest:
+            self.db.setLevelSpeed(Id, self.currentTime)
+        else:
+            splitTime = currentSavedBest.split(":")
+            savedBestInSeconds = (int(splitTime[0]) * 60) + int(splitTime[1]) + (int(splitTime[2]) / 100)
+            currentTimeInSeconds = (self.currentMinute * 60) + self.currentSecond + (self.currentMiliSeconds / 100)
+            
+            if savedBestInSeconds < currentTimeInSeconds:
+                self.db.setLevelSpeed(Id, self.currentTime)
+                return "New High Score"
+            
         
     def getCurrentTime(self):
         return self.currentTime

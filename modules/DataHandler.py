@@ -19,9 +19,6 @@ class DataHandler():
         self.db.create_index("username", unique=True)
         self.menuHandler = None
 
-        self.db.insert_one({
-            "test": "test"
-        })
         print('i handle the data.')
         
     def setMenuHandler(self, MH):
@@ -31,7 +28,7 @@ class DataHandler():
         return {
             "username": username,
             "currentLevel": "",
-            "levelTimes": [],
+            "levelTimes": {},
         }
     
     def ensureUserConfig(self):
@@ -68,8 +65,17 @@ class DataHandler():
         return True
 
     def saveData(self):
-        self.db.update_one({ "_id": self.currentData._id }, self.currentData)
+        self.db.update_one({"_id": self.currentData["_id"]}, {"$set": self.currentData })
         print('Data has been saved.')
+        
+    def setCurrentLevel(self, currentLevel):
+        self.currentData["currentLevel"] = currentLevel
+        
+    def setLevelSpeed(self, id, time):
+        self.currentData["levelTimes"][id] = time
+        
+    def fetchLevelTime(self, id):
+        return self.currentData["levelTimes"][id] or None
         
     def loadData(self):
         userConfig = self.ensureUserConfig()
@@ -81,6 +87,8 @@ class DataHandler():
                 self.menuHandler.enableMenu("NewUser")
             else:
                 self.currentData = userData
+                
+        print(userData)
         
     def fetchData(self):
         return self.currentData

@@ -39,7 +39,7 @@ class LevelGenerator():
         self.player = None
         self.menuHandler = None
         self.HT = handTracking
-        self.timer = LevelTimer(self.screen, self, 400, 50)
+        self.timer = LevelTimer(self.screen, self, 400, 50, dataHandling)
         
         self.loadAssets() # Loads all assets to be used in levels.
 
@@ -122,9 +122,10 @@ class LevelGenerator():
         self.wildCards = []
         self.canMove = []
         self.inLevel = False
+        self.timer.pauseTimer() # stops the timer
+        self.timer.saveTimerScore(self.chapterId, self.levelId)
         self.chapterId = None
         self.levelId = None
-        self.timer.pauseTimer() # stops the timer
         self.HT.stop() # stops hand tracking
         
         # resets tunneler logic
