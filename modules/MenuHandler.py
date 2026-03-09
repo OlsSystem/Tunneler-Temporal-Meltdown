@@ -15,10 +15,11 @@ from modules.menus.deadScreen import PlayerDiedScreen
 # ---- Initialising Variables ---- #
 
 class MenuHandler():
-    def __init__(self, screen, handTracking, levelGenerator, cursor, player, tunneler, clock, root, Inputs, brightnessHandler):
+    def __init__(self, screen, handTracking, levelGenerator, cursor, player, tunneler, clock, root, Inputs, brightnessHandler, dataHandling):
         # Variables for everything each menu option may require
         self.currentMenu = "Main"
         self.previousMenu = []
+        self.dataHandler = dataHandling
         self.screen = screen
         self.HT = handTracking
         self.LG = levelGenerator
@@ -30,6 +31,7 @@ class MenuHandler():
         self.Inputs = Inputs
         
         self.crt_time = 0
+        self.ghost_surface = None
     
         # load in every menu class to prepare it.
         self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs, self)
@@ -67,9 +69,9 @@ class MenuHandler():
     
     def draw_ghosting(self):
         # draws on the ghosting effect to the screen
-        ghost = pygame.transform.smoothscale(self.screen, (1472, 896))
-        ghost.set_alpha(40)
-        self.screen.blit(ghost, (1, 0)) 
+        self.ghost_surface = pygame.transform.smoothscale(self.screen, (1472, 896))
+        self.ghost_surface.set_alpha(40)
+        self.screen.blit(self.ghost_surface, (1, 0)) 
 
     # hide current menu function to be written later
     def hideCurrentMenu(self):
@@ -141,7 +143,11 @@ class MenuHandler():
     def drawCurrentMenu(self):
         # ---- CRT Effect for the main Menu ---- #
         if self.currentMenu != "LevelUI":
-            self.draw_ghosting() # draw the ghost effect
+            if self.currentMenu != "Settings":
+                self.draw_ghosting() # draw the ghost effect
+            else:
+                self.ghost_surface.fill((0,0,0))
+                
             self.draw_scanlines(self.screen) # draws on the lies accross the screen
             
             # add a green tint to the screen

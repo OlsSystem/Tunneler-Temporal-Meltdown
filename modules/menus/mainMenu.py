@@ -103,9 +103,7 @@ class MainMenu():
                     
                     if self.endButton.isClicked(event.pos): # When the end Button clicked
                         print('CLICKED END')
-                        self.HT.stop() # Closes out the Hand Tracking Client
-                        self.HT.disableMenuTracking() # Disabes the menu hand tracking.
-                        self.LG.levelEnded()
+                        self.InputHandler.inputCheck("QUIT")
                         
                     if self.settingsButton.isClicked(event.pos):
                         self.MenuHandler.enableMenu("Settings")

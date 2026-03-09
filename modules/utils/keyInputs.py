@@ -12,17 +12,19 @@ import pygame
 # For all core inputs that require checking.
 class KeyInputs:
     
-    def __init__(self, HT, tunneler, player, LG):
+    def __init__(self, HT, tunneler, player, LG, dataHandling):
         self.HT = HT
         self.Tunneler = tunneler
         self.Player = player
         self.LG = LG
         self.isRunning = True
+        self.dataHandler = dataHandling
     
     def inputCheck(self, event):
-        if event.type == pygame.QUIT: # If the pygame window is closed.
+        if event == "QUIT" or event.type == pygame.QUIT: # If the pygame window is closed.
             self.isRunning = False # Closes out the while loop by setting isRunning to false.
             pygame.quit() # Quits out of pygame.
+            self.dataHandler.saveData()
             
             if self.HT.cameraUiEnabled:
                 self.HT.stop() # Stops the hand tracking client.

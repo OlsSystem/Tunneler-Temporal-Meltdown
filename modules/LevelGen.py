@@ -18,8 +18,9 @@ moveItemBy = 0.3
 # ---- Initialising Variables ---- # 
 
 class LevelGenerator():
-    def __init__(self, pygameInstance, handTracking):
+    def __init__(self, pygameInstance, handTracking, dataHandling):
         self.rootDir = os.path.dirname(__file__) # Root directory of where this file is.
+        self.dataHandler = dataHandling
         self.screen = pygameInstance # Add the screen from the main file.
         self.levelName = None # Defines level name
         self.chapterId = None # Gives chapter id

@@ -15,6 +15,7 @@ from modules.LevelGen import LevelGenerator
 from modules.Player import Player
 from modules.handTracking import TrackHands
 from modules.MenuHandler import MenuHandler
+from modules.DataHandler import DataHandler
 
 from modules.items.Tunneler import Tunneler
 
@@ -28,7 +29,8 @@ pygame.init() # Initialises pygame and starts it up.
 screen = pygame.display.set_mode((1472,896)) # Sets the window to 1480 by 900px
 isRunning = True # Sets runing to True
 HT = TrackHands() # Initialises HandTracking to be used throughout the program.
-LG = LevelGenerator(screen, HT) # Initialises the Level Generator and pre generates the sprite images
+DH = DataHandler()
+LG = LevelGenerator(screen, HT, DH) # Initialises the Level Generator and pre generates the sprite images
 clock = pygame.time.Clock()
 
 # Initialises the Cursor Class 
@@ -42,16 +44,18 @@ tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.pa
 
 LG.setTunneler(tunneler)
 LG.setPlayer(player)
-InputHandler = KeyInputs(HT, tunneler, player, LG)
+InputHandler = KeyInputs(HT, tunneler, player, LG, DH)
 
 brightnessSurface = pygame.Surface(screen.get_size())
 brightnessSurface.set_alpha(int((100 - 100) * 2.55))
 
-MH = MenuHandler(screen, HT, LG, cursor, player, tunneler, clock, os.path.dirname(os.path.abspath(__file__)), InputHandler, brightnessSurface)
+MH = MenuHandler(screen, HT, LG, cursor, player, tunneler, clock, os.path.dirname(os.path.abspath(__file__)), InputHandler, brightnessSurface, DH)
 
 LG.setMenuHandler(MH)
 player.setMenuHandler(MH)
 HT.setLevelGen(LG)
+
+DH.loadData() # Load up the current users data.
 
 while isRunning: # While isRunning is set to true
     brightnessSurface.fill((0,0,0))
