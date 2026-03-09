@@ -11,6 +11,7 @@ from modules.menus.levelSelect import LevelSelect
 from modules.menus.levelUI import LevelUI
 from modules.menus.pauseMenu import PauseLevelUI
 from modules.menus.deadScreen import PlayerDiedScreen
+from modules.menus.newUser import NewUser
 
 # ---- Initialising Variables ---- #
 
@@ -41,6 +42,7 @@ class MenuHandler():
         self.levelUi = LevelUI(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self, self.player)
         self.levelPause = PauseLevelUI(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
         self.deadScreen = PlayerDiedScreen(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
+        self.newUser = NewUser(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self, brightnessHandler, self.dataHandler)
 
         # all menus available to use
         self.menuDictionary = {
@@ -51,9 +53,10 @@ class MenuHandler():
             "LevelUI": self.levelUi,
             "LevelPause": self.levelPause,
             "DeadScreen": self.deadScreen,
+            "NewUser": self.newUser
         }
         
-        self.ignoredPreviousMenus = ["LevelUI", "DeadScreen", "LoadingScreen"]
+        self.ignoredPreviousMenus = ["LevelUI", "DeadScreen", "LoadingScreen", "NewUser"]
         
         self.menuDictionary[self.currentMenu].enableUi()
         
@@ -143,7 +146,7 @@ class MenuHandler():
     def drawCurrentMenu(self):
         # ---- CRT Effect for the main Menu ---- #
         if self.currentMenu != "LevelUI":
-            if self.currentMenu != "Settings":
+            if self.currentMenu != "Settings" or self.currentMenu != "NewUser":
                 self.draw_ghosting() # draw the ghost effect
             else:
                 self.ghost_surface.fill((0,0,0))

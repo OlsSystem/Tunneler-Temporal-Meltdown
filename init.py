@@ -54,7 +54,7 @@ MH = MenuHandler(screen, HT, LG, cursor, player, tunneler, clock, os.path.dirnam
 LG.setMenuHandler(MH)
 player.setMenuHandler(MH)
 HT.setLevelGen(LG)
-
+DH.setMenuHandler(MH)
 DH.loadData() # Load up the current users data.
 
 while isRunning: # While isRunning is set to true
