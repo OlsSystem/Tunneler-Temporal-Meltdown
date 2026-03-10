@@ -18,8 +18,6 @@ class DataHandler():
         self.db = self.collection["PlayerData"]
         self.db.create_index("username", unique=True)
         self.menuHandler = None
-
-        print('i handle the data.')
         
     def setMenuHandler(self, MH):
         self.menuHandler = MH
@@ -27,7 +25,7 @@ class DataHandler():
     def formatPlayerData(self, username):
         return {
             "username": username,
-            "currentLevel": "",
+            "currentLevel": "CH1/LV1",
             "levelTimes": {},
         }
     
@@ -75,7 +73,10 @@ class DataHandler():
         self.currentData["levelTimes"][id] = time
         
     def fetchLevelTime(self, id):
-        return self.currentData["levelTimes"][id] or None
+        return self.currentData["levelTimes"].get(id)
+    
+    def fetchCurrentLevel(self):
+        return self.currentData["currentLevel"]
         
     def loadData(self):
         userConfig = self.ensureUserConfig()

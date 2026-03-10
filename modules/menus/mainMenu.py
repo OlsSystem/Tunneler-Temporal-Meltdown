@@ -19,7 +19,7 @@ Red = (0, 0, 255)
 
 
 class MainMenu():
-    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler, MenuHandler):
+    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler, MenuHandler, database):
         self.enabled = False
         self.screen = screen
         self.HT = handTracking
@@ -31,6 +31,7 @@ class MainMenu():
         self.tunneler = tunneler
         self.InputHandler = InputHandler
         self.MenuHandler = MenuHandler
+        self.db = database
         
         self.menuPlayer.x = 0
         self.menuPlayer.y = 659
@@ -97,9 +98,12 @@ class MainMenu():
                 self.InputHandler.inputCheck(event)
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # When the event is mouse button and down and event button is 1 (keydown)
                     if self.startButton.isClicked(event.pos): # When the start Buttons clicked 
-                        print('CLICKED START')
-                        self.HT.start() # Opens up the Hand Tracking Client
-                        self.HT.enableMenuTracking(self.cursor) # Enables the menu hand tracking.
+                        currentLevel = self.db.fetchCurrentLevel()
+                        if not currentLevel:
+                            self.MenuHandler.enableLevel("CH1", "LV1")
+                            
+                        splitId = currentLevel.split("/")
+                        self.MenuHandler.enableLevel(splitId[0], splitId[1])
                     
                     if self.endButton.isClicked(event.pos): # When the end Button clicked
                         print('CLICKED END')

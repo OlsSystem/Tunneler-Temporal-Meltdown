@@ -182,7 +182,7 @@ class Player(pygame.sprite.Sprite):
                 
                 if self.finishRect.collidepoint(self.rectangle.topright): # checks if the player has collided with the finish area
                     hasCollided = False
-                    self.MenuHandler.enableMenu("DeadScreen") # sets a "win screen"
+                    self.MenuHandler.enableMenu("WinScreen") # sets a "win screen"
                     break
                     
                 # if they have collided with the wall then stop movement

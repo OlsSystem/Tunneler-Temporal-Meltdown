@@ -76,7 +76,6 @@ class SettingsMenu:
 
                 if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
                     if self.applyButton.isClicked(event.pos):
-                        print('apply settings.')
                         pygame.mixer.music.set_volume(self.volumeSlider.fetchValue() / 100) # sets the volume slider 
                         
                     # to previous menu

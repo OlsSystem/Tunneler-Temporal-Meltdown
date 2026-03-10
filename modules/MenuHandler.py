@@ -2,6 +2,8 @@
 import pygame
 import math
 from threading import Thread
+import time
+import os
 
 # ---- Menu Files ---- #
 from modules.menus.mainMenu import MainMenu
@@ -12,6 +14,8 @@ from modules.menus.levelUI import LevelUI
 from modules.menus.pauseMenu import PauseLevelUI
 from modules.menus.deadScreen import PlayerDiedScreen
 from modules.menus.newUser import NewUser
+from modules.menus.wonScreen import PlayerWonScreen
+from modules.menus.finishGame import PlayerFinishedGame
 
 # ---- Initialising Variables ---- #
 
@@ -35,7 +39,7 @@ class MenuHandler():
         self.ghost_surface = None
     
         # load in every menu class to prepare it.
-        self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs, self)
+        self.mainMenu = MainMenu(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs, self, self.dataHandler)
         self.loadingScreen = LoadingScreen(self.screen, self.HT, self.cursor, self.LG, clock, self.rootDir, tunneler, self.Inputs, self)
         self.settingsMenu = SettingsMenu(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self, brightnessHandler)
         self.levelSelect = LevelSelect(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
@@ -43,6 +47,8 @@ class MenuHandler():
         self.levelPause = PauseLevelUI(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
         self.deadScreen = PlayerDiedScreen(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
         self.newUser = NewUser(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self, brightnessHandler, self.dataHandler)
+        self.wonScreen = PlayerWonScreen(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
+        self.finishedScreen = PlayerFinishedGame(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
 
         # all menus available to use
         self.menuDictionary = {
@@ -53,7 +59,9 @@ class MenuHandler():
             "LevelUI": self.levelUi,
             "LevelPause": self.levelPause,
             "DeadScreen": self.deadScreen,
-            "NewUser": self.newUser
+            "NewUser": self.newUser,
+            "WinScreen": self.wonScreen,
+            "FinishedGame": self.finishedScreen
         }
         
         self.ignoredPreviousMenus = ["LevelUI", "DeadScreen", "LoadingScreen", "NewUser"]
@@ -95,6 +103,42 @@ class MenuHandler():
         if hasLoaded: # starts the level once its loaded.
             self.enableMenu("LevelUI")
             print('reloaded level')
+            
+    def nextLevel(self):
+        currentChapter, currentLevel = self.dataHandler.fetchCurrentLevel().split("/")
+        chapterPath = os.path.join(os.path.join(self.rootDir, "levels"), currentChapter)
+        
+        allLevels = [
+            lvl for lvl in os.listdir(chapterPath)
+            if lvl.startswith("LV") and lvl.endswith(".csv")
+        ]
+        
+        allLevels.sort(key=lambda lvl: int(lvl.replace("LV", "").replace(".csv", "")))
+        currentLevelIndex = allLevels.index(f"{currentLevel}.csv")
+        
+        if not currentLevelIndex:
+            print('errr')
+            
+        if currentLevelIndex + 1 < len(allLevels):
+            self.enableLevel(currentChapter, allLevels[currentLevelIndex + 1])
+            self.dataHandler.setCurrentLevel(f"{currentChapter}/{allLevels[currentLevelIndex + 1]}")
+        else:
+            allChapters = [
+                chp for chp in os.listdir(os.path.join(self.rootDir, "levels"))
+                if chp.startswith("CH")
+            ]
+            allChapters.sort(key= lambda chp: int(chp.replace("CH", "").replace(".csv", "")))
+            currentChapterIndex = allChapters.index(currentChapter)
+            
+            if not currentChapterIndex:
+                print("err")
+                
+            if currentChapterIndex + 1 < len(allChapters):
+                print(allChapters[currentChapterIndex + 1], "LV1")
+                self.enableLevel(allChapters[currentChapterIndex + 1], "LV1")
+                self.dataHandler.setCurrentLevel(f"{allChapters[currentChapterIndex + 1]}/LV1")
+            else:
+                self.enableMenu("FinishedGame")
     
     def enableLevel(self, chapterId, levelId):
         # starts the level loading process as a thread to allow for extra while loops to check for the camera.
@@ -138,6 +182,11 @@ class MenuHandler():
 
             if menuId == "DeadScreen":
                 self.LG.levelStatus()
+                self.LG.levelCompleated = True
+                
+            if menuId == "WinScreen":
+                self.LG.levelStatus()
+                self.LG.levelCompleated = True
 
             self.menuDictionary[menuId].enableUi() # enables menu selected
             self.currentMenu = menuId # sets id of the current menu

@@ -80,5 +80,4 @@ class LevelUI:
                     # pause menu logic
                     if self.Pause.isClicked(event.pos):
                         self.LG.levelStatus()
-                        self.LG.timer.pauseTimer()
                         self.MenuHandler.enableMenu("LevelPause")

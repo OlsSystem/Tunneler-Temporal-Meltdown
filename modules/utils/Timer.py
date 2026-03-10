@@ -43,14 +43,16 @@ class LevelTimer:
         
         if not currentSavedBest:
             self.db.setLevelSpeed(Id, self.currentTime)
+            return "First score ever for the level"
         else:
             splitTime = currentSavedBest.split(":")
             savedBestInSeconds = (int(splitTime[0]) * 60) + int(splitTime[1]) + (int(splitTime[2]) / 100)
             currentTimeInSeconds = (self.currentMinute * 60) + self.currentSecond + (self.currentMiliSeconds / 100)
-            
-            if savedBestInSeconds < currentTimeInSeconds:
+            if savedBestInSeconds > currentTimeInSeconds:
                 self.db.setLevelSpeed(Id, self.currentTime)
                 return "New High Score"
+            else:
+                return "No Change score was lower"
             
         
     def getCurrentTime(self):

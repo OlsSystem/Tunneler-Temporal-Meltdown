@@ -27,6 +27,7 @@ class LevelGenerator():
         self.levelId = None # Gives level id
         self.levelPath = None # Defines level path
         self.inLevel = False # Check for if a users in a level
+        self.levelCompleated = False # Flag for if a level has been compleated
         self.levelLocation = os.path.normpath(os.path.join(self.rootDir, "../levels")) # Normalised path for central level folder
         self.levelsFolder = [] # List of all folders that contains levels.
         self.levelGrid = [] # Creates the level into a grid
@@ -114,6 +115,15 @@ class LevelGenerator():
             self.timer.pauseTimer()
         else:
             self.timer.startTimer()
+            
+    def saveLevelTime(self):
+        if self.levelCompleated:
+            self.timer.pauseTimer() # stops the timer
+            response = self.timer.saveTimerScore(self.chapterId, self.levelId)
+            print(response)
+            self.timer.resetTimer() # restarts the timer
+            self.levelCompleated = False
+
         
     def levelEnded(self): # resets all values to zero ready for the next level
         self.levelGrid = []
@@ -123,7 +133,7 @@ class LevelGenerator():
         self.canMove = []
         self.inLevel = False
         self.timer.pauseTimer() # stops the timer
-        self.timer.saveTimerScore(self.chapterId, self.levelId)
+        self.saveLevelTime()
         self.chapterId = None
         self.levelId = None
         self.HT.stop() # stops hand tracking
@@ -137,7 +147,6 @@ class LevelGenerator():
         chapterId = self.chapterId
         levelId = self.levelId
         self.levelEnded() # ends the level
-        self.timer.resetTimer() # restarts the timer
         
         # disables movement and sets x direction to 0
         self.player.isMoving = False

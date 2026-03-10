@@ -34,7 +34,6 @@ class KeyInputs:
         if event.type == pygame.KEYDOWN: # when a key is pressed
             
             if self.LG.inLevel:
-                print('key down')
                 if event.key == pygame.K_LEFT:
                     self.Player.keyDown("Left")
                 elif event.key == pygame.K_RIGHT:
