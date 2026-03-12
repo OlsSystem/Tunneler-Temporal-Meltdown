@@ -116,27 +116,31 @@ class MenuHandler():
         allLevels.sort(key=lambda lvl: int(lvl.replace("LV", "").replace(".csv", "")))
         currentLevelIndex = allLevels.index(f"{currentLevel}.csv")
         
-        if not currentLevelIndex:
-            print('errr')
+        if currentLevelIndex == -1:
+            print('errr cant find lvl index')
+            self.enableMenu("LevelSelect")
+            return
             
         if currentLevelIndex + 1 < len(allLevels):
+            self.LG.levelEnded()
             self.enableLevel(currentChapter, allLevels[currentLevelIndex + 1])
-            self.dataHandler.setCurrentLevel(f"{currentChapter}/{allLevels[currentLevelIndex + 1]}")
         else:
             allChapters = [
                 chp for chp in os.listdir(os.path.join(self.rootDir, "levels"))
                 if chp.startswith("CH")
             ]
-            allChapters.sort(key= lambda chp: int(chp.replace("CH", "").replace(".csv", "")))
-            currentChapterIndex = allChapters.index(currentChapter)
+            allChapters.sort(key= lambda chp: int(chp.replace("CH", "")))
+            currentChapterIndex = allChapters.index(f"{currentChapter}")
             
-            if not currentChapterIndex:
-                print("err")
+            if currentChapterIndex == -1:
+                print("err cant find chp index")
+                self.enableMenu("LevelSelect")
+                return
                 
             if currentChapterIndex + 1 < len(allChapters):
                 print(allChapters[currentChapterIndex + 1], "LV1")
+                self.LG.levelEnded()
                 self.enableLevel(allChapters[currentChapterIndex + 1], "LV1")
-                self.dataHandler.setCurrentLevel(f"{allChapters[currentChapterIndex + 1]}/LV1")
             else:
                 self.enableMenu("FinishedGame")
     
@@ -150,6 +154,7 @@ class MenuHandler():
         # enable level gen
         # enable player n stuff
         # pause ability etc
+        self.dataHandler.setCurrentLevel(f"{chapterId}/{levelId}")
         hasLoaded = self.LG.loadLevel(chapterId, levelId)
         
         while self.HT.checkCamera() == False:
