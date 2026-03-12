@@ -16,6 +16,7 @@ from modules.menus.deadScreen import PlayerDiedScreen
 from modules.menus.newUser import NewUser
 from modules.menus.wonScreen import PlayerWonScreen
 from modules.menus.finishGame import PlayerFinishedGame
+from modules.menus.leaderboards import LeaderboardMenu
 
 # ---- Initialising Variables ---- #
 
@@ -49,6 +50,7 @@ class MenuHandler():
         self.newUser = NewUser(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self, brightnessHandler, self.dataHandler)
         self.wonScreen = PlayerWonScreen(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
         self.finishedScreen = PlayerFinishedGame(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self)
+        self.leaderboard = LeaderboardMenu(self.screen, self.HT, self.cursor, self.LG, self.clock, self.rootDir, self.tunneler, self.Inputs, self, brightnessHandler, self.dataHandler)
 
         # all menus available to use
         self.menuDictionary = {
@@ -61,10 +63,11 @@ class MenuHandler():
             "DeadScreen": self.deadScreen,
             "NewUser": self.newUser,
             "WinScreen": self.wonScreen,
-            "FinishedGame": self.finishedScreen
+            "FinishedGame": self.finishedScreen,
+            "Leaderboard": self.leaderboard
         }
         
-        self.ignoredPreviousMenus = ["LevelUI", "DeadScreen", "LoadingScreen", "NewUser"]
+        self.ignoredPreviousMenus = ["LevelUI", "DeadScreen", "LoadingScreen", "NewUser", "WinScreen", "FinishedGame"]
         
         self.menuDictionary[self.currentMenu].enableUi()
         

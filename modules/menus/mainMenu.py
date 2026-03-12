@@ -45,8 +45,9 @@ class MainMenu():
         self.titleLabel = TextLabel(445, 120, "TUNNLER - TEMPORAL MELTDOWN", 72, (200, 200, 255), self.screen)
         self.startButton = TextButton(150, 260, "Start Game", 48, (255,255,255), self.screen)
         self.levelButton = TextButton(150, 330, "Play Levels", 48, (255,255,255), self.screen)
-        self.settingsButton = TextButton(150, 400, "Settings", 48, (255,255,255), self.screen)
-        self.endButton = TextButton(150, 470, "Quit", 48, (255,255,255), self.screen)
+        self.leaderboardButton = TextButton(150, 400, "Leaderboard", 48, (255,255,255), self.screen)
+        self.settingsButton = TextButton(150, 470, "Settings", 48, (255,255,255), self.screen)
+        self.endButton = TextButton(150, 540, "Quit", 48, (255,255,255), self.screen)
         self.footerLabel = TextLabel(1290, 885, "© 2026 Aperture-Inspired Systems", 28, (180,180,180), self.screen)
         
                 
@@ -72,6 +73,7 @@ class MainMenu():
             self.startButton.draw() # Draws on the start Button
             self.endButton.draw() # Draws on the end Button
             self.settingsButton.draw()
+            self.leaderboardButton.draw()
             self.levelButton.draw()
             self.footerLabel.draw()
             self.titleLabel.draw()
@@ -114,6 +116,9 @@ class MainMenu():
                         
                     if self.levelButton.isClicked(event.pos):
                         self.MenuHandler.enableMenu("LevelSelect")
+                        
+                    if self.leaderboardButton.isClicked(event.pos):
+                        self.MenuHandler.enableMenu("Leaderboard")
 
             
                     print(event.pos)

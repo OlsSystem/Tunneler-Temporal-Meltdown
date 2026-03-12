@@ -3,7 +3,7 @@ import pygame
 import os
 import csv
 
-from modules.utils.LevelDictionary import levelById
+from modules.utils.LevelDictionary import getLevelName
 from modules.utils.ItemMapping import itemMap, itemImageMap, collisionItems, moveableItems
 from modules.utils.Timer import LevelTimer
 
@@ -208,7 +208,7 @@ class LevelGenerator():
             self.player.levelStarted(startX, startY, finishX, finishY, finishW, finishH) # starts the level
             return True 
         else:
-            print('err')
+            print('err missing fundemental values')
             return False    
         
     def loadWildCards(self): # used to link interactables together. ie doors n buttons
@@ -351,5 +351,5 @@ class LevelGenerator():
                     levelPath = os.path.join(path, level) # creates a temporary level path
 
                     if level.split(".")[0] == levelId: # checks the level .csv file is the correct by comparing ids
-                        self.levelName = levelById[chapterId][levelId] # level name from the levelById map
+                        self.levelName = getLevelName(chapterId, levelId) # level name from the levelById map
                         self.levelPath = levelPath # add the level path to the self 

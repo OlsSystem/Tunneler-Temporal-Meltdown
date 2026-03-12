@@ -77,6 +77,9 @@ class DataHandler():
     
     def fetchCurrentLevel(self):
         return self.currentData["currentLevel"]
+    
+    def fetchAllUsers(self):
+        return self.db.find()
         
     def loadData(self):
         userConfig = self.ensureUserConfig()
