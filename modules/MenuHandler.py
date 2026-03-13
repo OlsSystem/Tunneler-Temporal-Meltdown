@@ -145,6 +145,7 @@ class MenuHandler():
                 self.LG.levelEnded()
                 self.enableLevel(allChapters[currentChapterIndex + 1], "LV1")
             else:
+                self.LG.levelEnded()
                 self.enableMenu("FinishedGame")
     
     def enableLevel(self, chapterId, levelId):

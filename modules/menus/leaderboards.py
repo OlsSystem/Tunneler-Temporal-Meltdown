@@ -2,8 +2,7 @@
 import pygame
 from modules.utils.TextButton import TextButton
 from modules.utils.TextLabel import TextLabel
-from modules.utils.LevelDictionary import levelById
-
+from modules.menus.menuUtils import buildChapterButtons, buildLevelButtons, fetchTime
 
 class LeaderboardMenu:
     def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler, MenuHandler, brightnessHandler, dataHandler):
@@ -32,44 +31,13 @@ class LeaderboardMenu:
         self.chapterButtons = []
         self.levelButtons = []
 
-        self.buildChapterButtons()
+        buildChapterButtons(self)
 
-    def fetchTime(self, timeString):
-        mm, ss, cc = timeString.split(":")
-        minutes = int(mm)
-        seconds = int(ss)
-        centis = int(cc)
-        return (minutes * 60) + seconds + (centis / 100)
-
-    def enableUi(self, ):
+    def enableUi(self):
         self.enabled = True
 
     def disableUi(self):
         self.enabled = False
-
-    def buildChapterButtons(self):
-        self.chapterButtons.clear()
-        x = 736
-        y = 200
-        spacing = 80
-
-        for chapterId, chapterData in levelById.items():
-            button = TextButton(x, y, chapterData["name"], 36, (200, 50, 50), self.screen)
-            self.chapterButtons.append((chapterId, button))
-            y += spacing
-
-    def buildLevelButtons(self, chapterId):
-        self.levelButtons.clear()
-        x = 736
-        y = 200
-        spacing = 60
-
-        for level in levelById[chapterId]["levels"]:
-            levelId = level["id"]
-            levelName = level["name"]
-            button = TextButton(x, y, levelName, 32, (50, 200, 50), self.screen)
-            self.levelButtons.append((chapterId, levelId, button))
-            y += spacing
 
     def buildLeaderboard(self):
         self.scoreLabels.clear()
@@ -87,17 +55,17 @@ class LeaderboardMenu:
                 entries.append({
                     "username": username,
                     "timeString": levelTimes[levelKey],
-                    "timeSeconds": self.fetchTime(levelTimes[levelKey])
+                    "timeSeconds": fetchTime(levelTimes[levelKey])
                 })
 
         entries.sort(key=lambda x: x["timeSeconds"])
 
         y = 200
-        for entry in entries:
+        for i, entry in enumerate(entries):
             label = TextLabel(
                 736,
                 y,
-                f"{entry['username']} - {entry['timeString']}",
+                f"{i + 1}. {entry['username']} - {entry['timeString']}",
                 36,
                 (255, 255, 255),
                 self.screen
@@ -147,7 +115,7 @@ class LeaderboardMenu:
                     for chapterId, button in self.chapterButtons:
                         if button.isClicked(event.pos):
                             self.chapterId = chapterId
-                            self.buildLevelButtons(chapterId)
+                            buildLevelButtons(self, chapterId)
                             return
                         
                 if self.levelId is None:

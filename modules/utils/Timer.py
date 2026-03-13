@@ -50,8 +50,10 @@ class LevelTimer:
             currentTimeInSeconds = (self.currentMinute * 60) + self.currentSecond + (self.currentMiliSeconds / 100)
             if savedBestInSeconds > currentTimeInSeconds:
                 self.db.setLevelSpeed(Id, self.currentTime)
+                self.resetTimer()
                 return "New High Score"
             else:
+                self.resetTimer()
                 return "No Change score was lower"
             
         

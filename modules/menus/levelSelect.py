@@ -12,6 +12,7 @@ from modules.utils.RadioButtons import RadioButtons
 from modules.utils.Slider import Slider
 from modules.Player import Player
 from modules.utils.LevelDictionary import levelById
+from modules.menus.menuUtils import buildChapterButtons, buildLevelButtons
 
 # ---- Misc Variables ---- #
 
@@ -42,38 +43,13 @@ class LevelSelect:
         self.chapterButtons = []  
         self.levelButtons = []  
 
-        self.buildChapterButtons()
+        buildChapterButtons(self)
 
     def enableUi(self):
         self.enabled = True
 
     def disableUi(self):
         self.enabled = False
-
-    def buildChapterButtons(self):
-        self.chapterButtons.clear()
-        x = 736
-        y = 200
-        spacing = 80
-
-        for chapterId, chapterData in levelById.items():
-            button = TextButton(x, y, chapterData["name"], 36, (200, 50, 50), self.screen)
-            self.chapterButtons.append((chapterId, button))
-            y += spacing
-
-    def buildLevelButtons(self, chapterId):
-        self.levelButtons.clear()
-        x = 736
-        y = 200
-        spacing = 60
-
-        levels = levelById[chapterId]["levels"]
-        for level in levels:
-            levelId = level["id"]
-            levelName = level["name"]
-            button = TextButton(x, y, levelName, 32, (50, 200, 50), self.screen)
-            self.levelButtons.append((chapterId, levelId, button))
-            y += spacing
 
     def drawCurrentMenu(self):
         if not self.enabled:
@@ -100,14 +76,14 @@ class LevelSelect:
                         self.MenuHandler.enablePreviousMenu()
                     else:
                         self.currentChapter = None
-                        self.buildChapterButtons()
+                        buildChapterButtons(self)
                     continue
 
                 if self.currentChapter is None:
                     for chapterId, button in self.chapterButtons:
                         if button.isClicked(mouse_pos):
                             self.currentChapter = chapterId
-                            self.buildLevelButtons(chapterId)
+                            buildLevelButtons(self, chapterId)
                             break
                 else:
                     for chapterId, levelId, button in self.levelButtons:
