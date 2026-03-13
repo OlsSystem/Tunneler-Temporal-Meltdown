@@ -1,6 +1,7 @@
 # ---- Python Modules ---- #
 import time
 import pygame
+from pygame import mixer
 import os
 
 # ---- Custom Modules ---- #
@@ -41,6 +42,9 @@ player = Player(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.a
 
 # Initialise the Tunneler Class
 tunneler = Tunneler(screen, pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalA.png')).convert_alpha(), pygame.image.load(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets\portalB.png')).convert_alpha(), player, LG)
+
+mixer.music.load("assets/GameSound.mp3")
+mixer.music.play(-1)
 
 LG.setTunneler(tunneler)
 LG.setPlayer(player)
