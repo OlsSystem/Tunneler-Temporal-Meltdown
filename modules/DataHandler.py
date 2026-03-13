@@ -9,13 +9,16 @@ from bson import ObjectId
 
 # ---- Initialising Variables ---- # 
 config_path = "data/config.json"
+mongoDbUri = "mongodb://localhost:27017/" ## add to env 
 
 class DataHandler():
     def __init__(self):
         self.currentData = []
-        self.client = pymongo.MongoClient("mongodb://localhost:27017/")
-        self.collection = self.client["Tunneler"]
-        self.db = self.collection["PlayerData"]
+        # initialises the database client connection
+        self.client = pymongo.MongoClient(mongoDbUri)
+        self.database = self.client["Tunneler"]
+        self.db = self.database["PlayerData"]
+        # makes sure that the username is always something unique
         self.db.create_index("username", unique=True)
         self.menuHandler = None
         
@@ -29,7 +32,7 @@ class DataHandler():
             "levelTimes": {},
         }
     
-    def ensureUserConfig(self):
+    def ensureUserConfig(self): # checks for a local config file for the users uuid
         if not os.path.exists(config_path):
             self.menuHandler.enableMenu("NewUser")
             return 
@@ -39,16 +42,17 @@ class DataHandler():
 
         return config
     
-    def setNewUserData(self, username):
+    def setNewUserData(self, username): # creates new user data if none can be found
         data = self.formatPlayerData(username)
         
         try:
             doc = self.db.insert_one(data)
-        except DuplicateKeyError:
+        except DuplicateKeyError: # if data cant be inserted due to the duplicated username itll return false and ask again
             return False
         
         self.currentData = data
         
+        # writes the data to the config file to be used when people load up
         config = {
             "userID": str(doc.inserted_id),
         }
@@ -62,26 +66,11 @@ class DataHandler():
         print(f"Config created for user '{username}'")
         return True
 
-    def saveData(self):
+    def saveData(self): # save user data 
         self.db.update_one({"_id": self.currentData["_id"]}, {"$set": self.currentData })
         print('Data has been saved.')
         
-    def setCurrentLevel(self, currentLevel):
-        self.currentData["currentLevel"] = currentLevel
-        
-    def setLevelSpeed(self, id, time):
-        self.currentData["levelTimes"][id] = time
-        
-    def fetchLevelTime(self, id):
-        return self.currentData["levelTimes"].get(id)
-    
-    def fetchCurrentLevel(self):
-        return self.currentData["currentLevel"]
-    
-    def fetchAllUsers(self):
-        return self.db.find()
-        
-    def loadData(self):
+    def loadData(self): # loads user data if it can find config. if it cant itll send the user to the new user screen
         userConfig = self.ensureUserConfig()
         
         if userConfig:
@@ -91,9 +80,23 @@ class DataHandler():
                 self.menuHandler.enableMenu("NewUser")
             else:
                 self.currentData = userData
-                
-        print(userData)
-        
+              
+    # ---- Encapsulation ----- #
+    
+    def fetchLevelTime(self, id):
+        return self.currentData["levelTimes"].get(id)
+    
+    def fetchCurrentLevel(self):
+        return self.currentData["currentLevel"]
+    
+    def fetchAllUsers(self):
+        return self.db.find()
+              
     def fetchData(self):
         return self.currentData
     
+    def setCurrentLevel(self, currentLevel):
+        self.currentData["currentLevel"] = currentLevel
+        
+    def setLevelSpeed(self, id, time):
+        self.currentData["levelTimes"][id] = time

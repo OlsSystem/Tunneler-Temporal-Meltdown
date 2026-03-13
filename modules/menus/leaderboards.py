@@ -55,7 +55,7 @@ class LeaderboardMenu:
                 entries.append({
                     "username": username,
                     "timeString": levelTimes[levelKey],
-                    "timeSeconds": fetchTime(levelTimes[levelKey])
+                    "timeSeconds": fetchTime(self, levelTimes[levelKey])
                 })
 
         entries.sort(key=lambda x: x["timeSeconds"])

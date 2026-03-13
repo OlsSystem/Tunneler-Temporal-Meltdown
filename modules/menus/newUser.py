@@ -77,5 +77,3 @@ class NewUser:
                             Thread(target=self.hideError).start()      
                 
             self.inputBox.update()
-            
-
