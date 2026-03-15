@@ -17,7 +17,7 @@ class TextBox:
         self.cursor_visible = True
         self.cursor_timer = time.time()
 
-    def handle_event(self, event):
+    def handleEvents(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 self.active = True
@@ -54,5 +54,5 @@ class TextBox:
             cursor_h = render.get_height()
             pygame.draw.line(self.screen, self.text_color, (cursor_x, cursor_y), (cursor_x, cursor_y + cursor_h), 2)
 
-    def get_value(self):
+    def fetchValue(self):
         return self.text

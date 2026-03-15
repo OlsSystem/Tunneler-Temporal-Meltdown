@@ -123,6 +123,8 @@ class LevelGenerator():
             print(response)
             self.timer.resetTimer() # restarts the timer
             self.levelCompleated = False
+        else:
+            self.timer.resetTimer() # restarts the timer
 
         
     def levelEnded(self): # resets all values to zero ready for the next level

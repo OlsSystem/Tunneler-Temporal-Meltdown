@@ -19,6 +19,7 @@ class LeaderboardMenu:
         self.brightnessSurface = brightnessHandler
         self.db = dataHandler
         
+        # initialises the ui
         self.fetchAllUsers = self.db.fetchAllUsers
 
         self.chapterId = None
@@ -31,6 +32,7 @@ class LeaderboardMenu:
         self.chapterButtons = []
         self.levelButtons = []
 
+        # builds the chapter buttons
         buildChapterButtons(self)
 
     def enableUi(self):
@@ -47,6 +49,7 @@ class LeaderboardMenu:
 
         entries = []
 
+        # loops through all the users for fetching the time for the current level key set
         for user in users:
             username = user.get("username")
             levelTimes = user.get("levelTimes", {})
@@ -55,13 +58,15 @@ class LeaderboardMenu:
                 entries.append({
                     "username": username,
                     "timeString": levelTimes[levelKey],
-                    "timeSeconds": fetchTime(self, levelTimes[levelKey])
+                    "timeSeconds": fetchTime(self, levelTimes[levelKey]) # converts the XX:XX:XX to seconds
                 })
 
+        # uses a lambda function to sort the times into decending order
         entries.sort(key=lambda x: x["timeSeconds"])
 
+        # loops through all entries and appends them to an array
         y = 200
-        for i, entry in enumerate(entries):
+        for i, entry in enumerate(entries): # uses enumeration to get the index of each entry
             label = TextLabel(
                 736,
                 y,
@@ -85,6 +90,7 @@ class LeaderboardMenu:
         self.title.draw()
         self.backButton.draw()
 
+        # draws on items based on where its at. 
         if self.chapterId is None:
             for chapterId, button in self.chapterButtons:
                 button.draw()
@@ -92,8 +98,7 @@ class LeaderboardMenu:
         elif self.levelId is None:
             for chapterId, levelId, button in self.levelButtons:
                 button.draw()
-
-        else:
+        else: # draws on the scores 
             for label in self.scoreLabels:
                 label.draw()
 
@@ -111,13 +116,15 @@ class LeaderboardMenu:
                         self.MenuHandler.enablePreviousMenu()
                     return
 
+                # builds level buttons if the chapter is selected
                 if self.chapterId is None:
                     for chapterId, button in self.chapterButtons:
                         if button.isClicked(event.pos):
                             self.chapterId = chapterId
                             buildLevelButtons(self, chapterId)
                             return
-                        
+
+                # builds the leaderboard if the level and chapter are selected     
                 if self.levelId is None:
                     for chapterId, levelId, button in self.levelButtons:
                         if button.isClicked(event.pos):

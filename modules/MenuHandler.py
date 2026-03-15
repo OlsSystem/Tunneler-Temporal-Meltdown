@@ -111,23 +111,29 @@ class MenuHandler():
         currentChapter, currentLevel = self.dataHandler.fetchCurrentLevel().split("/")
         chapterPath = os.path.join(os.path.join(self.rootDir, "levels"), currentChapter)
         
+        # groups all levels together
         allLevels = [
             lvl for lvl in os.listdir(chapterPath)
             if lvl.startswith("LV") and lvl.endswith(".csv")
         ]
         
+        # sorts all levels out using a lambda function and fetching the current levels index value 
         allLevels.sort(key=lambda lvl: int(lvl.replace("LV", "").replace(".csv", "")))
         currentLevelIndex = allLevels.index(f"{currentLevel}.csv")
         
+        # doesnt exist heads to level select
         if currentLevelIndex == -1:
             print('errr cant find lvl index')
             self.enableMenu("LevelSelect")
             return
             
+        # checks if there is a next level
         if currentLevelIndex + 1 < len(allLevels):
             self.LG.levelEnded()
             self.enableLevel(currentChapter, allLevels[currentLevelIndex + 1])
-        else:
+        else: # if there isnt check for next chapter
+
+            # runs through the same prossess as levels but instead for chapters
             allChapters = [
                 chp for chp in os.listdir(os.path.join(self.rootDir, "levels"))
                 if chp.startswith("CH")
@@ -144,7 +150,7 @@ class MenuHandler():
                 print(allChapters[currentChapterIndex + 1], "LV1")
                 self.LG.levelEnded()
                 self.enableLevel(allChapters[currentChapterIndex + 1], "LV1")
-            else:
+            else: # if there isnt a next chapter nor level then finish game 
                 self.LG.levelEnded()
                 self.enableMenu("FinishedGame")
     
@@ -168,7 +174,7 @@ class MenuHandler():
         
         # checks that the levels loaded and the cameras on.
         if hasLoaded and self.HT.checkCamera() == True:
-            self.enableMenu("LevelUI")               
+            self.enableMenu("LevelUI")        
         
     def disableLevel(self):
         # disable the level ui

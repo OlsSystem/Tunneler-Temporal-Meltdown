@@ -7,6 +7,7 @@ from modules.utils.Spritesheet import SpriteSheet
 from modules.utils.Particles import Dust, dustParticles
 # ---- Misc Variables ---- #
 
+GROUND_BUFFER = 6
 
 # ---- Initialising Variables ---- # 
 
@@ -32,6 +33,7 @@ class Player(pygame.sprite.Sprite):
         self.jumpOnCooldown = False
         self.yVelocity = self.jumpHeight
         self.mass = self.playerWeight
+        self.isGravityDisabled = True
         
         self.finishRect = None
         
@@ -84,7 +86,8 @@ class Player(pygame.sprite.Sprite):
             self.Facing = "Right"
             self.isMoving = True # sets moving to true
         elif event == "Jump":
-            self.isJumping = True
+            if not self.jumpOnCooldown and self.isOnGround(self.LG.canCollide, self.LG.canMove):
+                self.isJumping = True
 
 
     def keyUp(self, event): # as a key is pressed the x direction is changed to signify a stopping motion.
@@ -97,8 +100,8 @@ class Player(pygame.sprite.Sprite):
             
     def movePlayerToCoordinates(self, x, y):
         self.rectangle.x = x
-        self.rectangle.y = y - 48
-        self.y = y - 48
+        self.rectangle.y = y - 54
+        self.y = y - 54
 
     def tunnelPlayer(self, x, y, tunnelColour):
         # moves the player to where the tunnel is.
@@ -133,16 +136,77 @@ class Player(pygame.sprite.Sprite):
                 interactable.setPressed(False)
 
         return skipArray
+    
+    def fetchGround(self, canCollide, hasMoveables=None): # fetches the position of the object the players currently on top
+        feet_y = self.rectangle.bottom
 
+        if canCollide:
+            for obj in canCollide:
+                if abs(feet_y - obj.top) <= 6:
+                    if self.rectangle.right > obj.left and self.rectangle.left < obj.right:
+                        return obj.top
+
+        if hasMoveables:
+            for data in hasMoveables:
+                rect = data["rect"]
+                if abs(feet_y - rect.top) <= 6:
+                    if self.rectangle.right > rect.left and self.rectangle.left < rect.right:
+                        return rect.top
+                    
+        # returns none if it hasnt returned already
+        return None
+
+    def isOnGround(self, canCollide, hasMoveables=None): # check if the player is on the ground or ontop of a moveable
+        feet_y = self.rectangle.bottom
+
+        if canCollide:
+            for obj in canCollide:
+                if abs(feet_y - obj.top) <= GROUND_BUFFER: # ground buffer used to make sure player doesnt fall into the floor and prevent themself from moving
+                    if self.rectangle.right > obj.left and self.rectangle.left < obj.right:
+                        return True
+
+        if hasMoveables:
+            for data in hasMoveables:
+                rect = data["rect"]
+                if abs(feet_y - rect.top) <= GROUND_BUFFER:
+                    if self.rectangle.right > rect.left and self.rectangle.left < rect.right:
+                        return True
+
+        return False
+
+    def fetchSideCollided(self, playerRect, objectRect): # fetch the side that they player is interacting with
+        dx = (playerRect.centerx - objectRect.centerx)
+        dy = (playerRect.centery - objectRect.centery)
+
+        width = (playerRect.width + objectRect.width) / 2
+        height = (playerRect.height + objectRect.height) / 2
+
+        crossWidth = width * dy
+        crossHeight = height * dx
+
+        if abs(dx) <= width and abs(dy) <= height: # checks absolute values of dx and dy with width and height
+            # compares the product of width and dy with height and dx
+            if crossWidth > crossHeight:
+                if crossWidth > -crossHeight:
+                    return "bottom" 
+                else:
+                    return "left"   
+            else:
+                if crossWidth > -crossHeight:
+                    return "right"   
+                else:
+                    return "top"     
+
+        return None
     
     def movePlayer(self, canCollide=None, hasMoveables=None, isInLevel=False):
         if not isInLevel: return
         
         hasCollided = False # checks for collisions
-        shouldJump = False
         shouldMove = True
         jumpForce = (1/2) * self.mass * (self.yVelocity**2)
-            
+        onGround = self.isOnGround(canCollide, hasMoveables)
+
         skipArray = []  
         if hasMoveables:  
             for obj in hasMoveables:
@@ -153,7 +217,6 @@ class Player(pygame.sprite.Sprite):
         self.checkIfCollidingInteractable(self.rectangle, skipArray)
             
         if self.isJumping and not self.jumpOnCooldown: # check for if the person isnt on cooldown and is currently jumping
-            shouldJump = True
             self.yVelocity -= 0.4 # change the velocity by 0.4
             
             if self.yVelocity < 0: # once the velocity is less then 0 reverse the mass
@@ -161,14 +224,15 @@ class Player(pygame.sprite.Sprite):
                 
             if self.yVelocity <= -(self.jumpHeight - 1): # check if the velocity less or equal to -(jumpheight minus 1) 
                 self.isJumping = False # change jumping and should jump to false
-                shouldJump = False
                 Thread(target=self.jumpCooldown).start() # start the cooldown
 
                 # reset all values
                 self.yVelocity = self.jumpHeight
                 self.mass = self.playerWeight
 
-                self.rectangle.y = self.y
+
+        if isInLevel and not self.isJumping and not onGround: # change players yvelocity if they are not onthe grund
+            self.yVelocity += self.yGravity
         
         if canCollide: # if there are any collidable objects in the map.
             for object in canCollide: # loops through each object in the can collide list.
@@ -197,53 +261,48 @@ class Player(pygame.sprite.Sprite):
 
 
         if hasMoveables: # if theres moveables
-            collidedWithWall = False
             for i, data in enumerate(hasMoveables): # loops through all the moveab;es
                 if self.rectangle.colliderect(data["rect"]): # checks if the player has collided with a rect of the moveable.
+                    side = self.fetchSideCollided(self.rectangle, data["rect"])
 
-                    # gets the x and y of the player
-                    dx = self.speed * self.x_direction
-                    dy = self.speed * self.y_direction
+                    # if the player is ontop of the box then make the game keep them their untill they walk off
+                    if side == "top":
+                        onGround = True
+                        self.rectangle.bottom = data["rect"].top
+                        self.yVelocity = self.jumpHeight
+                        self.mass = self.playerWeight
+                        continue
 
-                    if canCollide: # checks if theres collidables
-                        for object in canCollide:
-                                                    
-                            # loops through each collideable checking if the players touching it and moveing. if moving in the opposite way it ignores
-                            if object.collidepoint(data["rect"].topleft) and self.x_direction == 2:
-                                shouldMove = False
-                                break
+                    # if players below the box then stop them jumping
+                    if side == "bottom":
+                        self.isJumping = False
+                        self.yVelocity = self.jumpHeight
+                        continue
 
-                            if object.collidepoint(data["rect"].bottomright) and self.x_direction == -2:
-                                shouldMove = False
-                                break
-
-                            # if box isnt moving and collided the player has collided
-                            if object.collidepoint(data["rect"].topleft):
-                                collidedWithWall = True
-
-                            if object.collidepoint(data["rect"].bottomright):
-                                collidedWithWall = True
-
-                            if collidedWithWall: # checks if box collided with the wall
-                                hasCollided = True # sets collided to true doesnt allow player to move and box
-                                shouldMove = False # sets should move to false to not move the box
-                                
-                                # resets the x and y
-                                if self.x_direction != 0:
-                                    self.x_direction = 0
-                                if self.y_direction != 0:
-                                    self.y_direction = 0
-                                break
-
-                    # Only push if player is actually moving
-                    if (dx != 0 or dy != 0) and collidedWithWall == False and shouldMove:
-                        self.LG.moveMoveable(i)
+                    # if players attempting to push the box then move it left n right
+                    if side in ("left", "right"):
+                        if shouldMove:
+                            self.LG.moveMoveable(i)
+                        hasCollided = True
+                        self.x_direction = 0
+                        continue
 
 
         if not hasCollided: # if there's no collisions start to move the players x and y values
             self.rectangle.x += self.speed * self.x_direction
-            if shouldJump and not self.jumpOnCooldown:
+            
+            if self.isJumping and not self.jumpOnCooldown: # make player jump
                 self.rectangle.y -= jumpForce
+            elif isInLevel and not onGround: # enforce gravity
+                self.rectangle.y += self.yVelocity
+            elif onGround: # if the players on the ground fetch the ground y of where the player is and make sure the value is the same for the rectangle of the player
+                groundY = self.fetchGround(canCollide, hasMoveables)
+                if groundY is not None:
+                    self.rectangle.bottom = groundY 
+
+                # reset jump values
+                self.yVelocity = self.jumpHeight
+                self.mass = self.playerWeight
             
         self.draw(isInLevel) # draw the sprite in the new location
     

@@ -63,15 +63,17 @@ class NewUser:
 
             for event in pygame.event.get():  # Constantly Event Checking.
                 self.InputHandler.inputCheck(event)
-                self.inputBox.handle_event(event)
+                self.inputBox.handleEvents(event)
                 
                 if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
                     if self.applyButton.isClicked(event.pos):
-                        response = self.db.setNewUserData(self.inputBox.get_value())
+                        # send through the input from the box and see if data can be made
+                        response = self.db.setNewUserData(self.inputBox.fetchValue())
                     
                         if response:
                             self.MenuHandler.enableMenu("Main")
                         else:
+                            # send error through and give it a cooldown before it hides itself.
                             self.errorLabel.updateText("Username already taken.")
                             self.showError = True    
                             Thread(target=self.hideError).start()      

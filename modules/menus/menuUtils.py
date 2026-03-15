@@ -22,6 +22,7 @@ def buildChapterButtons(self):
     y = 200
     spacing = 80
 
+    # loops through all chapteres and appends buttons to an array with a spacing of 80 on the y axis
     for chapterId, chapterData in levelById.items():
         button = TextButton(x, y, chapterData["name"], 36, (200, 50, 50), self.screen)
         self.chapterButtons.append((chapterId, button))
@@ -33,6 +34,7 @@ def buildLevelButtons(self, chapterId):
     y = 200
     spacing = 60
 
+    # loops through all levels and appends buttons to an array with a spacing of 80 on the y axis
     for level in levelById[chapterId]["levels"]:
         levelId = level["id"]
         levelName = level["name"]
@@ -40,6 +42,7 @@ def buildLevelButtons(self, chapterId):
         self.levelButtons.append((chapterId, levelId, button))
         y += spacing
 
+# converts XX:XX:XX time to seconds for comparisons
 def fetchTime(self, timeString):
     mm, ss, cc = timeString.split(":")
     minutes = int(mm)

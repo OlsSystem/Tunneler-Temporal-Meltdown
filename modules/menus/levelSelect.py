@@ -34,6 +34,7 @@ class LevelSelect:
         self.InputHandler = InputHandler
         self.MenuHandler = MenuHandler
 
+        # initialises the ui
         self.currentChapter = None  
 
         self.title = TextLabel(736, 50, "Select a Level", 64, (255, 255, 255), screen)
@@ -43,6 +44,7 @@ class LevelSelect:
         self.chapterButtons = []  
         self.levelButtons = []  
 
+        # builds chapter buttons
         buildChapterButtons(self)
 
     def enableUi(self):
@@ -58,6 +60,7 @@ class LevelSelect:
         self.title.draw()
         self.backButton.draw()
 
+        # draws on items based on where its at. 
         if self.currentChapter is None:
             for chapterId, button in self.chapterButtons:
                 button.draw()
@@ -71,6 +74,7 @@ class LevelSelect:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
 
+                # builds chapter buttons if nothings selected
                 if self.backButton.isClicked(mouse_pos):
                     if self.currentChapter is None:
                         self.MenuHandler.enablePreviousMenu()
@@ -79,6 +83,7 @@ class LevelSelect:
                         buildChapterButtons(self)
                     continue
 
+                # builds level buttons if the chapter is selected
                 if self.currentChapter is None:
                     for chapterId, button in self.chapterButtons:
                         if button.isClicked(mouse_pos):
@@ -86,6 +91,7 @@ class LevelSelect:
                             buildLevelButtons(self, chapterId)
                             break
                 else:
+                    # enables level selected
                     for chapterId, levelId, button in self.levelButtons:
                         if button.isClicked(mouse_pos):
                             self.MenuHandler.enableLevel(chapterId, levelId)
