@@ -26,6 +26,7 @@ class TextLabel():
 
     def draw(self):
         #self.screen.fill((30,30,30), self.rectangle)
+        self.rectangle.center = (self.x, self.y) # Sets the coordinates of the render to specified x and y coordinates. incase they get changed
         self.screen.blit(self.render, (self.rectangle.x, self.rectangle.y)) # On call draws on the text.
         
         

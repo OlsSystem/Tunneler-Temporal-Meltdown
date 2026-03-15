@@ -22,7 +22,7 @@ Red = (0, 0, 255)
 
 
 class SettingsMenu:
-    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler, MenuHandler, brightnessHandler):
+    def __init__(self, screen, handTracking, cursor, levelGenerator, clock, rootDir, tunneler, InputHandler, MenuHandler, brightnessHandler, dataHandler):
         self.enabled = False
         self.screen = screen
         self.HT = handTracking
@@ -34,6 +34,7 @@ class SettingsMenu:
         self.InputHandler = InputHandler
         self.MenuHandler = MenuHandler
         self.brightnessSurface = brightnessHandler
+        self.db = dataHandler
 
         # Menu components
         self.title = TextLabel(736, 50, "Settings", 64, (255, 255, 255), screen)
@@ -69,15 +70,19 @@ class SettingsMenu:
             for event in pygame.event.get():  # Constantly Event Checking.
                 self.InputHandler.inputCheck(event)
                 self.volumeSlider.isClicked(event)
+                self.brightnessSlider.isClicked(event)
                 
-                # sets brightness as you slide it along
-                if self.brightnessSlider.isClicked(event) != False:
-                    self.brightnessSurface.set_alpha(int((100 - self.brightnessSlider.fetchValue()) * 2.55)) 
-
                 if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
                     if self.applyButton.isClicked(event.pos):
                         pygame.mixer.music.set_volume(self.volumeSlider.fetchValue() / 100) # sets the volume slider 
-                        
+                        self.brightnessSurface.set_alpha(int((100 - self.brightnessSlider.fetchValue()) * 2.55)) 
+
+                        # save to a file
+                        self.db.saveSettings({
+                            "volume": self.volumeSlider.fetchValue() / 100,
+                            "brightness": int((100 - self.brightnessSlider.fetchValue()) * 2.55)
+                        })
+
                     # to previous menu
                     if self.backButton.isClicked(event.pos):
                         self.MenuHandler.enablePreviousMenu()

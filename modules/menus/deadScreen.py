@@ -51,18 +51,30 @@ class PlayerDiedScreen:
         self.enabled = False
 
     def drawCurrentMenu(self):
-        if self.enabled == True:
+        if not self.enabled:
+            return
 
-            # draw on the components
-            self.title.draw()
-            self.restartButton.draw()
-            self.time.updateText(self.LG.timer.getCurrentTime())
-            self.time.draw()
+        title_h = self.title.render.get_height()
+        self.title.x = (1472 // 2) 
+        self.title.y = 150
 
-            for event in pygame.event.get():  # Constantly Event Checking.
-                self.InputHandler.inputCheck(event)
+        self.time.updateText(self.LG.timer.getCurrentTime())
+        time_h = self.time.render.get_height()
+        self.time.x = (1472 // 2) 
 
-                if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
+        self.time.y = self.title.y + title_h + 60
+        self.restartButton.rectangle.centerx = 1472 // 2
+        self.restartButton.rectangle.centery = self.time.y + time_h + 120
 
-                    if self.restartButton.isClicked(event.pos):
-                        self.MenuHandler.restartLevel() # restarts the level when clicked
+        # Draw UI elements
+        self.title.draw()
+        self.time.draw()
+        self.restartButton.draw()
+
+        # Event handling
+        for event in pygame.event.get():
+            self.InputHandler.inputCheck(event)
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.restartButton.isClicked(event.pos):
+                    self.MenuHandler.restartLevel()

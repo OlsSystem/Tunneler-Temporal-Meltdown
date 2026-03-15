@@ -9,6 +9,7 @@ from bson import ObjectId
 
 # ---- Initialising Variables ---- # 
 config_path = "data/config.json"
+settings_path = "data/settings.json"
 mongoDbUri = "mongodb://localhost:27017/" ## add to env 
 
 class DataHandler():
@@ -35,12 +36,20 @@ class DataHandler():
     def ensureUserConfig(self): # checks for a local config file for the users uuid
         if not os.path.exists(config_path):
             self.menuHandler.enableMenu("NewUser")
-            return 
+            return {}
         
         with open(config_path, "r") as f:
             config = json.load(f)
 
         return config
+    
+    def saveSettings(self, settings):
+        os.makedirs("data", exist_ok=True)
+
+        with open(settings_path, "w") as f:
+            json.dump(settings, f, indent=4)
+
+        print("Saved the data ",)
     
     def setNewUserData(self, username): # creates new user data if none can be found
         data = self.formatPlayerData(username)
@@ -82,6 +91,19 @@ class DataHandler():
                 self.currentData = userData
               
     # ---- Encapsulation ----- #
+
+    def fetchSettings(self):
+        if not os.path.exists(settings_path):
+            return {"volume": 1.0, "brightness": 1.0}  # defaults
+
+        with open(settings_path, "r") as f:
+            data = json.load(f)
+
+        # Extract only the settings you care about
+        return {
+            "volume": data.get("volume", 1.0),
+            "brightness": data.get("brightness", 1.0)
+        }
     
     def fetchLevelTime(self, id):
         return self.currentData["levelTimes"].get(id)

@@ -49,16 +49,24 @@ class PlayerFinishedGame:
         self.enabled = False
 
     def drawCurrentMenu(self):
-        if self.enabled == True:
+        if not self.enabled:
+            return
 
-            # draw on the components
-            self.title.draw()
-            self.home.draw()
+        title_h = self.title.render.get_height()
+        self.title.x = (1472 // 2)
+        self.title.y = 180
 
-            for event in pygame.event.get():  # Constantly Event Checking.
-                self.InputHandler.inputCheck(event)
+        self.home.rectangle.centerx = 1472 // 2
+        self.home.rectangle.centery = self.title.y + title_h + 120
 
-                if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
+        # Draw UI elements
+        self.title.draw()
+        self.home.draw()
 
-                    if self.home.isClicked(event.pos):
-                        self.MenuHandler.enableMenu("Main") # restarts the level when clicked
+        # Event handling
+        for event in pygame.event.get():
+            self.InputHandler.inputCheck(event)
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.home.isClicked(event.pos):
+                    self.MenuHandler.enableMenu("Main")

@@ -36,9 +36,22 @@ class LevelUI:
         self.Player = Player
         
         # Menu components
-        self.title = TextLabel(736, 50, "Level", 64, (255, 255, 255), screen)
+        self.levelName = TextLabel(
+            736, 30,
+            self.LG.levelName,
+            36,
+            (255, 255, 255),
+            screen
+        )
 
-        self.Pause = TextButton(800, 50, "Pause", 36, (200, 50, 50), screen)
+        self.Pause = TextButton(
+            0, 0,
+            "Pause",
+            40,
+            (220, 80, 80),
+            screen
+        )
+
 
 
     def enableUi(self):
@@ -48,36 +61,44 @@ class LevelUI:
         self.enabled = False
 
     def drawCurrentMenu(self):
-        if self.enabled == True:
+        if not self.enabled:
+            return
 
-            self.title.draw()
-            self.Pause.draw()
-            
-            self.LG.timer.handleTimer()
-            self.LG.timer.drawTimer()
-            
-            # player movement handling
-            if self.HT.handLocation == "Top Right":
-                self.Player.keyUp("Left")
-                self.Player.keyDown("Right")
-            elif self.HT.handLocation == "Top Left":
-                self.Player.keyUp("Right")
-                self.Player.keyDown("Left")
-            elif self.HT.handLocation == "Bottom Left" or self.HT.handLocation == "Bottom Right":
-                self.Player.keyDown("Jump")
-                self.Player.keyUp("Right")
-                self.Player.keyUp("Left")
-            else:
-                self.Player.keyUp("Right")
-                self.Player.keyUp("Left")
+        pygame.draw.rect(self.screen, (20, 20, 20), (0, 0, 1472, 120))
+        pygame.draw.line(self.screen, (80, 80, 80), (0, 120), (1472, 120), 2)
 
-    
-            for event in pygame.event.get(): # Constantly Event Checking.    
-                self.InputHandler.inputCheck(event)
-                
-                if (event.type == pygame.MOUSEBUTTONDOWN):  # When the event is mouse button and down and event button is 1 (keydown)
+        name_h = self.levelName.render.get_height()
+        self.levelName.x = (1472 // 2) 
+        self.levelName.y = 30 
 
-                    # pause menu logic
-                    if self.Pause.isClicked(event.pos):
-                        self.LG.levelStatus()
-                        self.MenuHandler.enableMenu("LevelPause")
+        self.Pause.rectangle.centerx = 1472 // 2
+        self.Pause.rectangle.centery = 30 + name_h + 25 
+        self.levelName.updateText(self.LG.levelName)
+        
+        self.levelName.draw()
+        self.Pause.draw()
+
+        self.LG.timer.handleTimer()
+        self.LG.timer.drawTimer()
+
+        if self.HT.handLocation == "Top Right":
+            self.Player.keyUp("Left")
+            self.Player.keyDown("Right")
+        elif self.HT.handLocation == "Top Left":
+            self.Player.keyUp("Right")
+            self.Player.keyDown("Left")
+        elif self.HT.handLocation in ("Bottom Left", "Bottom Right"):
+            self.Player.keyDown("Jump")
+            self.Player.keyUp("Right")
+            self.Player.keyUp("Left")
+        else:
+            self.Player.keyUp("Right")
+            self.Player.keyUp("Left")
+
+        for event in pygame.event.get():
+            self.InputHandler.inputCheck(event)
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.Pause.isClicked(event.pos):
+                    self.LG.levelStatus()
+                    self.MenuHandler.enableMenu("LevelPause")

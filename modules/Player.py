@@ -8,6 +8,7 @@ from modules.utils.Particles import Dust, dustParticles
 # ---- Misc Variables ---- #
 
 GROUND_BUFFER = 6
+SPAWN_BUFFER = 56
 
 # ---- Initialising Variables ---- # 
 
@@ -27,8 +28,8 @@ class Player(pygame.sprite.Sprite):
         self.x_direction = 0
         self.y_direction = 0
         
-        self.yGravity = 1
-        self.jumpHeight = 7
+        self.yGravity = 1.4
+        self.jumpHeight = 5
         self.playerWeight = 1
         self.jumpOnCooldown = False
         self.yVelocity = self.jumpHeight
@@ -100,8 +101,8 @@ class Player(pygame.sprite.Sprite):
             
     def movePlayerToCoordinates(self, x, y):
         self.rectangle.x = x
-        self.rectangle.y = y - 54
-        self.y = y - 54
+        self.rectangle.y = y - SPAWN_BUFFER
+        self.y = y - SPAWN_BUFFER
 
     def tunnelPlayer(self, x, y, tunnelColour):
         # moves the player to where the tunnel is.
@@ -248,7 +249,7 @@ class Player(pygame.sprite.Sprite):
                     hasCollided = False
                     self.MenuHandler.enableMenu("WinScreen") # sets a "win screen"
                     break
-                    
+                
                 # if they have collided with the wall then stop movement
                 if self.rectangle.colliderect(object):
                     hasCollided = True
