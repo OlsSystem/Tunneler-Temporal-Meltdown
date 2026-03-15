@@ -179,3 +179,9 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+
+pictures.py
+assets/bettingTonBulk.png
+assets/harryNorris.png
+assets/jay.png

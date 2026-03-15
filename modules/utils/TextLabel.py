@@ -6,26 +6,31 @@ import pygame
 
 # ---- Initialising Variables ---- # 
 
-class TextButton():
-    def __init__(self, x, y, text, font_size, color, screen): # Basic Setup of the text button and variables it needs.
+
+class TextLabel():
+    def __init__(self, x, y, text, font_size, color, screen): # Basic Setup of the text labels and variables it needs.
         
         # Requested variables from when creating a new instance of this class.
         self.screen = screen 
         self.text = text 
         self.color = color
+        
+        self.x = x
+        self.y = y
 
         self.font = pygame.font.Font(None, font_size) # Sets the font of the Text
         self.render = self.font.render(self.text, True, self.color) # Renders the text in the colour and font
 
         self.rectangle = self.render.get_rect() # Gets the coordinates of the render.
         self.rectangle.center = (x, y) # Sets the coordinates of the render to specified x and y coordinates.
-        
+
     def draw(self):
-        # make box round text later
+        #self.screen.fill((30,30,30), self.rectangle)
         self.screen.blit(self.render, (self.rectangle.x, self.rectangle.y)) # On call draws on the text.
         
-    def isClicked(self, pos):
-        if self.rectangle.collidepoint(pos): # Checks that where the mouse is and if its on top of the button it returns true
-            return True
-        else: 
-            return False
+        
+    def updateText(self, newText):
+        self.text = newText
+        self.render = self.font.render(newText, True, self.color)
+        self.rectangle = self.render.get_rect(topleft=self.rectangle.topleft)
+        

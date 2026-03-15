@@ -2,6 +2,7 @@
 import cv2
 from threading import Thread
 import mediapipe
+import math
 
 # ---- Misc Variables ---- #
 
@@ -15,8 +16,8 @@ Red = (0, 0, 255)
 coordinates = [ # Coordinate points for the grid 640x480 and applies colour
     
     # -- Central Cross -- #
-    [(320,0), (320,480), Pink],
-    [(0,240), (640,240), Pink],
+    [(320,55), (320,425), Pink],
+    [(60,240), (580,240), Pink],
 
     # -- Dead Zone Box -- #
     [(380,200), (380,280), Red],
@@ -37,12 +38,22 @@ class TrackHands():
         #camera.set(cv2.CAP_PROP_FRAME_WIDTH, 1920) # Allows me to test out the camera in a bigger size
         #camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
-        self.cameraUiEnabled = True # used to turn off the camera when its not needed.
+        self.cameraUiEnabled = False # used to turn off the camera when its not needed.
         self.mpHandsSolution = mediapipe.solutions.hands # Imports the hands solution from Mediapipe
 
         self.hand = self.mpHandsSolution.Hands() # Initialises the Hands moduel from the hands solution
-    
+        self.LG = None
+        self.handLocation = "Unknown"
+        self.menuTracked = False
+        self.foundCamera = False
+        self.x, self.y = 100, 100
 
+    def setLevelGen(self, LG):
+        self.LG = LG
+        
+    def checkCamera(self):
+        return self.foundCamera # returns if cameras active  
+    
     def start(self):
         self.camera = cv2.VideoCapture(0) # Used to fetch the camera feed.
         
@@ -57,51 +68,101 @@ class TrackHands():
 
     def stop(self): # Disables the camera feed and thread.
         print("Stopping camera...")
-        self.cameraUiEnabled = False
+        self.cameraUiEnabled = False # Sets the for loop within the thread to false so it stops.
 
-        if self.camera:
-            self.camera.release()
-            self.camera = None
-            cv2.destroyWindow("image")
+        if self.camera: # If theres still and camera it will
+            self.camera.release() # Shuts off the camera Feed. 
+            self.camera = None # Sets the camera to None to allow for boot up again.
+            cv2.destroyWindow("image") # Closes out the window that shows the camera.
 
+    def enableMenuTracking(self, cursor):
+        self.menuTracked = True # Enables the menu tracking to be used.
+        self.cursor = cursor # Brings the cursor over from the core file to be used and changed with mediapipe and cv2.
+        
+    def disableMenuTracking(self):
+        self.menuTracked = False # Disables the menu tracking.
+        self.cursor.setImage("Idle")
+        
+    def setXandY(self, x, y):
+        self.x = x # Sets the hands x
+        self.y = y # Sets the hands y
+
+    def menuTracking(self):
+        if self.menuTracked: # If the menus enabled and hand tracking is on.
+            self.cursor.moveCursor(self.x, self.y) # Moves the cursor based on the set values.
+            
     def applyGrid(self):
         for coord_set in coordinates: # Loops through the dictionary 
             cv2.line(self.cameraImage, coord_set[0], coord_set[1], coord_set[2], 6) # Sets the line using the camera image and points from the dictionary.
                 
+    # To be deleted after testing ----- ----- -----
     def showCoords(self, event, x, y, flags, params):
         if event == cv2.EVENT_LBUTTONDOWN:
             print(f'X: {x} // Y: {y}')
             self.checkHand(x,y)
+            print(self.handLocation)
+    # ----- ----- ----- ----- ----- ----- ----- ----- 
 
     def checkHand(self, x, y):
-
         # -- Dead Zone Check -- #
         if x > 260 and x < 380 and y < 280 and y > 200:
-            print('DEAD')
+            self.handLocation = "Dead Zone"
             return
 
         # -- Top Right -- #
         if x > 320 and x < 580 and y < 240 and y > 55:
-            print('Top Right')
-
+            self.handLocation = "Top Right"
+            return
+        
         # -- Top Left -- #
         if x > 60 and x < 320 and y < 240 and y > 55:
-            print('Top Left')
+            self.handLocation = "Top Left"
+            return
 
         # -- Bottom Left -- #
         if x > 60 and x < 320 and y < 420 and y > 240:
-            print('Bottom Left')
+            self.handLocation = "Bottom Left"
+            return
 
         # -- Bottom Right -- #
         if x > 320 and x < 580 and y < 420 and y > 240:
-            print('Bottom Right')
-
+            self.handLocation = "Bottom Right"
+            return
+            
+        # -- Left Side Green -- #
+        if x > 0 and x < 60 and y < 425 and y > 55:
+            self.handLocation = "Left Side Green"
+            return
+        
+        # -- Right Side Green -- #
+        if x > 580 and x < 640 and y < 425 and y > 55:
+            self.handLocation = "Right Side Green"
+            return
+        
+        # -- Top Green -- #
+        if x > 60 and x < 580 and y < 55 and y > 0:
+            self.handLocation = "Top Green"
+            return
+        
+        # -- Bottom Green -- #
+        if x > 60 and x < 580 and y < 480 and y > 425:
+            self.handLocation = "Bottom Green"
+            return
+        
+        self.handLocation = "Unknown"
+        
+    def isPinching(self, p1, p2, threashold=30):
+        return math.hypot(p2[0] - p1[0], p2[1] - p1[1]) < threashold # Returns True if the two points are close enough to indicate a pinch gesture
+        
     def startCameraFeedThread(self):
         while self.cameraUiEnabled: # Keeping the camera on when its in use.
-            foundCamera, self.cameraImage = self.camera.read() # Reading the image of the camera
+            indexLandmark = None
+            thumbLandmark = None
+            self.circle = None
+            self.foundCamera, self.cameraImage = self.camera.read() # Reading the image of the camera
             self.cameraImage = cv2.flip(self.cameraImage, 1) # Flips the video image so that you move the hand in the same direction on the camera as you are in real life.
 
-            if not foundCamera: # Checks if the camera is found if not itll stop the function.
+            if not self.foundCamera: # Checks if the camera is found if not itll stop the function.
                 print('Camera not found.. Exiting.')
                 self.cameraUiEnabled = False
                 return "Couldn't use camera feed." # Returns it couldnt find the camera.
@@ -119,7 +180,26 @@ class TrackHands():
                         x, y = int(landMark.x * w), int(landMark.y * h) # converts the height and width into x and y coordinates to draw on the hand
                         if id == 8: # 8 is the ID for the tip of the index finger.
                             cv2.circle(self.cameraImage, (x, y), 15, (255, 0, 255), cv2.FILLED) # Creates a circle around the point on the index finger.
-                            self.checkHand(x,y)
+                            self.setXandY(x,y)
+                            indexLandmark = (x,y)
+                            
+                        if id == 4 and self.menuTracked:
+                            cv2.circle(self.cameraImage, (x, y), 15, (255, 0, 255), cv2.FILLED) 
+                            thumbLandmark = (x,y)
+            elif not handsInView.multi_hand_landmarks and self.LG.inLevel: # checks if they theres no hands in view and person in level
+                self.setXandY(0,0) # sets coords to 0,0 so the hand loc is unknown to stop movement
+                        
+          
+            if self.menuTracked:     
+                if indexLandmark and thumbLandmark: # If theres both the index and thumb on the screen.
+                    if self.isPinching(indexLandmark, thumbLandmark, 30): # check if they are pinching with a ±30 threashold.
+                        self.cursor.setImage("Select") # If it passes then change to the select.
+                    else: # Otherwise it goes to the idle mode.
+                        self.cursor.setImage("Idle")
+                else: # Defaults to the idle mode if not pinching or no thumb.
+                    self.cursor.setImage("Idle")
+
+            self.checkHand(self.x, self.y)
 
             cv2.imshow('image', self.cameraImage) # Displaying the cameras image in a window
             cv2.setMouseCallback('image', self.showCoords) # Displays the mouse coords after clicking
