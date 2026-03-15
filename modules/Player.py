@@ -13,7 +13,7 @@ GROUND_BUFFER = 6
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, screen, sheet, scale, LG):
+    def __init__(self, screen, sheet, scale, LG, disableGravity=False):
         super().__init__() # allows use of the pygame Sprite class
         # Initialise variables from the imports.
         self.screen = screen
@@ -33,7 +33,7 @@ class Player(pygame.sprite.Sprite):
         self.jumpOnCooldown = False
         self.yVelocity = self.jumpHeight
         self.mass = self.playerWeight
-        self.isGravityDisabled = True
+        self.gravityDisabled = disableGravity
         
         self.finishRect = None
         
@@ -231,7 +231,7 @@ class Player(pygame.sprite.Sprite):
                 self.mass = self.playerWeight
 
 
-        if isInLevel and not self.isJumping and not onGround: # change players yvelocity if they are not onthe grund
+        if (isInLevel and not self.isJumping and not onGround) and not self.gravityDisabled: # change players yvelocity if they are not onthe grund
             self.yVelocity += self.yGravity
         
         if canCollide: # if there are any collidable objects in the map.
@@ -293,9 +293,9 @@ class Player(pygame.sprite.Sprite):
             
             if self.isJumping and not self.jumpOnCooldown: # make player jump
                 self.rectangle.y -= jumpForce
-            elif isInLevel and not onGround: # enforce gravity
+            elif (isInLevel and not onGround) and not self.gravityDisabled: # enforce gravity
                 self.rectangle.y += self.yVelocity
-            elif onGround: # if the players on the ground fetch the ground y of where the player is and make sure the value is the same for the rectangle of the player
+            elif onGround and not self.gravityDisabled: # if the players on the ground fetch the ground y of where the player is and make sure the value is the same for the rectangle of the player
                 groundY = self.fetchGround(canCollide, hasMoveables)
                 if groundY is not None:
                     self.rectangle.bottom = groundY 
