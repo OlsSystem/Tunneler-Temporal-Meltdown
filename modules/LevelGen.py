@@ -99,7 +99,6 @@ class LevelGenerator():
         self.loadMoveables() # loads any moveable objects
         self.loadWildCards() # loads any wild card function
         
-        self.inLevel = True # sets in level to true
         self.chapterId = chapterId
         self.levelId = levelId
         self.tunneler.disableTunnelShooting()
