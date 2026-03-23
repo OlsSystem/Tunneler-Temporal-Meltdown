@@ -157,7 +157,8 @@ class MenuHandler():
     def enableLevel(self, chapterId, levelId):
         # starts the level loading process as a thread to allow for extra while loops to check for the camera.
         self.enableMenu("LoadingScreen")
-        Thread(target=self.startLevel, args=(chapterId,levelId)).start()
+        Thread(target=self.startLevel, args=(chapterId,levelId)).start() # DOCUMENT ME RN PLEASE MAKE SURE YOU DO 
+        # THIS IS ACTUALLY GENIOUS
 
     def startLevel(self, chapterId, levelId):
         # enable the level UI
